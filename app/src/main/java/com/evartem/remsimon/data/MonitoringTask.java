@@ -1,6 +1,10 @@
 package com.evartem.remsimon.data;
 
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.joda.time.Instant;
+
 /**
  * A common interface that each task of the app must implement
  */
@@ -20,21 +24,28 @@ public interface MonitoringTask {
     }
 
     /**
-     * Starts or stops the task's work
-     *
-     * @param active true = makes the task start issuing network requests on a separate worker thread,
-     *               false = the thread is stopped, no requests are being issued
+     * Makes the task start issuing network requests on a separate worker thread
      */
-    void setActive(boolean active);
-
-    boolean isActive();
+    void activate();
 
     /**
-     * Returns current status of the monitoring task as text string
-     *
-     * @return A short description of the current status of the task, e.g. "PING OK. Last successful ping at 12:34, 24 Jan"
+     * The worker thread is stopped, no requests are being issued
      */
-    String getStatusText();
+    void deactivate();
+
+
+    public static final int STATE_STOPPED = 0;
+    public static final int STATE_ACTIVE = 1;
+    public static final int STATE_DEACTIVATED = 2;
+
+    int getState();
+
+    /**
+     * Returns current state of the monitoring task as text string
+     *
+     * @return A short description of the current status of the task, e.g. "PING is OK"
+     */
+    String getStateText();
 
     /**
      * @return The type of this task as defined in {@link TaskType}
@@ -42,5 +53,15 @@ public interface MonitoringTask {
     String getType();
 
 
-    String getId();
+    String getTaskEntryId();
+
+    /**
+     * @return The moment when the task successfully completed it's job the last time (e.g. a successful ping of a URL)
+     */
+    Instant getLastSuccessInstant();
+
+    /**
+     * The app is being closed - stop the task (interrupt the worker thread)
+     */
+    void shutdown();
 }

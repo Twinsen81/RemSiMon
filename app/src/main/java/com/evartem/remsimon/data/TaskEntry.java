@@ -1,7 +1,9 @@
 package com.evartem.remsimon.data;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.util.UUID;
 
@@ -13,13 +15,20 @@ import java.util.UUID;
 @Entity(tableName = "Tasks")
 public final class TaskEntry {
     @PrimaryKey
+    @NonNull
     private final String id;
 
+    @NonNull
     private final String type;
 
-    public TaskEntry(String taskType) {
-        id = UUID.randomUUID().toString();
-        this.type = taskType;
+    @Ignore
+    public TaskEntry(@NonNull  String type) {
+        this(UUID.randomUUID().toString(), type);
+    }
+
+    public TaskEntry(@NonNull String id, @NonNull String type) {
+        this.id = id;
+        this.type = type;
     }
 
     public String getId() {

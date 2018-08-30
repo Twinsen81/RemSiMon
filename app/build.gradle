@@ -4,11 +4,17 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.evartem.remsimon"
-        minSdkVersion 19
+        minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     compileOptions {
@@ -29,6 +35,9 @@ dependencies {
     def supportLibraryVersion = '27.1.1'
     def butterknifeVersion = '8.8.1'
     def roomVersion = "1.1.1"
+    def guavaVersion = "26.0-jre"
+    def jodaTimeVersion = "2.9.9.4"
+    def leakCanaryVersion = "1.6.1"
 
 
 
@@ -42,12 +51,19 @@ dependencies {
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
+    implementation "com.google.guava:guava:$guavaVersion"
+    implementation "net.danlew:android.joda:$jodaTimeVersion"
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation "com.jakewharton:butterknife:$butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:$leakCanaryVersion"
 
 
 }
