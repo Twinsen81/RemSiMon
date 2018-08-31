@@ -1,4 +1,4 @@
-package com.evartem.remsimon.data;
+package com.evartem.remsimon.data.types;
 
 import java.util.Arrays;
 import java.util.List;

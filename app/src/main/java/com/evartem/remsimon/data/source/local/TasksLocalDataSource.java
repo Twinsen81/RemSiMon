@@ -32,6 +32,7 @@ public class TasksLocalDataSource implements TasksDataSource {
     @Override
     public void setTaskStateChangedListener(@NonNull StateChangedListener callback) {
 
+
     }
 
     @Override

@@ -7,7 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 import android.support.annotation.NonNull;
 
-import com.evartem.remsimon.data.PingingTask;
+import com.evartem.remsimon.data.types.pinging.PingingTask;
 
 import java.util.List;
 
