@@ -122,4 +122,21 @@ public class PingingTask implements MonitoringTask {
     public synchronized void shutdown() {
 
     }
+
+    @Override
+    public boolean isStateChange() {
+        return false;
+    }
+
+    @Override
+    public void doTheWork() {
+
+    }
+
+    /*@Override
+    public void copySettings(@NonNull MonitoringTask source) {
+        if (source instanceof PingingTask) {
+
+        }
+    }*/
 }
