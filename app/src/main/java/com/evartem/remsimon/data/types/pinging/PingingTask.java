@@ -96,25 +96,28 @@ public class PingingTask extends MonitoringTask {
     }
 
     private PingingTaskResult ping(PingingTaskSettings pingSettings) {
-        PingingTaskResult result = new PingingTaskResult();
+        PingingTaskResult workResult = new PingingTaskResult();
 
         if (!isValidUrl(pingSettings.getPingAddress())) {
-            result.errorCode = PingingTaskResult.ERROR_INVALID_ADDRESS;
-            return result;
+            workResult.errorCode = PingingTaskResult.ERROR_INVALID_ADDRESS;
+            workResult.errorMessage = "Not a valid URL";
+            return workResult;
         }
 
         PingResult pingResult;
         try {
             pingResult = Ping.onAddress(pingSettings.getPingAddress()).setTimeOutMillis(pingSettings.getPingTimeoutMs()).doPing();
         } catch (UnknownHostException e) {
-            result.errorCode = PingingTaskResult.ERROR_INVALID_ADDRESS;
-            return result;
+            workResult.errorCode = PingingTaskResult.ERROR_INVALID_ADDRESS;
+            workResult.errorMessage = "Unknown host";
+            return workResult;
         }
 
-        result.pingOK = pingResult.isReachable;
-        result.pingTimeMs = Float.valueOf(pingResult.timeTaken).longValue();
+        workResult.pingOK = pingResult.isReachable;
+        workResult.pingTimeMs = Float.valueOf(pingResult.timeTaken * 1000).longValue();
+        workResult.errorMessage = pingResult.getError();
 
-        return result;
+        return workResult;
     }
 
     /**
