@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.data.TaskEntry;
+import com.evartem.remsimon.data.types.base.TaskEntry;
 
 @Database(entities = {TaskEntry.class, PingingTask.class}, version = 1)
 public abstract class TasksDatabase extends RoomDatabase {

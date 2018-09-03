@@ -6,7 +6,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.support.annotation.NonNull;
 
-import com.evartem.remsimon.data.TaskEntry;
+import com.evartem.remsimon.data.types.base.TaskEntry;
 
 import java.util.List;
 

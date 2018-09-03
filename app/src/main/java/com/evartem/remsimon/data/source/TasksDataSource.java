@@ -1,11 +1,12 @@
-package com.evartem.remsimon.data;
+package com.evartem.remsimon.data.source;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
+
+import com.evartem.remsimon.data.types.base.MonitoringTask;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

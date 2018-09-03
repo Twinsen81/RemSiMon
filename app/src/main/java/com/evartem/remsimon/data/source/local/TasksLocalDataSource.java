@@ -2,8 +2,8 @@ package com.evartem.remsimon.data.source.local;
 
 import android.support.annotation.NonNull;
 
-import com.evartem.remsimon.data.MonitoringTask;
-import com.evartem.remsimon.data.TasksDataSource;
+import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.data.source.TasksDataSource;
 
 import java.util.List;
 

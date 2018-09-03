@@ -1,4 +1,4 @@
-package com.evartem.remsimon.data;
+package com.evartem.remsimon.data.types.base;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;

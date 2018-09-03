@@ -1,4 +1,4 @@
-package com.evartem.remsimon.data;
+package com.evartem.remsimon.data.types.base;
 
 
 import android.arch.persistence.room.Ignore;
@@ -6,13 +6,11 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.evartem.remsimon.data.types.TaskType;
 import com.google.common.base.Strings;
-
-import org.joda.time.Instant;
+import com.squareup.moshi.Moshi;
 
 //TODO Add moshi and return result as JSON
-//TODO Add to MinitoringTask field: String lastResult (getters and setters sync)
+//TODO Add to MinitoringTask field: String lastResultJson (getters and setters sync)
 //TODO Add superclass TaskResult with String lastSuccessTime, String error
 //TODO Add PingingTaskResult extends TaskResult
 //TODO remove lastSuccessTime
@@ -32,6 +30,21 @@ public abstract class MonitoringTask {
     private String description;
 
     /**
+     * The value returned by last call to doTheWork.
+     * JSON formatted string.
+     */
+    @NonNull
+    protected String lastResultJson;
+
+    /**
+     * The last result of the doTheWork routine is saved here in addition to the lastResultJson field
+     * to provide fast access to the lastSuccessTime field which, in case of the task's failure, must
+     * be transferred from the previous result to the current.
+     */
+    @Ignore
+    protected TaskResult lastResultCached;
+
+    /**
      * The doTheWork method of this task will be called every "everyNSeconds" seconds
      */
     private int everyNSeconds = 5;
@@ -39,7 +52,7 @@ public abstract class MonitoringTask {
     @Ignore
     protected volatile boolean stateChanged;
 
-    protected volatile long lastSuccessTime;
+    //protected volatile long lastSuccessTime;
 
     public static final int MODE_STOPPED = 0;
     public static final int MODE_ACTIVE = 1;
@@ -48,12 +61,18 @@ public abstract class MonitoringTask {
 
     private volatile int mode;
 
+    @Ignore
+    protected static Moshi moshi;
 
-    public MonitoringTask(@NonNull String taskEntryId, @NonNull String description, int mode, long lastSuccessTime) {
+
+
+    public MonitoringTask(@NonNull String taskEntryId, @NonNull String description, int mode, String lastResultJson) {
         this.taskEntryId = taskEntryId;
         this.description = description;
         this.mode = mode;
-        this.lastSuccessTime = lastSuccessTime;
+        this.lastResultJson = lastResultJson;
+        lastResultCached = new TaskResult();
+        moshi = new Moshi.Builder().build();
     }
 
     /**
@@ -140,8 +159,8 @@ public abstract class MonitoringTask {
      * "The temperature is 27 C"
      *  Some data represented as a JSON string
      */
-    public synchronized String getStateText() {
-        return (mode == MODE_ACTIVE ? "Active: " : "Not active: ") + description;
+    public synchronized String getLastResultJson() {
+        return lastResultJson;
     }
 
 
@@ -156,13 +175,13 @@ public abstract class MonitoringTask {
     /**
      * @return The moment when the task successfully completed it's job the last time (e.g. a successful ping of a URL)
      */
-    public synchronized Instant getLastSuccessInstant() {
+    /*public synchronized Instant getLastSuccessInstant() {
         return  new Instant(lastSuccessTime);
     }
 
     public synchronized long getLastSuccessTime() {
         return lastSuccessTime;
-    }
+    }*/
 
 
 
