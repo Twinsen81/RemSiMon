@@ -5,6 +5,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 
@@ -27,29 +28,23 @@ public interface TasksDataSource {
         void onTasksLoaded(@NonNull List<MonitoringTask> tasks);
     }
 
-    void setTaskStateChangedListener(@NonNull StateChangedListener callback);
+    @WorkerThread
+    List<MonitoringTask> getTasksSync();
 
-    interface StateChangedListener {
 
-        @RestrictTo(LIBRARY_GROUP)
-        @IntDef({STATE_CHANGED, DELETED, ADDED})
-        @IntRange(from = 1)
-        @Retention(RetentionPolicy.SOURCE)
-        public @interface WhatChanged {}
+    @UiThread
+    void saveOrAddTask(@NonNull MonitoringTask task);
 
-        public static final int STATE_CHANGED = 1;
-        public static final int DELETED = 2;
-        public static final int ADDED = 3;
+    /**
+     * If called from UI thread -> executes asynchronously
+     * If called from Worker thread -> synchronously
+     * @param tasks
+     */
+    void saveOrAddTasks(@NonNull List<MonitoringTask> tasks);
 
-        @UiThread
-        void onTaskStateChanged(@NonNull MonitoringTask changedTask, @WhatChanged int whatChanged);
-    }
-
-    void saveTask(@NonNull MonitoringTask task);
-
-    void saveTasks(@NonNull List<MonitoringTask> tasks);
-
+    @UiThread
     void deleteAllTasks();
 
+    @UiThread
     void deleteTask(@NonNull MonitoringTask task);
 }

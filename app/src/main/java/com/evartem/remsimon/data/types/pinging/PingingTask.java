@@ -81,7 +81,7 @@ public class PingingTask extends MonitoringTask {
 
     @Override
     @WorkerThread
-    public void doTheWork() {
+    protected void doTheActualWork() {
 
         checkNotNull(settings);
         PingingTaskSettings pingSettings;

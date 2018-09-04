@@ -1,6 +1,8 @@
 package com.evartem.remsimon.data.source.local;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.source.TasksDataSource;
@@ -21,7 +23,7 @@ public class TasksLocalDataSource implements TasksDataSource {
         return INSTANCE;
     }
 
-    //private TasksLocalDataSource()
+    private TasksLocalDataSource() {}
 
 
     @Override
@@ -30,27 +32,36 @@ public class TasksLocalDataSource implements TasksDataSource {
     }
 
     @Override
-    public void setTaskStateChangedListener(@NonNull StateChangedListener callback) {
+    @WorkerThread
+    public List<MonitoringTask> getTasksSync() {
+        return null;
+    }
 
+
+    @Override
+    @UiThread
+    public void saveOrAddTask(@NonNull MonitoringTask task) {
+
+    }
+
+    /**
+     * If called from UI thread -> executes asynchronously
+     * If called from Worker thread -> synchronously
+     * @param tasks
+     */
+    @Override
+    public void saveOrAddTasks(@NonNull List<MonitoringTask> tasks) {
 
     }
 
     @Override
-    public void saveTask(@NonNull MonitoringTask task) {
-
-    }
-
-    @Override
-    public void saveTasks(@NonNull List<MonitoringTask> tasks) {
-
-    }
-
-    @Override
+    @UiThread
     public void deleteAllTasks() {
 
     }
 
     @Override
+    @UiThread
     public void deleteTask(@NonNull MonitoringTask task) {
 
     }
