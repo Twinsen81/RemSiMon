@@ -33,14 +33,14 @@ public interface TasksDataSource {
 
 
     @UiThread
-    void saveOrAddTask(@NonNull MonitoringTask task);
+    void updateOrAddTask(@NonNull MonitoringTask task);
 
     /**
      * If called from UI thread -> executes asynchronously
      * If called from Worker thread -> synchronously
      * @param tasks
      */
-    void saveOrAddTasks(@NonNull List<MonitoringTask> tasks);
+    void updateOrAddTasks(@NonNull List<MonitoringTask> tasks);
 
     @UiThread
     void deleteAllTasks();

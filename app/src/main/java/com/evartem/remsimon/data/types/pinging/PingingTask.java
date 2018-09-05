@@ -34,8 +34,8 @@ import static com.google.common.base.Preconditions.checkState;
 
 
 @Entity(tableName = TaskType.PINGING,
-        indices = @Index({"taskEntryId"}),
-        foreignKeys = @ForeignKey(entity = TaskEntry.class, parentColumns = "id", childColumns = "taskEntryId"))
+        indices = @Index({"taskId"}),
+        foreignKeys = @ForeignKey(entity = TaskEntry.class, parentColumns = "id", childColumns = "taskId"))
 public class PingingTask extends MonitoringTask {
 
     /**

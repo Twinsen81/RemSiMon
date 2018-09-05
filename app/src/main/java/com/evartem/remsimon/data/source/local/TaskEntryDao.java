@@ -17,7 +17,7 @@ public interface TaskEntryDao {
     List<TaskEntry> getAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void add(TaskEntry taskEntry);
+    void addOrReplace(TaskEntry taskEntry);
 
     @Query("DELETE FROM tasks WHERE id = :taskId")
     int remove(@NonNull String taskId);

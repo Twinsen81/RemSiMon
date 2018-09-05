@@ -6,15 +6,13 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.google.common.base.Strings;
 import com.squareup.moshi.Moshi;
 
-import net.danlew.android.joda.JodaTimeAndroid;
-
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
+
+import java.util.UUID;
 
 import timber.log.Timber;
 
@@ -28,7 +26,7 @@ public abstract class MonitoringTask {
 
     @PrimaryKey
     @NonNull
-    protected final String taskEntryId;
+    protected final String taskId;
 
 
     private String description;
@@ -80,8 +78,8 @@ public abstract class MonitoringTask {
     Instant lastTimeDidWork; // When this task last time did the work
 
 
-    public MonitoringTask(@NonNull String taskEntryId, @NonNull String description, int mode, String lastResultJson) {
-        this.taskEntryId = taskEntryId;
+    public MonitoringTask(@NonNull String description, int mode, String lastResultJson) {
+        this.taskId = UUID.randomUUID().toString();
         this.description = description;
         this.mode = mode;
         this.lastResultJson = lastResultJson;
@@ -216,7 +214,7 @@ public abstract class MonitoringTask {
     public abstract String getType();
 
 
-    public String getTaskEntryId() {return taskEntryId;}
+    public String getTaskId() {return taskId;}
 
     /**
      * @return The moment when the task successfully completed it's job the last time (e.g. a successful ping of a URL)

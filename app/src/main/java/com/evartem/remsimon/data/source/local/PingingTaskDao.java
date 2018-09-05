@@ -21,7 +21,11 @@ public interface PingingTaskDao {
     PingingTask getById(@NonNull String taskId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void add(@NonNull PingingTask task);
+    void addOrReplace(@NonNull PingingTask task);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addOrReplaceAll(@NonNull List<PingingTask> tasks);
+
 
     @Query("DELETE FROM pingingtask WHERE taskEntryID = :taskId")
     int deleteById(@NonNull String taskId);

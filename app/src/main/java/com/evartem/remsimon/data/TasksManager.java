@@ -5,7 +5,6 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.UiThread;
-import android.support.annotation.WorkerThread;
 
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
@@ -14,13 +13,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -38,7 +33,7 @@ public class TasksManager implements Runnable {
     private static TasksManager INSTANCE = null;
     private TasksDataSource dataSource;
     private ReentrantLock tasksListLock = new ReentrantLock();
-    private Map<String, MonitoringTask> tasks = new HashMap<>(); // In-memory cache of the tasks stored in the data source
+    private ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source
     private ExecutorService managerThreadExecutor;
 
     public static TasksManager getInstance(@NotNull TasksDataSource dataSource, ExecutorService managerThreadExecutor) {
@@ -107,7 +102,7 @@ public class TasksManager implements Runnable {
      */
     private void saveAll2Datasource() {
         if (tasks.size() > 0)
-            dataSource.saveOrAddTasks((List<MonitoringTask>) tasks.values());
+            dataSource.updateOrAddTasks((List<MonitoringTask>) tasks.values());
     }
 
 
@@ -116,17 +111,24 @@ public class TasksManager implements Runnable {
         return (List<MonitoringTask>) tasks.values();
     }
 
-    public void saveOrAddTask(@NonNull MonitoringTask task) {
+    @UiThread
+    public void AddTask(@NonNull MonitoringTask task) {
+        if (tasks.containsKey(task.getTaskId())) return;
 
+        tasks.put(task.getTaskId(), task);
+        dataSource.updateOrAddTask(task);
     }
 
-
+    @UiThread
     public void deleteAllTasks() {
-
+        tasks.clear();
+        dataSource.deleteAllTasks();
     }
 
+    @UiThread
     public void deleteTask(@NonNull MonitoringTask task) {
-
+        tasks.remove(task.getTaskId());
+        dataSource.deleteTask(task);
     }
 
 
