@@ -152,4 +152,13 @@ public class PingingTask extends MonitoringTask {
         }
         lastResultCached = result;
     }
+
+    @Override
+    public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
+        super.copyPropertiesFrom(sourceTask);
+        if (sourceTask instanceof PingingTask) {
+            jsonAdapter = ((PingingTask)sourceTask).jsonAdapter;
+            settings = ((PingingTask)sourceTask).settings;
+        }
+    }
 }

@@ -6,9 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.UiThread;
+import android.support.annotation.WorkerThread;
 
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.util.AppExecutors;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -20,8 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
-import timber.log.Timber;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
@@ -49,10 +49,18 @@ public class TasksManager implements Runnable {
         return INSTANCE;
     }
 
-
     private TasksManager(@NotNull TasksDataSource dataSource, ExecutorService managerThreadExecutor) {
         this.dataSource = dataSource;
         this.managerThreadExecutor = managerThreadExecutor;
+    }
+
+    /**
+     * Used to force new instance creation (for tests)
+     */
+    public static void destroyInstance() {
+        synchronized (TasksManager.class) {
+            INSTANCE = null;
+        }
     }
 
     public void startManager() {
@@ -83,7 +91,7 @@ public class TasksManager implements Runnable {
             }
         }
 
-        saveAll2Datasource();
+        forceSaveAll2Datasource();
         successfullyFinishedWorking = true;
     }
 
@@ -106,9 +114,30 @@ public class TasksManager implements Runnable {
     /**
      * Saves current state of all tasks in the datasource
      */
-    private void saveAll2Datasource() {
+    public void forceSaveAll2Datasource() {
         if (tasks.size() > 0)
             dataSource.updateOrAddTasks(new ArrayList<MonitoringTask>(tasks.values()));
+    }
+
+    /**
+     * Updates current cached list of tasks with tasks from the data source
+     * @param overwriteProperties if the task already exists in the cache, should its properties
+     *                            be overwritten by the task in the data source?
+     */
+    @UiThread
+    public void updateTasksFromDatasource(boolean overwriteProperties) {
+        new AppExecutors().diskIO().execute(() -> {
+            List<MonitoringTask> dbTasks = dataSource.getTasksSync();
+            for (MonitoringTask dbTask :
+                    dbTasks) {
+                MonitoringTask currCachedTask = tasks.get(dbTask.getTaskId());
+                if (currCachedTask == null) {
+                    tasks.put(dbTask.getTaskId(), dbTask);
+                }else {
+                    currCachedTask.copyPropertiesFrom(dbTask);
+                }
+            }
+        });
     }
 
 
@@ -125,7 +154,7 @@ public class TasksManager implements Runnable {
 
     @UiThread
     public void addTask(@NonNull MonitoringTask task) {
-        if (tasks.containsKey(task.getTaskId())) return;
+        if (task == null || tasks.containsKey(task.getTaskId())) return;
 
         tasks.put(task.getTaskId(), task);
         dataSource.updateOrAddTask(task);

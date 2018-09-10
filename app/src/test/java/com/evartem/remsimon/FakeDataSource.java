@@ -4,14 +4,17 @@ import android.support.annotation.NonNull;
 
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.util.AppExecutors;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Fake data source for testing. Holds all items in memory.
@@ -28,30 +31,29 @@ public class FakeDataSource implements TasksDataSource{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            callback.onTasksLoaded(tasksDb);
+            callback.onTasksLoaded(new ArrayList<>(tasksDb));
         });
     }
 
     @Override
     public List<MonitoringTask> getTasksSync() {
-        return tasksDb;
+        return new ArrayList<>(tasksDb);
     }
 
     @Override
     public void updateOrAddTask(@NonNull MonitoringTask task) {
-        updateOrAddTasks(Arrays.asList(task));
+        updateOrAddTasks(Collections.singletonList(task));
     }
 
-    /**
-     * No need to update tasks since we're working with the same in-memory list
-     * @param tasks
-     */
     @Override
     public void updateOrAddTasks(@NonNull List<MonitoringTask> tasks) {
         for (MonitoringTask newTask :
-                tasksDb) {
-            if (!tasksDb.contains(newTask))
+                tasks) {
+            int index2Update = tasksDb.indexOf(newTask);
+            if (index2Update == -1)
                 tasksDb.add(newTask);
+            else
+                tasksDb.get(index2Update).copyPropertiesFrom(newTask);
         }
     }
 

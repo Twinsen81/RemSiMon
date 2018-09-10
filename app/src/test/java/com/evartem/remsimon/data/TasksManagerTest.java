@@ -31,6 +31,11 @@ public class TasksManagerTest {
         manager.startManager();
     }
 
+    @After
+    public void destroyRepositoryInstance() {
+        manager.destroyInstance();
+    }
+
     private static PingingTask createPingingTask(String description, String address, int timeOutMs) {
         PingingTask task = new PingingTask(description);
         task.settings.setPingAddress(address);
@@ -39,7 +44,7 @@ public class TasksManagerTest {
     }
 
     @Test
-    public void AddTasks_AddsOneTask() {
+    public void addTasks_AddsOneTask() {
         manager.addTask(pingingTask1);
         MonitoringTask returnedTask = manager.getTask(pingingTask1.getTaskId());
         assertNotNull(returnedTask);
@@ -47,12 +52,9 @@ public class TasksManagerTest {
     }
 
     @Test
-    public void AddTasks_MultipleTasks() {
-        manager.addTask(pingingTask1);
-        manager.addTask(pingingTasks.get(0));
-        manager.addTask(pingingTasks.get(1));
-        manager.addTask(pingingTasks.get(2));
+    public void addTasks_MultipleTasks() {
 
+        addMultipleTasks();
         List<MonitoringTask> tasks = manager.getTasks();
 
         assertTrue(tasks.contains(pingingTask1));
@@ -61,9 +63,52 @@ public class TasksManagerTest {
         assertTrue(tasks.contains(pingingTasks.get(2)));
     }
 
+    private void addMultipleTasks() {
+        manager.addTask(pingingTask1);
+        manager.addTask(pingingTasks.get(0));
+        manager.addTask(pingingTasks.get(1));
+        manager.addTask(pingingTasks.get(2));
+    }
 
-    @After
-    public void tearDown() {
-        //assertThat(manager.finish(), is(true));
+    @Test
+    public void addTasks_NullTask() {
+        manager.addTask(null);
+        assertThat(manager.getTasks().size(), is (0));
+    }
+
+    @Test
+    public void getTasks_NoTasksReturnsEmptyList() {
+        assertThat(manager.getTasks().size(), is (0));
+    }
+
+    @Test
+    public void deleteTask_OneTask() {
+        addMultipleTasks();
+        assertTrue(manager.getTasks().contains(pingingTask1));
+
+        manager.deleteTask(pingingTask1);
+
+        assertFalse(manager.getTasks().contains(pingingTask1));
+    }
+
+    @Test
+    public void deleteAllTasks() {
+        addMultipleTasks();
+        manager.deleteAllTasks();
+        assertThat(manager.getTasks().size(), is (0));
+    }
+
+    @Test
+    public void updateOneTask() {
+        addMultipleTasks();
+
+        pingingTask1.setDescription("New description for TEST ping task 3");
+        pingingTask1.activate();
+        pingingTask1.settings.setPingTimeoutMs(1500);
+        pingingTask1.settings.setPingAddress("192.168.0.0");
+
+        manager.addTask(pingingTask1);
+
+
     }
 }

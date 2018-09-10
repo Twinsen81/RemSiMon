@@ -113,7 +113,7 @@ public abstract class MonitoringTask {
      *
      * @return An important notification to show to the user, if no notification available at the moment - empty string
      */
-    public void setDescription(@NonNull String description) {
+    public synchronized void setDescription(@NonNull String description) {
         if (Strings.isNullOrEmpty(description)) {
             this.description = "New " + getType();
         } else {
@@ -121,7 +121,7 @@ public abstract class MonitoringTask {
         }
     }
 
-    public String getDescription() {
+    public synchronized String getDescription() {
         return description;
     }
 
@@ -228,24 +228,13 @@ public abstract class MonitoringTask {
         return obj instanceof MonitoringTask && ((MonitoringTask) obj).getTaskId().equals(taskId);
     }
 
-
-    /**
-     * @return The moment when the task successfully completed it's job the last time (e.g. a successful ping of a URL)
-     */
-    /*public synchronized Instant getLastSuccessInstant() {
-        return  new Instant(lastSuccessTime);
+    public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
+        description = sourceTask.description;
+        lastResultCached = sourceTask.lastResultCached;
+        lastResultJson = sourceTask.lastResultJson;
+        lastTimeDidWork = sourceTask.lastTimeDidWork;
+        mode = sourceTask.mode;
+        runTaskEveryNSeconds = sourceTask.runTaskEveryNSeconds;
+        workStage = sourceTask.workStage;
     }
-
-    public synchronized long getLastSuccessTime() {
-        return lastSuccessTime;
-    }*/
-
-
-
-
-    /**
-     * Copy settings from another task (copying a task without creating a new instance)
-     * @param source The task to copy the settings from
-     */
-    //void copySettings(@NonNull MonitoringTask source);
 }
