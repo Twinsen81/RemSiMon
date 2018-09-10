@@ -3,6 +3,7 @@ package com.evartem.remsimon.data;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.UiThread;
 
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -35,6 +37,7 @@ public class TasksManager implements Runnable {
     private ReentrantLock tasksListLock = new ReentrantLock();
     private ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source
     private ExecutorService managerThreadExecutor;
+    private volatile boolean  successfullyFinishedWorking = false;
 
     public static TasksManager getInstance(@NotNull TasksDataSource dataSource, ExecutorService managerThreadExecutor) {
         if (INSTANCE == null) {
@@ -48,7 +51,7 @@ public class TasksManager implements Runnable {
 
 
     private TasksManager(@NotNull TasksDataSource dataSource, ExecutorService managerThreadExecutor) {
-        dataSource = dataSource;
+        this.dataSource = dataSource;
         this.managerThreadExecutor = managerThreadExecutor;
     }
 
@@ -76,13 +79,12 @@ public class TasksManager implements Runnable {
                 if (!someTasksWereRun) TimeUnit.MILLISECONDS.sleep(300);
 
             } catch (InterruptedException e) {
-                e.printStackTrace();
-                Timber.d(e);
-            } finally {
+                //Timber.d(e);
             }
         }
 
         saveAll2Datasource();
+        successfullyFinishedWorking = true;
     }
 
     private boolean shouldRunTask(MonitoringTask task) {
@@ -90,10 +92,14 @@ public class TasksManager implements Runnable {
     }
 
     /**
-     * Interrupts all the worker threads
+     * Interrupts the worker thread (run)
+     * @return True if the worker thread finished correctly
+     * @throws InterruptedException
      */
-    public void finish() {
+    public boolean finish() throws InterruptedException {
         managerThreadExecutor.shutdownNow();
+        managerThreadExecutor.awaitTermination(2000, TimeUnit.MILLISECONDS);
+        return successfullyFinishedWorking;
     }
 
 
@@ -102,17 +108,23 @@ public class TasksManager implements Runnable {
      */
     private void saveAll2Datasource() {
         if (tasks.size() > 0)
-            dataSource.updateOrAddTasks((List<MonitoringTask>) tasks.values());
+            dataSource.updateOrAddTasks(new ArrayList<MonitoringTask>(tasks.values()));
     }
 
 
     @UiThread
     public List<MonitoringTask> getTasks() {
-        return (List<MonitoringTask>) tasks.values();
+        return new ArrayList<MonitoringTask>(tasks.values());
     }
 
     @UiThread
-    public void AddTask(@NonNull MonitoringTask task) {
+    @Nullable
+    public MonitoringTask getTask(String taskId) {
+        return tasks.get(taskId);
+    }
+
+    @UiThread
+    public void addTask(@NonNull MonitoringTask task) {
         if (tasks.containsKey(task.getTaskId())) return;
 
         tasks.put(task.getTaskId(), task);

@@ -41,20 +41,19 @@ public class PingingTask extends MonitoringTask {
     /**
      * Creates the pinging task.
      *
-     * @param taskEntryId An id of the task from the {@link TaskEntry} table
      * @param description A short description of the task
      */
     @Ignore
-    public PingingTask(@NonNull String taskEntryId, @NonNull String description) {
-        this(taskEntryId, description, MonitoringTask.MODE_STOPPED, "");
+    public PingingTask(@NonNull String description) {
+        this(description, MonitoringTask.MODE_STOPPED, "");
         settings = new PingingTaskSettings();
     }
 
     /**
      * SHOULD NOT be used directly in the app! A special constructor for the Room library.
      */
-    public PingingTask(@NonNull String taskEntryId, @NonNull String description, int mode, String lastResultJson) {
-        super(taskEntryId, description, mode, lastResultJson);
+    public PingingTask(@NonNull String description, int mode, String lastResultJson) {
+        super(description, mode, lastResultJson);
         jsonAdapter = moshi.adapter(PingingTaskResult.class);
 
         // Empty lastResultCached is created in the base class, but if we have already a JSON-serialized result in the Room -> unpack it

@@ -17,7 +17,7 @@ public interface PingingTaskDao {
     @Query("SELECT * FROM pingingtask")
     List<PingingTask> getAll();
 
-    @Query("SELECT * FROM pingingtask WHERE taskEntryID = :taskId")
+    @Query("SELECT * FROM pingingtask WHERE taskId = :taskId")
     PingingTask getById(@NonNull String taskId);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -26,8 +26,7 @@ public interface PingingTaskDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addOrReplaceAll(@NonNull List<PingingTask> tasks);
 
-
-    @Query("DELETE FROM pingingtask WHERE taskEntryID = :taskId")
+    @Query("DELETE FROM pingingtask WHERE taskId = :taskId")
     int deleteById(@NonNull String taskId);
 
     @Query("DELETE FROM pingingtask")

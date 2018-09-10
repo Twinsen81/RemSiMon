@@ -26,7 +26,7 @@ public abstract class MonitoringTask {
 
     @PrimaryKey
     @NonNull
-    protected final String taskId;
+    protected String taskId;
 
 
     private String description;
@@ -107,7 +107,6 @@ public abstract class MonitoringTask {
     public synchronized int getMode() {
         return mode;
     }
-
 
     /**
      * Returns a non-empty string when an important notification should be shown to the user
@@ -204,6 +203,7 @@ public abstract class MonitoringTask {
      * "The temperature is 27 C"
      *  Some data represented as a JSON string
      */
+    @NonNull
     public synchronized String getLastResultJson() {
         return lastResultJson;
     }
@@ -214,7 +214,20 @@ public abstract class MonitoringTask {
     public abstract String getType();
 
 
+    @NonNull
     public String getTaskId() {return taskId;}
+
+    /**
+     * Should NOT be used directly! Inserted only for the Room library's sake
+     * @param taskId
+     */
+    public void setTaskId(@NonNull String taskId) {this.taskId = taskId;}
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MonitoringTask && ((MonitoringTask) obj).getTaskId().equals(taskId);
+    }
+
 
     /**
      * @return The moment when the task successfully completed it's job the last time (e.g. a successful ping of a URL)

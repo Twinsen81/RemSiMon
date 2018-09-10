@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".tasks.TasksActivity"
-    tools:showIn="@layout/Tasks_app_bar">
+    tools:showIn="@layout/tasks_app_bar">
 
     <TextView
         android:id="@+id/hello"
