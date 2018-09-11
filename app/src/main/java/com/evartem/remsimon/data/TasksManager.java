@@ -35,7 +35,7 @@ public class TasksManager implements Runnable {
     private static TasksManager INSTANCE = null;
     private TasksDataSource dataSource;
     private ReentrantLock tasksListLock = new ReentrantLock();
-    private ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source
+    ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source (package access for testing)
     private ExecutorService managerThreadExecutor;
     private volatile boolean  successfullyFinishedWorking = false;
 

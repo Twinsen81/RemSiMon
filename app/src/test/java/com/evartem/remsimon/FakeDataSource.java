@@ -23,6 +23,8 @@ public class FakeDataSource implements TasksDataSource{
 
     private List<MonitoringTask> tasksDb = new ArrayList<>();
 
+
+
     @Override
     public void getTasks(@NonNull LoadTasksListener callback) {
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -47,6 +49,7 @@ public class FakeDataSource implements TasksDataSource{
 
     @Override
     public void updateOrAddTasks(@NonNull List<MonitoringTask> tasks) {
+        System.out.println("FAKE DATA SOURCE: ADD");
         for (MonitoringTask newTask :
                 tasks) {
             int index2Update = tasksDb.indexOf(newTask);
