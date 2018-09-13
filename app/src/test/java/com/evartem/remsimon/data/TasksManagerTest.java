@@ -14,14 +14,20 @@ import java.util.concurrent.Executors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.mockito.Answers.RETURNS_DEFAULTS;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.stubbing.answers.AnswersWithDelay;
 
 public class TasksManagerTest {
 
@@ -128,22 +134,52 @@ public class TasksManagerTest {
 
     @Test
     public void deleteAllTasks() {
+        // Given a few tasks in the manager
         addMultipleTasks();
+
+        // When all the tasks are deleted
         manager.deleteAllTasks();
+
+        // Then there's nothing in the cache
         assertThat(manager.getTasks().size(), is(0));
+        // and the corresponding method is called on the data source
+        verify(mockDataSource).deleteAllTasks();
     }
 
     @Test
-    public void updateOneTask() {
-        addMultipleTasks();
+    public void taskIsRunByManager() {
+        // Given a task
+        PingingTask task = Mockito.mock(PingingTask.class);
+        when(task.getTaskId()).thenReturn("TestTaskID");
+        when(task.isTimeToExecute()).thenReturn(true).thenReturn(false);
 
-        pingingTask1.setDescription("New description for TEST ping task 3");
-        pingingTask1.activate();
-        pingingTask1.settings.setPingTimeoutMs(1500);
-        pingingTask1.settings.setPingAddress("192.168.0.0");
+        // When the task is added to the manager
+        manager.addTask(task);
 
-        manager.addTask(pingingTask1);
+        // Then it is executed at least once
+        verify(task, timeout(3000).times(1)).doTheWork();
+    }
 
+    @Test
+    public void gracefullyFinishManager() throws InterruptedException {
+
+        // Given a task
+        PingingTask task = Mockito.mock(PingingTask.class);
+        when(task.getTaskId()).thenReturn("TestTaskID");
+        when(task.isTimeToExecute()).thenReturn(true).thenReturn(false);
+        doAnswer(new AnswersWithDelay(100, RETURNS_DEFAULTS)).when(task).doTheWork();
+
+        // When the task is added to the manager
+        // and the manager is shut down
+        manager.addTask(task);
+        verify(mockDataSource, times(1)).updateOrAddTask(task);
+        Thread.sleep(100);
+        Boolean finishedGracefully = manager.finish();
+
+        // Then the manager's worker thread finishes properly
+        assertTrue(finishedGracefully);
+        // and the data is saved to the data source
+        verify(mockDataSource, times(1)).updateOrAddTasks(any());
 
     }
 

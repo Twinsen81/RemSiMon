@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -38,6 +39,7 @@ public class TasksManager implements Runnable {
     ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source (package access for testing)
     private ExecutorService managerThreadExecutor;
     private volatile boolean  successfullyFinishedWorking = false;
+    private Future managerThread = null;
 
     public static TasksManager getInstance(@NotNull TasksDataSource dataSource, ExecutorService managerThreadExecutor) {
         if (INSTANCE == null) {
@@ -64,14 +66,15 @@ public class TasksManager implements Runnable {
     }
 
     public void startManager() {
-        managerThreadExecutor.execute(this);
+        managerThread = managerThreadExecutor.submit(this);
     }
 
     @Override
     public void run() {
         boolean someTasksWereRun;
+        boolean interrupted = false;
 
-        while (!Thread.interrupted()) {
+        while (!Thread.interrupted() && !interrupted) {
             someTasksWereRun = false;
             try {
 
@@ -87,9 +90,11 @@ public class TasksManager implements Runnable {
                 if (!someTasksWereRun) TimeUnit.MILLISECONDS.sleep(300);
 
             } catch (InterruptedException e) {
-                //Timber.d(e);
+                interrupted = true;
             }
+             System.out.println("running...");
         }
+         System.out.println("exiting...");
 
         forceSaveAll2Datasource();
         successfullyFinishedWorking = true;
@@ -105,9 +110,15 @@ public class TasksManager implements Runnable {
      * @throws InterruptedException
      */
     public boolean finish() throws InterruptedException {
-        managerThreadExecutor.shutdownNow();
-        managerThreadExecutor.awaitTermination(2000, TimeUnit.MILLISECONDS);
-        return successfullyFinishedWorking;
+        if (managerThread != null) {
+            managerThread.cancel(true);
+            System.out.println("after cancel");
+            managerThreadExecutor.shutdownNow();
+            managerThreadExecutor.awaitTermination(2000, TimeUnit.MILLISECONDS);
+            return successfullyFinishedWorking;
+        }
+        else
+            return true;
     }
 
 
