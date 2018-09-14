@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -182,6 +183,17 @@ public class TasksManagerTest {
         verify(mockDataSource, times(1)).updateOrAddTasks(any());
 
     }
+
+    @Test
+    public void stateChangedListener_Added() {
+        // Given a few tasks in the manager
+        addMultipleTasks();
+
+        manager.getTasks()
+    }
+
+    //TODO: Add unit tests with callbacks
+
 
     // Convenience methods
 

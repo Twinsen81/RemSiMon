@@ -165,6 +165,7 @@ public abstract class MonitoringTask {
     public void doTheWork() {
         if (isWorking()) return;
 
+        stateChanged = false;
         signalWorkStarted();
         try {
             doTheActualWork();

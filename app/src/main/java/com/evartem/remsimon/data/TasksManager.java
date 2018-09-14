@@ -24,6 +24,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
+import timber.log.Timber;
+
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 
 /**
@@ -35,25 +37,30 @@ public class TasksManager implements Runnable {
 
     private static TasksManager INSTANCE = null;
     private TasksDataSource dataSource;
-    private ReentrantLock tasksListLock = new ReentrantLock();
     ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source (package access for testing)
+
     private ExecutorService managerThreadExecutor;
+    private AppExecutors executors;
+
     private volatile boolean  successfullyFinishedWorking = false;
     private Future managerThread = null;
 
-    public static TasksManager getInstance(@NotNull TasksDataSource dataSource, ExecutorService managerThreadExecutor) {
+    private List<StateChangedListener> listeners = new ArrayList<>();
+
+    public static TasksManager getInstance(@NotNull TasksDataSource dataSource, AppExecutors appExecutors, ExecutorService managerThreadExecutor) {
         if (INSTANCE == null) {
             synchronized (TasksManager.class) {
                 if (INSTANCE == null)
-                    INSTANCE = new TasksManager(dataSource, managerThreadExecutor);
+                    INSTANCE = new TasksManager(dataSource, appExecutors, managerThreadExecutor);
             }
         }
         return INSTANCE;
     }
 
-    private TasksManager(@NotNull TasksDataSource dataSource, ExecutorService managerThreadExecutor) {
+    private TasksManager(@NotNull TasksDataSource dataSource, AppExecutors appExecutors, ExecutorService managerThreadExecutor) {
         this.dataSource = dataSource;
         this.managerThreadExecutor = managerThreadExecutor;
+        this.executors = appExecutors;
     }
 
     /**
@@ -83,6 +90,8 @@ public class TasksManager implements Runnable {
                     if (shouldRunTask(task)) {
                         task.doTheWork();
                         someTasksWereRun = true;
+                        if (task.getStateChange())
+                            notifyListeners(task, StateChangedListener.STATE_CHANGED);
                     }
 
                 }
@@ -92,9 +101,7 @@ public class TasksManager implements Runnable {
             } catch (InterruptedException e) {
                 interrupted = true;
             }
-             System.out.println("running...");
         }
-         System.out.println("exiting...");
 
         forceSaveAll2Datasource();
         successfullyFinishedWorking = true;
@@ -110,6 +117,7 @@ public class TasksManager implements Runnable {
      * @throws InterruptedException
      */
     public boolean finish() throws InterruptedException {
+        listeners.clear();
         if (managerThread != null) {
             managerThread.cancel(true);
             System.out.println("after cancel");
@@ -137,7 +145,7 @@ public class TasksManager implements Runnable {
      */
     @UiThread
     public void updateTasksFromDatasource(boolean overwriteProperties) {
-        new AppExecutors().diskIO().execute(() -> {
+        executors.diskIO().execute(() -> {
             List<MonitoringTask> dbTasks = dataSource.getTasksSync();
             for (MonitoringTask dbTask :
                     dbTasks) {
@@ -184,6 +192,28 @@ public class TasksManager implements Runnable {
     }
 
 
+    @WorkerThread
+    private void notifyListeners(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged)
+    {
+        executors.mainThread().execute(() -> notifyListenersFromUI(changedTask, whatChanged));
+    }
+
+    @UiThread
+    private void notifyListenersFromUI(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged)
+    {
+        for (StateChangedListener listener :
+                listeners) {
+            listener.onTaskStateChanged(changedTask, whatChanged);
+        }
+    }
+
+    /**
+     * Notifies the subscriber about changes in the tasks:
+     * ADDED - a new task was added
+     * DELETED - a task was deleted
+     * STATE_CHANGED - task's work completed
+     *
+     */
     interface StateChangedListener {
 
         @RestrictTo(LIBRARY_GROUP)
@@ -192,18 +222,23 @@ public class TasksManager implements Runnable {
         @Retention(RetentionPolicy.SOURCE)
         public @interface WhatChanged {
         }
-
         public static final int STATE_CHANGED = 1;
         public static final int DELETED = 2;
         public static final int ADDED = 3;
 
         @UiThread
-        void onTaskStateChanged(@NonNull MonitoringTask changedTask, @WhatChanged int whatChanged);
+        void onTaskStateChanged(@Nullable MonitoringTask changedTask, @WhatChanged int whatChanged);
 
     }
 
-    void setTaskStateChangedListener(@NonNull StateChangedListener callback) {
+    void addTaskStateChangedListener(@NonNull StateChangedListener callback) {
+        if (listeners.size() > 0) // Generally, there should be only one listener - the tasks activity
+            Timber.wtf("Adding second listener. Possible memory leak!");
+        listeners.add(callback);
+    }
 
+    void removeTaskStateChangedListener(@NonNull StateChangedListener callback) {
+        listeners.remove(callback);
     }
 
 }

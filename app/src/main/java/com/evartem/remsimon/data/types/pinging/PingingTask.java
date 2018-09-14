@@ -92,6 +92,8 @@ public class PingingTask extends MonitoringTask {
         PingingTaskResult result = ping(pingSettings);
 
         formatAndSetResult(result);
+
+        stateChanged = true;
     }
 
     private PingingTaskResult ping(PingingTaskSettings pingSettings) {
