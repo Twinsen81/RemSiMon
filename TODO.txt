@@ -1,0 +1,28 @@
+
+//Test callbacks
+//READ:
+https://medium.com/google-developer-experts/finally-understanding-how-references-work-in-android-and-java-26a0d9c92f83
+https://medium.com/google-developer-experts/weakreference-in-android-dd1e66b9be9d
+
+
+// androidTest: Room DB
+// androidTest: pinging task - that it actually pings!
+// Write tests about updating tasks: flushing and retrieving data from the data source, etc.
+
+// Manager - reads next execution time from all the tasks and sleeps until the next execution is needed
+// Manager - if the task is being executed, but user deletes it? + add test case
+
+// Constraint Layout - watch, add edit field for IP, add a button, add a text field for results
+// add callbacks to UI
+// add test data and test UI, add test Logs: Timber.i
+// watch DB changes: https://github.com/amitshekhariitbhu/Android-Debug-Database
+
+// tests: https://www.youtube.com/watch?v=wYMIadv9iF8
+// JUnit tests: LocalDataSource
+// JUnit tests: TasksManager
+// JUnit tests: find test coverage tool
+
+// instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
+
+// Task type: web page parser -> extract info from a certain web page and display data
+// TasksManager - implement with a thread pool, so several tasks could be executed simultaneously
