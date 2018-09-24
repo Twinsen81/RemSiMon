@@ -3,6 +3,7 @@ package com.evartem.remsimon.data;
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
+import com.evartem.remsimon.util.AppExecutors;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,11 +13,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import static com.evartem.remsimon.data.TasksManager.StateChangedListener.ADDED;
+import static com.evartem.remsimon.data.TasksManager.StateChangedListener.STATE_CHANGED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Answers.RETURNS_DEFAULTS;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -25,6 +31,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -34,6 +41,12 @@ public class TasksManagerTest {
 
     @Mock
     private TasksDataSource mockDataSource;
+
+    @Mock
+    private TasksManager.StateChangedListener stateChangedListener;
+
+    @Mock
+    private AppExecutors appExecutors;
 
     private TasksManager manager;
 
@@ -47,7 +60,11 @@ public class TasksManagerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        manager = TasksManager.getInstance(mockDataSource, Executors.newFixedThreadPool(1));
+
+        when(appExecutors.mainThread()).thenReturn(Executors.newSingleThreadExecutor());
+        when(appExecutors.diskIO()).thenReturn(Executors.newSingleThreadExecutor());
+
+        manager = TasksManager.getInstance(mockDataSource, appExecutors, Executors.newFixedThreadPool(1));
         manager.startManager();
     }
 
@@ -94,7 +111,7 @@ public class TasksManagerTest {
     }
 
     @Test
-    public void addTasks_SameTaskTwice() {
+    public void addTasks_SameTaskTwice() throws InterruptedException {
         // Given one task in the manager
         manager.addTask(pingingTask1);
 
@@ -186,16 +203,56 @@ public class TasksManagerTest {
 
     @Test
     public void stateChangedListener_Added() {
-        // Given a few tasks in the manager
+        // Given no tasks in the manager
+        // and the changes listener set
+        manager.addTaskStateChangedListener(stateChangedListener);
+
+        // When a few tasks were added
         addMultipleTasks();
 
-        manager.getTasks()
+        // Then the callback's method was called at least 2 times with the argument ADDED
+        verify(stateChangedListener, timeout(200).atLeast(2)).onTaskStateChanged(any(MonitoringTask.class), eq(ADDED));
     }
 
-    //TODO: Add unit tests with callbacks
+    @Test
+    public void setStateChangedListener_Changed() {
+        // Given the changes listener set
+        manager.addTaskStateChangedListener(stateChangedListener);
+        // and a task in the manager
+        PingingTask task = Mockito.mock(PingingTask.class);
+        when(task.getTaskId()).thenReturn("TestTaskID");
+        when(task.isTimeToExecute()).thenReturn(true).thenReturn(false);
+        when(task.getStateChange()).thenReturn(true);
+        manager.addTask(task);
 
+        // When the task is executed and its state changes
 
-    // Convenience methods
+        // Then the callback was called with the arguments ADDED and CHANGED
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, ADDED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, STATE_CHANGED);
+    }
+
+    @Test
+    public void setStateChangedListener_Deleted() {
+        // Given the changes listener set
+        manager.addTaskStateChangedListener(stateChangedListener);
+        // and a task in the manager
+        PingingTask task = Mockito.mock(PingingTask.class);
+        when(task.getTaskId()).thenReturn("TestTaskID");
+        when(task.isTimeToExecute()).thenReturn(false);
+        manager.addTask(task);
+
+        // When the task is deleted
+        manager.deleteTask(task);
+
+        // Then the callback was called with the arguments ADDED and DELETED
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, ADDED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, TasksManager.StateChangedListener.DELETED);
+    }
+
+    /**
+     * Convenience methods
+     */
 
     private static PingingTask createPingingTask(String description, String address, int timeOutMs) {
         PingingTask task = new PingingTask(description);

@@ -31,7 +31,7 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
 /**
  * A repository for the tasks and a manager responsible for executing the tasks.
  * Should be kept alive during the app's lifecycle, even when activities are destroyed and
- * the app is in the background. Hence, the app must use a service.
+ * the app is in the background. Hence, must be run in a service or somehow else (Scgeduler?)
  */
 public class TasksManager implements Runnable {
 
@@ -42,7 +42,7 @@ public class TasksManager implements Runnable {
     private ExecutorService managerThreadExecutor;
     private AppExecutors executors;
 
-    private volatile boolean  successfullyFinishedWorking = false;
+    private volatile boolean successfullyFinishedWorking = false;
     private Future managerThread = null;
 
     private List<StateChangedListener> listeners = new ArrayList<>();
@@ -81,6 +81,9 @@ public class TasksManager implements Runnable {
         boolean someTasksWereRun;
         boolean interrupted = false;
 
+        // Load tasks that were previously saved to the datasource
+        loadTasksFromDatasource();
+
         while (!Thread.interrupted() && !interrupted) {
             someTasksWereRun = false;
             try {
@@ -113,6 +116,7 @@ public class TasksManager implements Runnable {
 
     /**
      * Interrupts the worker thread (run)
+     *
      * @return True if the worker thread finished correctly
      * @throws InterruptedException
      */
@@ -124,8 +128,7 @@ public class TasksManager implements Runnable {
             managerThreadExecutor.shutdownNow();
             managerThreadExecutor.awaitTermination(2000, TimeUnit.MILLISECONDS);
             return successfullyFinishedWorking;
-        }
-        else
+        } else
             return true;
     }
 
@@ -140,11 +143,12 @@ public class TasksManager implements Runnable {
 
     /**
      * Updates current cached list of tasks with tasks from the data source
-     * @param overwriteProperties if the task already exists in the cache, should its properties
-     *                            be overwritten by the task in the data source?
+     *
+     * @param overwriteExistingTasks if the task already exists in the cache, should its properties
+     *                               be overwritten by the task in the data source?
      */
-    @UiThread
-    public void updateTasksFromDatasource(boolean overwriteProperties) {
+    /*@UiThread
+    public void getTasksFromDatasource(boolean overwriteExistingTasks) {
         executors.diskIO().execute(() -> {
             List<MonitoringTask> dbTasks = dataSource.getTasksSync();
             for (MonitoringTask dbTask :
@@ -152,11 +156,23 @@ public class TasksManager implements Runnable {
                 MonitoringTask currCachedTask = tasks.get(dbTask.getTaskId());
                 if (currCachedTask == null) {
                     tasks.put(dbTask.getTaskId(), dbTask);
-                }else {
+                } else if (overwriteExistingTasks) {
                     currCachedTask.copyPropertiesFrom(dbTask);
                 }
             }
         });
+    }
+    */
+
+    @WorkerThread
+    private void loadTasksFromDatasource() {
+        List<MonitoringTask> dbTasks = dataSource.getTasksSync();
+        for (MonitoringTask dbTask :
+                dbTasks) {
+            tasks.put(dbTask.getTaskId(), dbTask);
+        }
+        if (dbTasks.size() > 0)
+            notifyListeners(null, StateChangedListener.ADDED);
     }
 
 
@@ -177,6 +193,7 @@ public class TasksManager implements Runnable {
 
         tasks.put(task.getTaskId(), task);
         dataSource.updateOrAddTask(task);
+        notifyListenersFromUI(task, StateChangedListener.ADDED);
     }
 
     @UiThread
@@ -189,18 +206,17 @@ public class TasksManager implements Runnable {
     public void deleteTask(@NonNull MonitoringTask task) {
         tasks.remove(task.getTaskId());
         dataSource.deleteTask(task);
+        notifyListenersFromUI(task, StateChangedListener.DELETED);
     }
 
 
     @WorkerThread
-    private void notifyListeners(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged)
-    {
+    private void notifyListeners(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged) {
         executors.mainThread().execute(() -> notifyListenersFromUI(changedTask, whatChanged));
     }
 
     @UiThread
-    private void notifyListenersFromUI(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged)
-    {
+    private void notifyListenersFromUI(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged) {
         for (StateChangedListener listener :
                 listeners) {
             listener.onTaskStateChanged(changedTask, whatChanged);
@@ -212,7 +228,6 @@ public class TasksManager implements Runnable {
      * ADDED - a new task was added
      * DELETED - a task was deleted
      * STATE_CHANGED - task's work completed
-     *
      */
     interface StateChangedListener {
 
@@ -222,6 +237,7 @@ public class TasksManager implements Runnable {
         @Retention(RetentionPolicy.SOURCE)
         public @interface WhatChanged {
         }
+
         public static final int STATE_CHANGED = 1;
         public static final int DELETED = 2;
         public static final int ADDED = 3;
