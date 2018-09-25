@@ -11,7 +11,7 @@ import com.evartem.remsimon.data.types.base.TaskEntry;
 @Database(entities = {TaskEntry.class, PingingTask.class}, version = 1)
 public abstract class TasksDatabase extends RoomDatabase {
 
-    public abstract TaskEntryDao taskEntryDao();
+    //public abstract TaskEntryDao taskEntryDao();
 
     public abstract PingingTaskDao pingingTaskDao();
 

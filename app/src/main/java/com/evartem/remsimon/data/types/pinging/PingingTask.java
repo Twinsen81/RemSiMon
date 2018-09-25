@@ -34,8 +34,8 @@ import static com.google.common.base.Preconditions.checkState;
 
 
 @Entity(tableName = TaskType.PINGING,
-        indices = @Index({"taskId"}),
-        foreignKeys = @ForeignKey(entity = TaskEntry.class, parentColumns = "id", childColumns = "taskId"))
+        indices = @Index({"taskId"}))
+        //foreignKeys = @ForeignKey(entity = TaskEntry.class, parentColumns = "id", childColumns = "taskId"))
 public class PingingTask extends MonitoringTask {
 
     /**
@@ -65,6 +65,18 @@ public class PingingTask extends MonitoringTask {
                 lastResultCached = new TaskResult();
             }
         }
+    }
+
+    /**
+     * A factory method for quick creation of a pinging task
+     */
+    public static PingingTask create(@NonNull String description, int runTaskEveryNSeconds,
+                                     @NonNull String addressToPing, int pingTimeoutMs) {
+        PingingTask task = new PingingTask(description);
+        task.setRunTaskEveryNSeconds(runTaskEveryNSeconds);
+        task.settings.setPingAddress(addressToPing);
+        task.settings.setPingTimeoutMs(pingTimeoutMs);
+        return task;
     }
 
     @Override

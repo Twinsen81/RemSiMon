@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ad8c4e908c6d6871d49bacd21dbdf572",
+    "identityHash": "a20042ec4fc580bdd2ee9cb1cd9fd664",
     "entities": [
       {
         "tableName": "Tasks",
@@ -32,7 +32,7 @@
       },
       {
         "tableName": "PingingTask",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` TEXT NOT NULL, `lastResultJson` TEXT NOT NULL, `description` TEXT, `runTaskEveryNSeconds` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `pingAddress` TEXT, `pingTimeoutMs` INTEGER, PRIMARY KEY(`taskId`), FOREIGN KEY(`taskId`) REFERENCES `Tasks`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` TEXT NOT NULL, `lastResultJson` TEXT NOT NULL, `description` TEXT, `runTaskEveryNSeconds` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `pingAddress` TEXT, `pingTimeoutMs` INTEGER, PRIMARY KEY(`taskId`))",
         "fields": [
           {
             "fieldPath": "taskId",
@@ -93,24 +93,12 @@
             "createSql": "CREATE  INDEX `index_PingingTask_taskId` ON `${TABLE_NAME}` (`taskId`)"
           }
         ],
-        "foreignKeys": [
-          {
-            "table": "Tasks",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "taskId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ad8c4e908c6d6871d49bacd21dbdf572\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a20042ec4fc580bdd2ee9cb1cd9fd664\")"
     ]
   }
 }
