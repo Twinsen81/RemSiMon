@@ -32,4 +32,11 @@ public class PingingTaskSettings {
         clone.setPingTimeoutMs(getPingTimeoutMs());
         return clone;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PingingTaskSettings &&
+                pingAddress.equals(((PingingTaskSettings)obj).pingAddress) &&
+                pingTimeoutMs == ((PingingTaskSettings)obj).pingTimeoutMs;
+    }
 }

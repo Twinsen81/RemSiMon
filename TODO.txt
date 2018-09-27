@@ -1,3 +1,8 @@
+
+// Unit test: pinging task
+//TODO: ping ERROR_INVALID_ADDRESS = 1 - Regex are not in the unit test lib - Robolectric?????
+
+
 // androidTest: pinging task - that it actually pings! + provides correct output (JSON results, etc.)
 // Write tests about updating tasks: flushing and retrieving data from the data source, etc.
 

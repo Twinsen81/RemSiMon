@@ -39,7 +39,7 @@ public abstract class MonitoringTask {
     protected String lastResultJson;
 
     @Ignore
-    protected static Moshi moshi;
+    protected static Moshi moshi = new Moshi.Builder().build();
 
     /**
      * The last result of the doTheActualWork routine is saved here in addition to the lastResultJson field
@@ -84,7 +84,6 @@ public abstract class MonitoringTask {
         this.mode = mode;
         this.lastResultJson = lastResultJson;
         lastResultCached = new TaskResult();
-        moshi = new Moshi.Builder().build();
         workStage = WorkStage.STOPPED;
         lastTimeDidWork = Instant.now().minus(Duration.standardDays(1));
     }

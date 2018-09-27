@@ -38,6 +38,9 @@ import static com.google.common.base.Preconditions.checkState;
         //foreignKeys = @ForeignKey(entity = TaskEntry.class, parentColumns = "id", childColumns = "taskId"))
 public class PingingTask extends MonitoringTask {
 
+    @Ignore
+    Pinger pinger;
+
     /**
      * Creates the pinging task.
      *
@@ -54,6 +57,8 @@ public class PingingTask extends MonitoringTask {
      */
     public PingingTask(@NonNull String description, int mode, String lastResultJson) {
         super(description, mode, lastResultJson);
+
+        pinger = new HybridPinger();
         jsonAdapter = moshi.adapter(PingingTaskResult.class);
 
         // Empty lastResultCached is created in the base class, but if we have already a JSON-serialized result in the Room -> unpack it
@@ -79,6 +84,12 @@ public class PingingTask extends MonitoringTask {
         return task;
     }
 
+    /**
+     * Replaces the default pinger (for Unit tests)
+     * @param pinger the class that implements {@link Pinger} and actually performs pinging
+     */
+    void setPinger(@NotNull Pinger pinger) {this.pinger = pinger;}
+
     @Override
     public String getType() {
         return TaskType.PINGING;
@@ -88,7 +99,7 @@ public class PingingTask extends MonitoringTask {
     public PingingTaskSettings settings;
 
     @Ignore
-    private JsonAdapter<PingingTaskResult> jsonAdapter;
+    JsonAdapter<PingingTaskResult> jsonAdapter; // package-private for Unit tests
 
     @Override
     @WorkerThread
@@ -101,47 +112,11 @@ public class PingingTask extends MonitoringTask {
             pingSettings = settings.clone();
         }
 
-        PingingTaskResult result = ping(pingSettings);
+        PingingTaskResult result = pinger.ping(pingSettings);
 
         formatAndSetResult(result);
 
         stateChanged = true;
-    }
-
-    private PingingTaskResult ping(PingingTaskSettings pingSettings) {
-        PingingTaskResult workResult = new PingingTaskResult();
-
-        if (!isValidUrl(pingSettings.getPingAddress())) {
-            workResult.errorCode = PingingTaskResult.ERROR_INVALID_ADDRESS;
-            workResult.errorMessage = "Not a valid URL";
-            return workResult;
-        }
-
-        PingResult pingResult;
-        try {
-            pingResult = Ping.onAddress(pingSettings.getPingAddress()).setTimeOutMillis(pingSettings.getPingTimeoutMs()).doPing();
-        } catch (UnknownHostException e) {
-            workResult.errorCode = PingingTaskResult.ERROR_INVALID_ADDRESS;
-            workResult.errorMessage = "Unknown host";
-            return workResult;
-        }
-
-        workResult.pingOK = pingResult.isReachable;
-        workResult.pingTimeMs = Float.valueOf(pingResult.timeTaken * 1000).longValue();
-        workResult.errorMessage = pingResult.getError();
-
-        return workResult;
-    }
-
-    /**
-     * This is used to check the given URL is valid or not.
-     * @param url
-     * @return true if url is valid, false otherwise.
-     */
-    private boolean isValidUrl(String url) {
-        Pattern p = Patterns.WEB_URL;
-        Matcher m = p.matcher(url.toLowerCase());
-        return m.matches();
     }
 
     private void formatAndSetResult(@NotNull  PingingTaskResult result) {

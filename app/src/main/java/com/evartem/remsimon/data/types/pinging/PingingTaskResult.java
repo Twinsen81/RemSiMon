@@ -8,4 +8,21 @@ public class PingingTaskResult extends TaskResult {
 
     public static final int ERROR_INVALID_ADDRESS = 1;
     public static final int ERROR_TIMEOUT = 2;
+
+    public PingingTaskResult(boolean pingOK, long pingTimeMs) {
+        this.pingOK = pingOK;
+        this.pingTimeMs = pingTimeMs;
+    }
+
+    public PingingTaskResult(boolean pingOK, long pingTimeMs, int errorCode, String errorMessage) {
+        this.pingOK = pingOK;
+        this.pingTimeMs = pingTimeMs;
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
+    public PingingTaskResult(int errorCode, String errorMessage) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
 }

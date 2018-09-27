@@ -9,11 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static com.evartem.remsimon.data.TasksManager.StateChangedListener.ADDED;
 import static com.evartem.remsimon.data.TasksManager.StateChangedListener.STATE_CHANGED;
@@ -22,7 +20,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Answers.RETURNS_DEFAULTS;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -31,7 +28,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -50,12 +46,12 @@ public class TasksManagerTest {
 
     private TasksManager manager;
 
-    private PingingTask pingingTask1 = createPingingTask("TEST ping task 1", "127.0.0.1", 1000);
+    private PingingTask pingingTask1 = PingingTask.create("TEST ping task 1", 1, "127.0.0.1", 1000);
 
-    private List<PingingTask> pingingTasks = Arrays.asList(createPingingTask("TEST ping task 2", "127.0.0.2", 2000),
-            createPingingTask("TEST ping task 3", "127.0.0.3", 3000),
-            createPingingTask("TEST ping task 4", "127.0.0.4", 4000));
-
+    private List<PingingTask> pingingTasks = Arrays.asList(
+            PingingTask.create("TEST ping task 2", 1, "127.0.0.2", 2000),
+            PingingTask.create("TEST ping task 3", 1, "127.0.0.3", 3000),
+            PingingTask.create("TEST ping task 4", 1, "127.0.0.4", 4000));
 
     @Before
     public void setUp() {
@@ -125,8 +121,7 @@ public class TasksManagerTest {
     }
 
     @Test
-    public void getTasks_NoTasksReturnsEmptyList()
-    {
+    public void getTasks_NoTasksReturnsEmptyList() {
         // Given no tasks in the manager
         // When requesting the cache
         List<MonitoringTask> tasks = manager.getTasks();
@@ -254,13 +249,13 @@ public class TasksManagerTest {
      * Convenience methods
      */
 
-    private static PingingTask createPingingTask(String description, String address, int timeOutMs) {
+/*    private static PingingTask createPingingTask(String description, String address, int timeOutMs) {
+        PingingTask.create()
         PingingTask task = new PingingTask(description);
         task.settings.setPingAddress(address);
         task.settings.setPingTimeoutMs(timeOutMs);
         return task;
-    }
-
+    }*/
     private int addMultipleTasks() {
         manager.addTask(pingingTask1);
         manager.addTask(pingingTasks.get(0));

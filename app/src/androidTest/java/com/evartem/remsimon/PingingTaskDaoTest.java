@@ -32,14 +32,14 @@ public class PingingTaskDaoTest {
     PingingTask TASK1, TASK2;
 
     private static final String TASK1_DESCRIPTION = "Test task description";
-    public static final String TASK1_PING_ADDRESS = "8.8.8.8";  // google's dns
-    public static final int TASK1_RUN_EVERY = 3;
-    public static final int TASK1_PING_TIMEOUT = 300;
+    private static final String TASK1_PING_ADDRESS = "8.8.8.8";  // google's dns
+    private static final int TASK1_RUN_EVERY = 3;
+    private static final int TASK1_PING_TIMEOUT = 300;
 
     private static final String TASK2_DESCRIPTION = "Test task - non-existent IP ";
-    public static final String TASK2_PING_ADDRESS = "192.168.88.88";
-    public static final int TASK2_RUN_EVERY = 2;
-    public static final int TASK2_PING_TIMEOUT = 900;
+    private static final String TASK2_PING_ADDRESS = "192.168.88.88";
+    private static final int TASK2_RUN_EVERY = 2;
+    private static final int TASK2_PING_TIMEOUT = 900;
 
 
     @Before
