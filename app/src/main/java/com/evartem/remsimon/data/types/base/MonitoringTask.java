@@ -56,17 +56,13 @@ public abstract class MonitoringTask {
     private int runTaskEveryNSeconds = 5;
 
     @Ignore
-    protected volatile boolean stateChanged;
-
-    //protected volatile long lastSuccessTime;
+    protected volatile boolean taskGotNewResult = false;
 
     public static final int MODE_STOPPED = 0;
     public static final int MODE_ACTIVE = 1;
     public static final int MODE_DEACTIVATED = 2;
 
     private volatile int mode;
-
-
 
     private enum WorkStage {STOPPED, INPROGRESS, FINISHED}
 
@@ -138,14 +134,16 @@ public abstract class MonitoringTask {
 
 
     /**
-     * Checks if the task's state has changed and thus, UI must be updated.
-     * The "changed" flag is cleared in this method. So the second consecutive call will
+     * Checks if the task has got new result and thus, UI must be updated.
+     * The taskGotNewResult flag is cleared in this method. So the second consecutive call will
      * most likely return false.
      *
-     * @return true if the task's state change
+     * @return true if the task has an updated result that must be shown to the user
      */
-    public boolean getStateChange() {
-        return stateChanged;
+    public boolean gotNewResult() {
+        boolean newResult = taskGotNewResult;
+        taskGotNewResult = false;
+        return newResult;
     }
 
 
@@ -164,7 +162,6 @@ public abstract class MonitoringTask {
     public void doTheWork() {
         if (isWorking()) return;
 
-        stateChanged = false;
         signalWorkStarted();
         try {
             doTheActualWork();
@@ -196,7 +193,7 @@ public abstract class MonitoringTask {
     protected abstract void doTheActualWork();
 
     /**
-     * Returns current state (e.g. data received) of the monitoring task as text string OR JSON string.
+     * Returns current state (e.g. data received) of the monitoring task as text (JSON) string.
      *
      * @return The tasks received data or a description of the current status of the task, e.g.
      * "PING 127.0.0.1 is OK"

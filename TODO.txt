@@ -1,9 +1,8 @@
 
-// Unit test: pinging task
-//TODO: ping ERROR_INVALID_ADDRESS = 1 - Regex are not in the unit test lib - Robolectric?????
+// run every N seconds -> change to milliseconds
+// Unit test: Manager - run every N seconds - test that the task is really run every N seconds
+// Unit test: Manager - activate/deactivate
 
-
-// androidTest: pinging task - that it actually pings! + provides correct output (JSON results, etc.)
 // Write tests about updating tasks: flushing and retrieving data from the data source, etc.
 
 // Manager - reads next execution time from all the tasks and sleeps until the next execution is needed

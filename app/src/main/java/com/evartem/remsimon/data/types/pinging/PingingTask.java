@@ -2,30 +2,21 @@ package com.evartem.remsimon.data.types.pinging;
 
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
-import android.util.Patterns;
 
 import com.evartem.remsimon.data.types.base.MonitoringTask;
-import com.evartem.remsimon.data.types.base.TaskEntry;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
 import com.google.common.base.Strings;
 import com.squareup.moshi.JsonAdapter;
-import com.stealthcopter.networktools.Ping;
-import com.stealthcopter.networktools.ping.PingResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.Instant;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import timber.log.Timber;
 
@@ -116,7 +107,7 @@ public class PingingTask extends MonitoringTask {
 
         formatAndSetResult(result);
 
-        stateChanged = true;
+        taskGotNewResult = true;
     }
 
     private void formatAndSetResult(@NotNull  PingingTaskResult result) {
@@ -138,9 +129,15 @@ public class PingingTask extends MonitoringTask {
 
         synchronized (this) {
             lastResultJson = jsonResult;
+            lastResultCached = result;
         }
-        lastResultCached = result;
     }
+
+    @NonNull
+    synchronized PingingTaskResult getLastResult() { //Package access for unit tests
+        return (PingingTaskResult)lastResultCached;
+    }
+
 
     @Override
     public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {

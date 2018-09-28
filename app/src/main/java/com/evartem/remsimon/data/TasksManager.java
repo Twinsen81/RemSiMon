@@ -22,7 +22,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 import timber.log.Timber;
 
@@ -93,7 +92,7 @@ public class TasksManager implements Runnable {
                     if (shouldRunTask(task)) {
                         task.doTheWork();
                         someTasksWereRun = true;
-                        if (task.getStateChange())
+                        if (task.gotNewResult())
                             notifyListeners(task, StateChangedListener.STATE_CHANGED);
                     }
 

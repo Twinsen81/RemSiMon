@@ -6,8 +6,10 @@ public class PingingTaskResult extends TaskResult {
     public boolean pingOK = false; // Last ping successful?
     public long pingTimeMs = 0; // Last ping time in milliseconds
 
+    public static final int NO_ERROR = 0;
     public static final int ERROR_INVALID_ADDRESS = 1;
     public static final int ERROR_TIMEOUT = 2;
+    public static final int ERROR_IO = 3;
 
     public PingingTaskResult(boolean pingOK, long pingTimeMs) {
         this.pingOK = pingOK;

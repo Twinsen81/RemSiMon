@@ -217,7 +217,7 @@ public class TasksManagerTest {
         PingingTask task = Mockito.mock(PingingTask.class);
         when(task.getTaskId()).thenReturn("TestTaskID");
         when(task.isTimeToExecute()).thenReturn(true).thenReturn(false);
-        when(task.getStateChange()).thenReturn(true);
+        when(task.gotNewResult()).thenReturn(true);
         manager.addTask(task);
 
         // When the task is executed and its state changes
