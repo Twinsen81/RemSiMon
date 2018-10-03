@@ -35,24 +35,24 @@ public class PingingTaskTest {
 
     private static final String TASK1_DESCRIPTION = "Test task - always available google's DNS";
     private static final String TASK1_PING_ADDRESS = "8.8.8.8";  // google's dns
-    private static final int TASK1_RUN_EVERY = 1;
+    private static final int TASK1_RUN_EVERY_MS = 100;
     private static final int TASK1_PING_TIMEOUT = 500;
 
     private static final String TASK2_DESCRIPTION = "Test task - non-existent IP that always times out";
     private static final String TASK2_PING_ADDRESS = "192.168.88.88";
-    private static final int TASK2_RUN_EVERY = 2;
+    private static final int TASK2_RUN_EVERY_MS = 100;
     private static final int TASK2_PING_TIMEOUT = 10;
 
     private static final String TASK3_DESCRIPTION = "Test task - invalid URL";
     private static final String TASK3_PING_ADDRESS = "NotAURLatAll";
-    private static final int TASK3_RUN_EVERY = 4;
+    private static final int TASK3_RUN_EVERY_MS = 100;
     private static final int TASK3_PING_TIMEOUT = 999;
 
     private static final String jsonResultInvalidUrl = "{\"errorCode\":1,\"errorMessage\":\"Not a valid URL\",\"lastSuccessTime\":0,\"pingOK\":false,\"pingTimeMs\":0}";
 
-    private PingingTask TASK1_Ok = PingingTask.create(TASK1_DESCRIPTION, TASK1_RUN_EVERY, TASK1_PING_ADDRESS, TASK1_PING_TIMEOUT);
-    private PingingTask TASK2_NoPing = PingingTask.create(TASK2_DESCRIPTION, TASK2_RUN_EVERY, TASK2_PING_ADDRESS, TASK2_PING_TIMEOUT);
-    private PingingTask TASK3_WrongUrl = PingingTask.create(TASK3_DESCRIPTION, TASK3_RUN_EVERY, TASK3_PING_ADDRESS, TASK3_PING_TIMEOUT);
+    private PingingTask TASK1_Ok = PingingTask.create(TASK1_DESCRIPTION, TASK1_RUN_EVERY_MS, TASK1_PING_ADDRESS, TASK1_PING_TIMEOUT);
+    private PingingTask TASK2_NoPing = PingingTask.create(TASK2_DESCRIPTION, TASK2_RUN_EVERY_MS, TASK2_PING_ADDRESS, TASK2_PING_TIMEOUT);
+    private PingingTask TASK3_WrongUrl = PingingTask.create(TASK3_DESCRIPTION, TASK3_RUN_EVERY_MS, TASK3_PING_ADDRESS, TASK3_PING_TIMEOUT);
 
 
     @Before
@@ -71,7 +71,7 @@ public class PingingTaskTest {
         assertThat(TASK1_Ok.getDescription(), not(isEmptyString()));
         assertNotNull(TASK1_Ok.getLastResultJson());
         assertThat(TASK1_Ok.getMode(), is(MonitoringTask.MODE_STOPPED));
-        assertFalse(TASK1_Ok.isWorking() || TASK1_Ok.isFinshed());
+        assertFalse(TASK1_Ok.isWorking() || TASK1_Ok.isFinished());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class PingingTaskTest {
         TASK1_Ok.setPinger(pinger);
         Answer pingAnswer = invocation -> { // Will be called when the task calls ping(...)
             assertTrue(TASK1_Ok.isWorking()); // Should be set to INPROGRESS while in the middle of the work
-            assertFalse(TASK1_Ok.isFinshed());
+            assertFalse(TASK1_Ok.isFinished());
             return new PingingTaskResult(false, 0);
         };
         Mockito.doAnswer(pingAnswer).when(pinger).ping(TASK1_Ok.settings);
@@ -93,7 +93,7 @@ public class PingingTaskTest {
 
         // Then, when the work is done,  the stage should be FINISHED
         assertFalse(TASK1_Ok.isWorking());
-        assertTrue(TASK1_Ok.isFinshed());
+        assertTrue(TASK1_Ok.isFinished());
     }
 
     @Test
@@ -187,8 +187,8 @@ public class PingingTaskTest {
 
         // Then, when the work is done,  the task signals that it's not time to to execute yet again
         assertFalse(TASK1_Ok.isTimeToExecute());
-        // But after the TASK1_RUN_EVERY seconds elapse...
-        TimeUnit.MILLISECONDS.sleep(TASK1_RUN_EVERY * 1000 + 10);
+        // But after the TASK1_RUN_EVERY_MS seconds elapse...
+        TimeUnit.MILLISECONDS.sleep(TASK1_RUN_EVERY_MS + 10);
         // It's time to execute the task again
         assertTrue(TASK1_Ok.isTimeToExecute());
     }

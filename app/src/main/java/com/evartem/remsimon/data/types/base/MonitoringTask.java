@@ -51,9 +51,9 @@ public abstract class MonitoringTask {
     protected TaskResult lastResultCached;
 
     /**
-     * The doTheActualWork method of this task will be called every "runTaskEveryNSeconds" seconds
+     * The doTheActualWork method of this task will be called every "runTaskEveryMs" milliseconds
      */
-    private int runTaskEveryNSeconds = 5;
+    private int runTaskEveryMs = 5000;
 
     @Ignore
     protected volatile boolean taskGotNewResult = false;
@@ -120,12 +120,12 @@ public abstract class MonitoringTask {
         return description;
     }
 
-    public synchronized int getRunTaskEveryNSeconds() {
-        return runTaskEveryNSeconds;
+    public synchronized int getRunTaskEveryMs() {
+        return runTaskEveryMs;
     }
 
-    public synchronized void setRunTaskEveryNSeconds(int runTaskEveryNSeconds) {
-        this.runTaskEveryNSeconds = runTaskEveryNSeconds;
+    public synchronized void setRunTaskEveryMs(int runTaskEveryMs) {
+        this.runTaskEveryMs = runTaskEveryMs;
     }
 
     public String getNotification() {
@@ -148,7 +148,7 @@ public abstract class MonitoringTask {
 
 
     public synchronized boolean isTimeToExecute() {
-        return Instant.now().minus(lastTimeDidWork.getMillis()).getMillis() > (runTaskEveryNSeconds * 1000);
+        return Instant.now().minus(lastTimeDidWork.getMillis()).getMillis() > runTaskEveryMs;
     }
 
 
@@ -183,7 +183,7 @@ public abstract class MonitoringTask {
     public synchronized boolean isWorking() {
             return workStage == WorkStage.INPROGRESS;
     }
-    public synchronized boolean isFinshed() {
+    public synchronized boolean isFinished() {
             return workStage == WorkStage.FINISHED;
     }
 
@@ -231,7 +231,7 @@ public abstract class MonitoringTask {
         lastResultJson = sourceTask.lastResultJson;
         lastTimeDidWork = sourceTask.lastTimeDidWork;
         mode = sourceTask.mode;
-        runTaskEveryNSeconds = sourceTask.runTaskEveryNSeconds;
+        runTaskEveryMs = sourceTask.runTaskEveryMs;
         workStage = sourceTask.workStage;
     }
 }

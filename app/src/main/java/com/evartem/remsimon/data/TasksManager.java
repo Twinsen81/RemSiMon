@@ -98,7 +98,7 @@ public class TasksManager implements Runnable {
 
                 }
 
-                if (!someTasksWereRun) TimeUnit.MILLISECONDS.sleep(300);
+                if (!someTasksWereRun) TimeUnit.MILLISECONDS.sleep(20);
 
             } catch (InterruptedException e) {
                 interrupted = true;

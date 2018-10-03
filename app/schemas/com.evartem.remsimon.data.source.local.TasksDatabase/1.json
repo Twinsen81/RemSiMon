@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a20042ec4fc580bdd2ee9cb1cd9fd664",
+    "identityHash": "5de15c7f272937ce78a50e709ef84e0b",
     "entities": [
       {
         "tableName": "Tasks",
@@ -32,7 +32,7 @@
       },
       {
         "tableName": "PingingTask",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` TEXT NOT NULL, `lastResultJson` TEXT NOT NULL, `description` TEXT, `runTaskEveryNSeconds` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `pingAddress` TEXT, `pingTimeoutMs` INTEGER, PRIMARY KEY(`taskId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` TEXT NOT NULL, `lastResultJson` TEXT NOT NULL, `description` TEXT, `runTaskEveryMs` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `pingAddress` TEXT, `pingTimeoutMs` INTEGER, PRIMARY KEY(`taskId`))",
         "fields": [
           {
             "fieldPath": "taskId",
@@ -53,8 +53,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "runTaskEveryNSeconds",
-            "columnName": "runTaskEveryNSeconds",
+            "fieldPath": "runTaskEveryMs",
+            "columnName": "runTaskEveryMs",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -98,7 +98,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a20042ec4fc580bdd2ee9cb1cd9fd664\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5de15c7f272937ce78a50e709ef84e0b\")"
     ]
   }
 }

@@ -66,10 +66,10 @@ public class PingingTask extends MonitoringTask {
     /**
      * A factory method for quick creation of a pinging task
      */
-    public static PingingTask create(@NonNull String description, int runTaskEveryNSeconds,
+    public static PingingTask create(@NonNull String description, int runTaskEveryMs,
                                      @NonNull String addressToPing, int pingTimeoutMs) {
         PingingTask task = new PingingTask(description);
-        task.setRunTaskEveryNSeconds(runTaskEveryNSeconds);
+        task.setRunTaskEveryMs(runTaskEveryMs);
         task.settings.setPingAddress(addressToPing);
         task.settings.setPingTimeoutMs(pingTimeoutMs);
         return task;

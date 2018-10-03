@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static com.evartem.remsimon.data.TasksManager.StateChangedListener.ADDED;
 import static com.evartem.remsimon.data.TasksManager.StateChangedListener.STATE_CHANGED;
@@ -20,6 +21,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Answers.RETURNS_DEFAULTS;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -46,12 +48,12 @@ public class TasksManagerTest {
 
     private TasksManager manager;
 
-    private PingingTask pingingTask1 = PingingTask.create("TEST ping task 1", 1, "127.0.0.1", 1000);
+    private PingingTask TASK1 = PingingTask.create("TEST ping task 1", 1000, "127.0.0.1", 1000);
 
     private List<PingingTask> pingingTasks = Arrays.asList(
-            PingingTask.create("TEST ping task 2", 1, "127.0.0.2", 2000),
-            PingingTask.create("TEST ping task 3", 1, "127.0.0.3", 3000),
-            PingingTask.create("TEST ping task 4", 1, "127.0.0.4", 4000));
+            PingingTask.create("TEST ping task 2", 1000, "127.0.0.2", 2000),
+            PingingTask.create("TEST ping task 3", 1000, "127.0.0.3", 3000),
+            PingingTask.create("TEST ping task 4", 1000, "127.0.0.4", 4000));
 
     @Before
     public void setUp() {
@@ -73,12 +75,12 @@ public class TasksManagerTest {
 
     @Test
     public void addTasks_AddsOneTask() {
-        // Given a task - pingingTask1
+        // Given a task - TASK1
         // When a task is added to the manager
-        manager.addTask(pingingTask1);
+        manager.addTask(TASK1);
 
         // Then the task is added to to the data source
-        verify(mockDataSource).updateOrAddTask(pingingTask1);
+        verify(mockDataSource).updateOrAddTask(TASK1);
         // and to the manager's cache
         assertThat(manager.tasks.size(), is(1));
     }
@@ -107,12 +109,12 @@ public class TasksManagerTest {
     }
 
     @Test
-    public void addTasks_SameTaskTwice() throws InterruptedException {
+    public void addTasks_SameTaskTwice() {
         // Given one task in the manager
-        manager.addTask(pingingTask1);
+        manager.addTask(TASK1);
 
         // When adding the same task again
-        manager.addTask(pingingTask1);
+        manager.addTask(TASK1);
 
         // Then the corresponding data source method is called only once
         verify(mockDataSource).updateOrAddTask(any());
@@ -137,12 +139,12 @@ public class TasksManagerTest {
         addMultipleTasks();
 
         // When one of the tasks is deleted
-        manager.deleteTask(pingingTask1);
+        manager.deleteTask(TASK1);
 
         // Then make sure that task is gone from the cache
-        assertFalse(manager.getTasks().contains(pingingTask1));
+        assertFalse(manager.getTasks().contains(TASK1));
         // and the corresponding method is called on the data source
-        verify(mockDataSource).deleteTask(pingingTask1);
+        verify(mockDataSource).deleteTask(TASK1);
     }
 
     @Test
@@ -245,19 +247,41 @@ public class TasksManagerTest {
         verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, TasksManager.StateChangedListener.DELETED);
     }
 
+    @Test
+    public void taskRunsEveryMs() throws InterruptedException {
+        // Given a task with the run period = 60 ms
+        TASK1.setRunTaskEveryMs(60);
+        PingingTask spyTASK1 = Mockito.spy(TASK1);
+
+        // When it's added to the manager
+        manager.addTask(spyTASK1);
+
+        // Then it is run at least 2 times within 130 ms
+        TimeUnit.MILLISECONDS.sleep(100);
+        verify(spyTASK1, atLeast(2)).doTheWork();
+    }
+
+    @Test
+    public void deactivatedTaskIsNotRun() throws InterruptedException {
+        // Given a task
+        TASK1.setRunTaskEveryMs(20);
+        PingingTask spyTASK1 = Mockito.spy(TASK1);
+
+        // When it's deactivated and added to the manager
+        spyTASK1.deactivate();
+        manager.addTask(spyTASK1);
+
+        // Then it is not run by the manager
+        TimeUnit.MILLISECONDS.sleep(60);
+        verify(spyTASK1, never()).doTheWork();
+    }
+
     /**
      * Convenience methods
      */
 
-/*    private static PingingTask createPingingTask(String description, String address, int timeOutMs) {
-        PingingTask.create()
-        PingingTask task = new PingingTask(description);
-        task.settings.setPingAddress(address);
-        task.settings.setPingTimeoutMs(timeOutMs);
-        return task;
-    }*/
     private int addMultipleTasks() {
-        manager.addTask(pingingTask1);
+        manager.addTask(TASK1);
         manager.addTask(pingingTasks.get(0));
         manager.addTask(pingingTasks.get(1));
         manager.addTask(pingingTasks.get(2));

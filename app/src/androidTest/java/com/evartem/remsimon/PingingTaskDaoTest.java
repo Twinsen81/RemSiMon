@@ -187,7 +187,7 @@ public class PingingTaskDaoTest {
     private void assertEqualsTestTask(PingingTask taskToTest, PingingTask testTask) {
         assertThat(taskToTest.getTaskId(), is(testTask.getTaskId()));
         assertThat(taskToTest.getDescription(), is(testTask.getDescription()));
-        assertThat(taskToTest.getRunTaskEveryNSeconds(), is(testTask.getRunTaskEveryNSeconds()));
+        assertThat(taskToTest.getRunTaskEveryMs(), is(testTask.getRunTaskEveryMs()));
         assertThat(taskToTest.settings.getPingAddress(), is(testTask.settings.getPingAddress()));
         assertThat(taskToTest.settings.getPingTimeoutMs(), is(testTask.settings.getPingTimeoutMs()));
     }
