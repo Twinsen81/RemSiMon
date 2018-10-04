@@ -24,9 +24,6 @@ import butterknife.ButterKnife;
 public class TasksActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    @BindView(R.id.hello)
-    TextView hello;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

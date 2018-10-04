@@ -22,6 +22,6 @@
 // Task type: web page parser -> extract info from a certain web page and display data
 // TasksManager - implement with a thread pool, so several tasks could be executed simultaneously
 
-// Add dagger
+// Add dagger - read about testing with dagger
 // Add RxJava
 // Rewrite in Kotlin??? - all or just parts?

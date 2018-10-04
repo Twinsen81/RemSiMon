@@ -1,9 +1,15 @@
 <resources>
-    <string name="app_name">RemSiMon</string>
+    <string name="app_name">Remote Site Monitor</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="timeout">Timeout</string>
+    <string name="address">Address</string>
+    <string name="label">Label</string>
+    <string name="run_every">Run every</string>
+    <string name="ms">ms</string>
+    <string name="apply">APPLY</string>
 </resources>
