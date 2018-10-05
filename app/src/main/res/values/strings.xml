@@ -7,9 +7,13 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="timeout">Timeout</string>
-    <string name="address">Address</string>
+    <string name="address">Address (IP/URL)</string>
     <string name="label">Label</string>
     <string name="run_every">Run every</string>
     <string name="ms">ms</string>
     <string name="apply">APPLY</string>
+    <string name="max_waiting_time">max waiting time</string>
+    <string name="how_often_the_task_is_run">how often the task is run</string>
+    <string name="short_description">short description</string>
+    <string name="ip_or_url">IP or URL</string>
 </resources>

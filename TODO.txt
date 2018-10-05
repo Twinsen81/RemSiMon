@@ -1,27 +1,25 @@
-// Test UI- Constraint Layout - watch, add edit field for IP, add a button, add a text field for results which is updated constantly
+// Finish and test View and Presenter
+// Add manager
 // add callbacks to UI
 // Gets only one task from DB
-// add test data and test UI, add test Logs: Timber.i
+// add test Logs: Timber.i
+// Test manually
+// Add dagger - read about testing with dagger
+
 // add Robolectric UI test
 // add espresso test
 // watch DB changes: https://github.com/amitshekhariitbhu/Android-Debug-Database
-
-
-// MVP - UI
-// add Robolectric UI test
-// add espresso test
 
 // Write tests about updating tasks: flushing and retrieving data from the data source, etc.
 
 // Manager - reads next execution time from all the tasks and sleeps until the next execution is needed
 // Manager - if the task is being executed, but user deletes it? + add test case
 
-
 // instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
+
 
 // Task type: web page parser -> extract info from a certain web page and display data
 // TasksManager - implement with a thread pool, so several tasks could be executed simultaneously
 
-// Add dagger - read about testing with dagger
-// Add RxJava
+// Add RxJava + RxBindings library from Jake Wharton
 // Rewrite in Kotlin??? - all or just parts?
