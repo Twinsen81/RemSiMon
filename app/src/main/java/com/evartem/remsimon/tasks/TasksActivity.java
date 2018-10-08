@@ -1,6 +1,5 @@
 package com.evartem.remsimon.tasks;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
@@ -15,12 +14,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.evartem.remsimon.R;
+import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.data.types.pinging.PingingTask;
+import com.stealthcopter.networktools.Ping;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +38,7 @@ public class TasksActivity extends AppCompatActivity
     Button btnApply;
 
     @BindView(R.id.etLabel)
-    EditText etLabel;
+    EditText etTitle;
     @BindView(R.id.etAddress)
     EditText etAddress;
     @BindView(R.id.etRunEveryMs)
@@ -76,58 +77,30 @@ public class TasksActivity extends AppCompatActivity
 
         setEditTextsCallbacks();
 
-        btnApply.setOnClickListener(view -> presenter.onApplyClicked());
+        setOnApplyButtonClickedCallback();
 
         presenter = new TasksPresenter();
         presenter.attachView(this);
         presenter.viewIsReady();
+
+        onInputChanged();
+    }
+
+    private void setOnApplyButtonClickedCallback() {
+        btnApply.setOnClickListener(view -> {
+            PingingTask currTask = presenter.getCurrentTask();
+            currTask.setDescription(etTitle.getText().toString().trim());
+            currTask.setRunTaskEveryMs(Integer.valueOf(etRunEveryMs.getText().toString().trim()));
+            currTask.settings.setPingAddress(etAddress.getText().toString().trim());
+            currTask.settings.setPingTimeoutMs(Integer.valueOf(etTimeoutMs.getText().toString().trim()));
+            presenter.onApplyClicked(currTask);
+        });
     }
 
 
     private void setEditTextsCallbacks() {
-        /*etLabel.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                if (presenter.isInputValidTitle(((EditText) v).getText().toString().trim())) {
-                    v.setBackgroundColor(Color.WHITE);
-                } else {
-                    v.setBackgroundColor(Color.RED);
-                }
-            } else
-                v.setBackgroundColor(Color.WHITE);
-        });
-        etAddress.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                if (presenter.isInputValidAddress(((EditText) v).getText().toString().trim())) {
-                    v.setBackgroundColor(Color.WHITE);
-                } else {
-                    v.setBackgroundColor(Color.RED);
-                }
-            } else
-                v.setBackgroundColor(Color.WHITE);
-        });
-        etTimeoutMs.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                if (presenter.isInputValidTimeoutMs(((EditText) v).getText().toString().trim())) {
-                    ((EditText) v).setError(null);
-                } else {
-                    v.setBackgroundColor(Color.RED);
-                }
-            } else
-                v.setBackgroundColor(Color.WHITE);
-        });
-        etRunEveryMs.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus) {
-                if (presenter.isInputValidRunEveryMs(((EditText) v).getText().toString().trim())) {
-                    v.setBackgroundColor(Color.WHITE);
-                } else {
-                    v.setBackgroundColor(Color.RED);
-                }
-            } else
-                v.setBackgroundColor(Color.WHITE);
 
-        });*/
-
-        etLabel.addTextChangedListener(new TextWatcher() {
+        etTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -135,11 +108,14 @@ public class TasksActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean titleIsValid = presenter.isInputValidTitle(etTitle.getText().toString().trim());
+                etTitle.setError(titleIsValid ? null : "Must not be empty!");
+                onInputChanged();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                onInputChanged();
+
             }
         });
         etAddress.addTextChangedListener(new TextWatcher() {
@@ -150,11 +126,14 @@ public class TasksActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean addressIsValid = presenter.isInputValidAddress(etAddress.getText().toString().trim());
+                etAddress.setError(addressIsValid ? null : "Not an IP or URL!");
+                onInputChanged();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                onInputChanged();
+
             }
         });
         etTimeoutMs.addTextChangedListener(new TextWatcher() {
@@ -165,11 +144,14 @@ public class TasksActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean timeoutMsIsValid = presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim());
+                etTimeoutMs.setError(timeoutMsIsValid ? null : "Enter a valid number!");
+                onInputChanged();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                onInputChanged();
+
             }
         });
         etRunEveryMs.addTextChangedListener(new TextWatcher() {
@@ -180,11 +162,14 @@ public class TasksActivity extends AppCompatActivity
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean runEveryMsIsValid = presenter.isInputValidRunEveryMs(etRunEveryMs.getText().toString().trim());
+                etRunEveryMs.setError(runEveryMsIsValid ? null : "Enter a valid number!");
+                onInputChanged();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                onInputChanged();
+
             }
         });
     }
@@ -192,14 +177,11 @@ public class TasksActivity extends AppCompatActivity
     private void onInputChanged() {
 
         boolean addressIsValid = presenter.isInputValidAddress(etAddress.getText().toString().trim());
+        boolean titleIsValid = presenter.isInputValidTitle(etTitle.getText().toString().trim());
+        boolean runEveryMsIsValid = presenter.isInputValidRunEveryMs(etRunEveryMs.getText().toString().trim());
+        boolean timeoutMsIsValid = presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim());
 
-        etAddress.setError(addressIsValid ? null : "Not an IP or URL!");
-
-        btnApply.setEnabled(
-                addressIsValid &&
-                        presenter.isInputValidTitle(etLabel.getText().toString().trim()) &&
-                        presenter.isInputValidRunEveryMs(etRunEveryMs.getText().toString().trim()) &&
-                        presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim()));
+        btnApply.setEnabled(addressIsValid &&titleIsValid && runEveryMsIsValid && timeoutMsIsValid);
     }
 
     @Override
@@ -209,7 +191,6 @@ public class TasksActivity extends AppCompatActivity
         if (isFinishing()) {
             presenter.destroy();
         }
-
     }
 
     @Override
@@ -270,11 +251,11 @@ public class TasksActivity extends AppCompatActivity
     }
 
     @Override
-    public void displayTaskData(String title, String address, String runEveryMs, String timeoutMs) {
-        etLabel.setText(title);
-        etAddress.setText(address);
-        etRunEveryMs.setText(runEveryMs);
-        etTimeoutMs.setText(timeoutMs);
+    public void displayTask(PingingTask task) {
+        etTitle.setText(task.getDescription());
+        etAddress.setText(task.settings.getPingAddress());
+        etRunEveryMs.setText(String.valueOf(task.getRunTaskEveryMs()));
+        etTimeoutMs.setText(String.valueOf(task.settings.getPingTimeoutMs()));
     }
 
     @UiThread

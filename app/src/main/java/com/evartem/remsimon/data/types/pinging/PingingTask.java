@@ -43,6 +43,12 @@ public class PingingTask extends MonitoringTask {
         settings = new PingingTaskSettings();
     }
 
+    @Ignore
+    public PingingTask(@NonNull String description, int mode) {
+        this(description, mode, "");
+        settings = new PingingTaskSettings();
+    }
+
     /**
      * SHOULD NOT be used directly in the app! A special constructor for the Room library.
      */

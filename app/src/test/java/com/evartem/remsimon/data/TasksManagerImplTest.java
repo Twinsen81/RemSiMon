@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.evartem.remsimon.data.TasksManager.StateChangedListener.ADDED;
-import static com.evartem.remsimon.data.TasksManager.StateChangedListener.STATE_CHANGED;
+import static com.evartem.remsimon.data.TasksManagerImpl.StateChangedListener.ADDED;
+import static com.evartem.remsimon.data.TasksManagerImpl.StateChangedListener.STATE_CHANGED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Answers.RETURNS_DEFAULTS;
@@ -35,18 +35,18 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.stubbing.answers.AnswersWithDelay;
 
-public class TasksManagerTest {
+public class TasksManagerImplTest {
 
     @Mock
     private TasksDataSource mockDataSource;
 
     @Mock
-    private TasksManager.StateChangedListener stateChangedListener;
+    private TasksManagerImpl.StateChangedListener stateChangedListener;
 
     @Mock
     private AppExecutors appExecutors;
 
-    private TasksManager manager;
+    private TasksManagerImpl manager;
 
     private PingingTask TASK1 = PingingTask.create("TEST ping task 1", 1000, "127.0.0.1", 1000);
 
@@ -62,14 +62,14 @@ public class TasksManagerTest {
         when(appExecutors.mainThread()).thenReturn(Executors.newSingleThreadExecutor());
         when(appExecutors.diskIO()).thenReturn(Executors.newSingleThreadExecutor());
 
-        manager = TasksManager.getInstance(mockDataSource, appExecutors, Executors.newFixedThreadPool(1));
+        manager = TasksManagerImpl.getInstance(mockDataSource, appExecutors, Executors.newFixedThreadPool(1));
         manager.startManager();
     }
 
     @After
     public void destroyRepositoryInstance() {
         // Make sure each test method gets its own manager instance
-        TasksManager.destroyInstance();
+        TasksManagerImpl.destroyInstance();
     }
 
 
@@ -244,7 +244,7 @@ public class TasksManagerTest {
 
         // Then the callback was called with the arguments ADDED and DELETED
         verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, ADDED);
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, TasksManager.StateChangedListener.DELETED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, TasksManagerImpl.StateChangedListener.DELETED);
     }
 
     @Test

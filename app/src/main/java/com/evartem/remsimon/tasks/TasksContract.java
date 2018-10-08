@@ -2,12 +2,13 @@ package com.evartem.remsimon.tasks;
 
 import com.evartem.remsimon.BaseMVP.MvpPresenter;
 import com.evartem.remsimon.BaseMVP.MvpView;
+import com.evartem.remsimon.data.types.pinging.PingingTask;
 
 public interface TasksContract {
 
     interface View extends MvpView {
 
-        void displayTaskData(String title, String address, String runEveryMs, String timeoutMs);
+        void displayTask(PingingTask task);
 
         void displayMessage(String message);
 
@@ -21,7 +22,9 @@ public interface TasksContract {
         boolean isInputValidRunEveryMs(String runEveryMs);
         boolean isInputValidTimeoutMs(String timeoutMs);
 
-        void onApplyClicked();
+        void onApplyClicked(PingingTask task);
+
+        PingingTask getCurrentTask();
     }
 
 

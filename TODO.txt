@@ -1,8 +1,5 @@
-// Finish and test View and Presenter
-// Add manager
-// add callbacks to UI
-// Gets only one task from DB
-// add test Logs: Timber.i
+// onResume onPause - subscribe/unsubscribe from UI callbacks there!
+
 // Test manually
 // Add dagger - read about testing with dagger
 
