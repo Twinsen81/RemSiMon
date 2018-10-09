@@ -252,13 +252,17 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
 
     @Override
     public void addTaskStateChangedListener(@NonNull StateChangedListener callback) {
+        Timber.i("Adding listener: %s", callback.toString());
         if (listeners.size() > 0) // Generally, there should be only one listener - the tasks activity
+        {
             Timber.wtf("Adding second listener. Possible memory leak!");
+        }
         listeners.add(callback);
     }
 
     @Override
     public void removeTaskStateChangedListener(@NonNull StateChangedListener callback) {
+        Timber.i("Removing listener: %s", callback.toString());
         listeners.remove(callback);
     }
 }

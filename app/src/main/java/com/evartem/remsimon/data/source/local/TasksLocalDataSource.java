@@ -62,7 +62,7 @@ public class TasksLocalDataSource implements TasksDataSource {
     @Override
     public void updateOrAddTasks(@NonNull List<MonitoringTask> tasks) {
         if (isOnMainThread())
-            executors.mainThread().execute(() -> updateOrAddTasksByType(tasks));
+            executors.diskIO().execute(() -> updateOrAddTasksByType(tasks));
         else
             updateOrAddTasksByType(tasks);
     }

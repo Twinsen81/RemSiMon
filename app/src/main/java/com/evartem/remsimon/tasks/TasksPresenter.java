@@ -12,12 +12,18 @@ import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
 
+import timber.log.Timber;
+
 public class TasksPresenter extends PresenterBase<TasksContract.View> implements
         TasksContract.Presenter, TasksManager.StateChangedListener {
 
-    TasksManager manager;
+    private TasksManager manager;
 
-    PingingTask theTask = null;
+    private PingingTask theTask = null;
+
+    public TasksPresenter() {
+        manager = TheApp.getTM();
+    }
 
     @Override
     public boolean isInputValidTitle(String title) {
@@ -53,7 +59,8 @@ public class TasksPresenter extends PresenterBase<TasksContract.View> implements
 
     @Override
     public void onApplyClicked(@NotNull PingingTask task) {
-        TheApp.getTM().addTask(theTask);
+        manager.addTask(theTask);
+        manager.forceSaveAll2Datasource();
     }
 
     @Override
@@ -61,20 +68,27 @@ public class TasksPresenter extends PresenterBase<TasksContract.View> implements
         return theTask;
     }
 
+    /**
+     * Read task from the data source or create a new one if there's none there
+     */
     @Override
     public void viewIsReady() {
-
-        manager = TheApp.getTM();
-
+        Timber.i("View is ready: %s", getView());
         manager.getTasks(tasks -> {
             if (tasks.size() > 0) {
+                Timber.i("Loaded a task from DS: %s", tasks.get(0).getDescription());
                 theTask = (PingingTask) tasks.get(0);
-                getView().displayTask(theTask);
             } else
                 theTask = new PingingTask("New task", MonitoringTask.MODE_ACTIVE);
+                        getView().displayTask(theTask);
         });
-
         manager.addTaskStateChangedListener(this);
+    }
+
+    @Override
+    public void viewIsNotReady() {
+        Timber.i("View is not ready: %s", getView());
+        manager.removeTaskStateChangedListener(this);
     }
 
     @Override
@@ -86,7 +100,6 @@ public class TasksPresenter extends PresenterBase<TasksContract.View> implements
 
     @Override
     public void destroy() {
-        TheApp.getTM().forceSaveAll2Datasource();
         super.destroy();
     }
 

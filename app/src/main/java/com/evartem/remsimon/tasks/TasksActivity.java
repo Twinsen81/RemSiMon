@@ -81,9 +81,6 @@ public class TasksActivity extends AppCompatActivity
 
         presenter = new TasksPresenter();
         presenter.attachView(this);
-        presenter.viewIsReady();
-
-        onInputChanged();
     }
 
     private void setOnApplyButtonClickedCallback() {
@@ -182,6 +179,19 @@ public class TasksActivity extends AppCompatActivity
         boolean timeoutMsIsValid = presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim());
 
         btnApply.setEnabled(addressIsValid &&titleIsValid && runEveryMsIsValid && timeoutMsIsValid);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.viewIsReady();
+        onInputChanged();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.viewIsNotReady();
     }
 
     @Override

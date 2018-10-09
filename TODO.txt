@@ -1,22 +1,19 @@
-// onResume onPause - subscribe/unsubscribe from UI callbacks there!
-
-// Test manually
 // Add dagger - read about testing with dagger
+// Add RecyclerView
 
 // add Robolectric UI test
 // add espresso test
 // watch DB changes: https://github.com/amitshekhariitbhu/Android-Debug-Database
 
-// Write tests about updating tasks: flushing and retrieving data from the data source, etc.
-
 // Manager - reads next execution time from all the tasks and sleeps until the next execution is needed
 // Manager - if the task is being executed, but user deletes it? + add test case
+// Manager - implement with a thread pool, so several tasks could be executed simultaneously
 
 // instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
 
 
 // Task type: web page parser -> extract info from a certain web page and display data
-// TasksManager - implement with a thread pool, so several tasks could be executed simultaneously
 
+// MVVM instead of MVP?
 // Add RxJava + RxBindings library from Jake Wharton
-// Rewrite in Kotlin??? - all or just parts?
+// Rewrite in Kotlin. Also try to use composition instead of inheritance

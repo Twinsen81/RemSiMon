@@ -6,6 +6,8 @@ public interface MvpPresenter<V extends MvpView> {
 
     void viewIsReady();
 
+    void viewIsNotReady();
+
     void detachView();
 
     void destroy();
