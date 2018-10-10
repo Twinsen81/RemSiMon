@@ -31,11 +31,11 @@ public class TheApp extends Application {
 
         Timber.plant(new Timber.DebugTree());
 
-        TasksDatabase tasksDatabase = Room.databaseBuilder(this, TasksDatabase.class, "RSM").build();
+/*        TasksDatabase tasksDatabase = Room.databaseBuilder(this, TasksDatabase.class, "RSM").build();
         TasksLocalDataSource localDataSource = TasksLocalDataSource.getInstance(new AppExecutors(), tasksDatabase.pingingTaskDao());
         TasksManagerStarter tasksManagerStarter = TasksManagerImpl.getInstance(localDataSource, new AppExecutors(), Executors.newFixedThreadPool(1));
         tasksManagerStarter.startManager();
-        tasksManager = tasksManagerStarter.getManager();
+        tasksManager = tasksManagerStarter.getManager();*/
 
 
         if (!isRobolectricUnitTest()) setupLeakCananry();

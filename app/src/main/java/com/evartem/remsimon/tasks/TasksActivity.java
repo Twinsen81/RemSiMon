@@ -25,6 +25,8 @@ import com.stealthcopter.networktools.Ping;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -46,6 +48,7 @@ public class TasksActivity extends AppCompatActivity
     @BindView(R.id.etTimeoutMs)
     EditText etTimeoutMs;
 
+    @Inject
     TasksContract.Presenter presenter;
 
     @Override
@@ -79,7 +82,7 @@ public class TasksActivity extends AppCompatActivity
 
         setOnApplyButtonClickedCallback();
 
-        presenter = new TasksPresenter();
+        //presenter = new TasksPresenter();
         presenter.attachView(this);
     }
 

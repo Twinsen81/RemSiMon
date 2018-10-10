@@ -1,4 +1,11 @@
 // Add dagger - read about testing with dagger
+
+https://android.jlelse.eu/practical-guide-to-dagger-76398948a2ea
+https://blog.mindorks.com/android-dagger2-critical-things-to-know-before-you-implement-275663aecc3e#.crrgqwnbi
+https://fernandocejas.com/2015/04/11/tasting-dagger-2-on-android/
+http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
+
+
 // Add RecyclerView
 
 // add Robolectric UI test

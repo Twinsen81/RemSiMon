@@ -3,7 +3,6 @@ package com.evartem.remsimon.tasks;
 import android.support.annotation.Nullable;
 
 import com.evartem.remsimon.BaseMVP.PresenterBase;
-import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.HybridPinger;
@@ -11,6 +10,9 @@ import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
+
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -21,9 +23,15 @@ public class TasksPresenter extends PresenterBase<TasksContract.View> implements
 
     private PingingTask theTask = null;
 
-    public TasksPresenter() {
-        manager = TheApp.getTM();
+
+    @Inject
+    public TasksPresenter(TasksManager manager) {
+        this.manager = manager;
     }
+
+    /*{
+        manager = TheApp.getTM();
+    }*/
 
     @Override
     public boolean isInputValidTitle(String title) {
