@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.TasksManagerImpl;
+import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.source.local.TasksDatabase;
 import com.evartem.remsimon.data.source.local.TasksLocalDataSource;
 import com.evartem.remsimon.data.types.TasksManagerStarter;
@@ -12,40 +13,36 @@ import com.evartem.remsimon.util.AppExecutors;
 
 import java.util.concurrent.Executors;
 
-import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module
-public class TasksManagerModule {
+final class TasksManagerModule {
 
-    TasksManagerImpl tasksManager;
-
-    // @Inject
-    public TasksManagerModule(TasksManagerImpl tasksManagerImpl) {
-        tasksManager = tasksManagerImpl;
-
-        TasksDatabase tasksDatabase =
-        TasksLocalDataSource localDataSource = TasksLocalDataSource.getInstance(new AppExecutors(), tasksDatabase.pingingTaskDao());
-        TasksManagerStarter tasksManagerStarter = TasksManagerImpl.getInstance(localDataSource, new AppExecutors(), Executors.newFixedThreadPool(1));
+    @Singleton
+    @Provides
+    static TasksManager getTasksManager(TasksDataSource dataSource, AppExecutors appExecutors) {
+        TasksManagerStarter tasksManagerStarter = TasksManagerImpl.getInstance(dataSource, appExecutors, Executors.newFixedThreadPool(1));
         tasksManagerStarter.startManager();
-        tasksManager = tasksManagerStarter.getManager();
+        return tasksManagerStarter.getManager();
     }
 
     @Provides
-    TasksLocalDataSource getLocalDataSource(AppExecutors appExecutors, TasksDatabase db) {
+    static AppExecutors getAppExecutors() {
+        return new AppExecutors();
+    }
+
+    @Singleton
+    @Provides
+    static TasksDataSource getLocalDataSource(AppExecutors appExecutors, TasksDatabase db) {
         return TasksLocalDataSource.getInstance(appExecutors, db.pingingTaskDao());
     }
 
-
+    @Singleton
     @Provides
-    TasksDatabase getTasksDatabase(Application context) {
+    static TasksDatabase getTasksDatabase(Application context) {
         return Room.databaseBuilder(context, TasksDatabase.class, "RSM").build();
-    }
-
-    @Provides
-    TasksManager getTasksManager() {
-        return tasksManager;
     }
 }

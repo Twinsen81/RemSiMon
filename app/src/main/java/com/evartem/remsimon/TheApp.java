@@ -1,29 +1,26 @@
 package com.evartem.remsimon;
 
 import android.app.Application;
-import android.arch.persistence.room.Room;
 import android.os.Build;
 
-import com.evartem.remsimon.data.TasksManager;
-import com.evartem.remsimon.data.TasksManagerImpl;
-import com.evartem.remsimon.data.source.local.TasksDatabase;
-import com.evartem.remsimon.data.source.local.TasksLocalDataSource;
-import com.evartem.remsimon.data.types.TasksManagerStarter;
-import com.evartem.remsimon.util.AppExecutors;
+import com.evartem.remsimon.DI.AppComponent;
+import com.evartem.remsimon.DI.AppContextModule;
+import com.evartem.remsimon.DI.DaggerAppComponent;
 import com.squareup.leakcanary.LeakCanary;
 import net.danlew.android.joda.JodaTimeAndroid;
-
-import java.util.concurrent.Executors;
 
 import timber.log.Timber;
 
 public class TheApp extends Application {
 
+/*
     private static TasksManager tasksManager;
-
     public static TasksManager getTM() {
         return tasksManager;
     }
+*/
+
+    private static AppComponent component;
 
     @Override
     public void onCreate() {
@@ -37,10 +34,17 @@ public class TheApp extends Application {
         tasksManagerStarter.startManager();
         tasksManager = tasksManagerStarter.getManager();*/
 
+        component = DaggerAppComponent.builder()
+                .appContextModule(new AppContextModule(this))
+                .build();
 
-        if (!isRobolectricUnitTest()) setupLeakCananry();
+        if (!isRobolectricUnitTest()) setupLeakCanary();
 
         JodaTimeAndroid.init(this);
+    }
+
+    public static AppComponent getComponent() {
+        return component;
     }
 
     @Override
@@ -48,7 +52,7 @@ public class TheApp extends Application {
         super.onTerminate();
     }
 
-    private void setupLeakCananry() {
+    private void setupLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.

@@ -19,19 +19,13 @@ import timber.log.Timber;
 public class TasksPresenter extends PresenterBase<TasksContract.View> implements
         TasksContract.Presenter, TasksManager.StateChangedListener {
 
-    private TasksManager manager;
+    @Inject
+    TasksManager manager;
 
     private PingingTask theTask = null;
 
-
     @Inject
-    public TasksPresenter(TasksManager manager) {
-        this.manager = manager;
-    }
-
-    /*{
-        manager = TheApp.getTM();
-    }*/
+    TasksPresenter() {}
 
     @Override
     public boolean isInputValidTitle(String title) {

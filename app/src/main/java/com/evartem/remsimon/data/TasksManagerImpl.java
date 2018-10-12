@@ -73,9 +73,13 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         }
     }
 
+    /**
+     * Strating the thread that will execute tasks
+     */
     @Override
-    public void startManager() {
-        managerThread = managerThreadExecutor.submit(this);
+    public synchronized void startManager() {
+        if (managerThread == null)
+            managerThread = managerThreadExecutor.submit(this);
     }
 
     @Override

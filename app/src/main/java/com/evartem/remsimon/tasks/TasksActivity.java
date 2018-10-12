@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.evartem.remsimon.R;
+import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.stealthcopter.networktools.Ping;
@@ -67,6 +68,8 @@ public class TasksActivity extends AppCompatActivity
             }
         });*/
 
+        ButterKnife.bind(this);
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -76,13 +79,13 @@ public class TasksActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ButterKnife.bind(this);
 
         setEditTextsCallbacks();
 
         setOnApplyButtonClickedCallback();
 
         //presenter = new TasksPresenter();
+        TheApp.getComponent().inject(this);
         presenter.attachView(this);
     }
 
