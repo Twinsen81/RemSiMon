@@ -13,13 +13,6 @@ import timber.log.Timber;
 
 public class TheApp extends Application {
 
-/*
-    private static TasksManager tasksManager;
-    public static TasksManager getTM() {
-        return tasksManager;
-    }
-*/
-
     private static AppComponent component;
 
     @Override
@@ -28,14 +21,9 @@ public class TheApp extends Application {
 
         Timber.plant(new Timber.DebugTree());
 
-/*        TasksDatabase tasksDatabase = Room.databaseBuilder(this, TasksDatabase.class, "RSM").build();
-        TasksLocalDataSource localDataSource = TasksLocalDataSource.getInstance(new AppExecutors(), tasksDatabase.pingingTaskDao());
-        TasksManagerStarter tasksManagerStarter = TasksManagerImpl.getInstance(localDataSource, new AppExecutors(), Executors.newFixedThreadPool(1));
-        tasksManagerStarter.startManager();
-        tasksManager = tasksManagerStarter.getManager();*/
-
         component = DaggerAppComponent.builder()
-                .appContextModule(new AppContextModule(this))
+                //.appContextModule(new AppContextModule(this))
+                .setAppInstance(this)
                 .build();
 
         if (!isRobolectricUnitTest()) setupLeakCanary();
@@ -47,10 +35,12 @@ public class TheApp extends Application {
         return component;
     }
 
+/*
     @Override
     public void onTerminate() {
         super.onTerminate();
     }
+*/
 
     private void setupLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {

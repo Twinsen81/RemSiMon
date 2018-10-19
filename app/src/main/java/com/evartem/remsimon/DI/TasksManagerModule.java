@@ -3,6 +3,7 @@ package com.evartem.remsimon.DI;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 
+import com.evartem.remsimon.DI.Scopes.PerApplication;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.TasksManagerImpl;
 import com.evartem.remsimon.data.source.TasksDataSource;
@@ -21,7 +22,7 @@ import dagger.Provides;
 @Module
 final class TasksManagerModule {
 
-    @Singleton
+    @PerApplication
     @Provides
     static TasksManager getTasksManager(TasksDataSource dataSource, AppExecutors appExecutors) {
         TasksManagerStarter tasksManagerStarter = TasksManagerImpl.getInstance(dataSource, appExecutors, Executors.newFixedThreadPool(1));
@@ -34,13 +35,13 @@ final class TasksManagerModule {
         return new AppExecutors();
     }
 
-    @Singleton
+    @PerApplication
     @Provides
     static TasksDataSource getLocalDataSource(AppExecutors appExecutors, TasksDatabase db) {
         return TasksLocalDataSource.getInstance(appExecutors, db.pingingTaskDao());
     }
 
-    @Singleton
+    @PerApplication
     @Provides
     static TasksDatabase getTasksDatabase(Application context) {
         return Room.databaseBuilder(context, TasksDatabase.class, "RSM").build();
