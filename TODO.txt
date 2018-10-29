@@ -1,29 +1,22 @@
-// Read about dagger: https://proandroiddev.com/how-to-android-dagger-2-10-2-11-butterknife-mvp-part-1-eb0f6b970fd
+// Fix the toolbar - use support library for dagger!
+// Remove getInstance - DI handles this now
+
+// Add RecyclerView (dagger - inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/)
+
 // Add shared prefs
-
-https://habr.com/post/334710/
-https://blog.mindorks.com/a-complete-guide-to-learn-dagger-2-b4c7a570d99c
-
-https://fernandocejas.com/2015/04/11/tasting-dagger-2-on-android/
-http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
-
-
-// Add RecyclerView
-// Ping task: calculate and display uptime and downtime
 
 // add Robolectric UI test
 // add espresso test
-// watch DB changes: https://github.com/amitshekhariitbhu/Android-Debug-Database
 
+// Add MQQT task (A repository for MQQT profiles)
+
+// Ping task: calculate and display uptime and downtime
 // Manager - reads next execution time from all the tasks and sleeps until the next execution is needed
 // Manager - if the task is being executed, but user deletes it? + add test case
 // Manager - implement with a thread pool, so several tasks could be executed simultaneously
 
 // instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
 
-
-
-// Task type: web page parser -> extract info from a certain web page and display data
 
 // MVVM instead of MVP?
 // Add RxJava + RxBindings library from Jake Wharton

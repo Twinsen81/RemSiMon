@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvRunEveryMs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:gravity="end"
+        android:text="@string/run_every"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etRunEveryMs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etRunEveryMs" />
+
+    <TextView
+        android:id="@+id/tvRunEveryUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/ms"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etRunEveryMs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etRunEveryMs" />
+
+    <TextView
+        android:id="@+id/tvTimeoutUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/ms"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etTimeoutMs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etTimeoutMs" />
+
+    <EditText
+        android:id="@+id/etLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="@string/short_description"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Home router" />
+
+    <EditText
+        android:id="@+id/etAddress"
+        android:backgroundTint="@null"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="@string/ip_or_url"
+        android:inputType="textUri"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toBottomOf="@+id/etRunEveryMs"
+        tools:text="8.8.8.8" />
+
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:gravity="end"
+        android:text="@string/label"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etLabel" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:gravity="end"
+        android:text="@string/address"
+        app:layout_constraintBottom_toBottomOf="@+id/etAddress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etAddress" />
+
+    <TextView
+        android:id="@+id/tvTimeoutMs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:gravity="end"
+        android:text="@string/timeout"
+        app:layout_constraintBottom_toBottomOf="@+id/etTimeoutMs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etTimeoutMs" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barAfterAllTextLabels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="tvAddress, tvLabel, tvRunEveryMs, tvTimeoutMs" />
+
+    <EditText
+        android:id="@+id/etRunEveryMs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:gravity="end"
+        android:hint="@string/how_often_the_task_is_run"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toBottomOf="@+id/etLabel"
+        tools:text="10000" />
+
+    <EditText
+        android:id="@+id/etTimeoutMs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:gravity="end"
+        android:hint="@string/max_waiting_time"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toBottomOf="@+id/etAddress"
+        tools:text="1000" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barBeforeMs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="tvRunEveryUnits, tvTimeoutUnits" />
+
+    <Button
+        android:id="@+id/btnApply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/apply"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnApply" />
+
+</android.support.constraint.ConstraintLayout>

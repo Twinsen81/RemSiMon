@@ -1,19 +1,24 @@
 package com.evartem.remsimon;
 
+import android.app.Activity;
 import android.app.Application;
 import android.os.Build;
 
-import com.evartem.remsimon.DI.AppComponent;
-import com.evartem.remsimon.DI.AppContextModule;
 import com.evartem.remsimon.DI.DaggerAppComponent;
 import com.squareup.leakcanary.LeakCanary;
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
 import timber.log.Timber;
 
-public class TheApp extends Application {
+public class TheApp extends Application implements HasActivityInjector {
 
-    private static AppComponent component;
+    @Inject
+    DispatchingAndroidInjector<Activity> activityInjector;
 
     @Override
     public void onCreate() {
@@ -21,26 +26,18 @@ public class TheApp extends Application {
 
         Timber.plant(new Timber.DebugTree());
 
-        component = DaggerAppComponent.builder()
-                //.appContextModule(new AppContextModule(this))
-                .setAppInstance(this)
-                .build();
+        DaggerAppComponent.builder().create(this).inject(this);
 
         if (!isRobolectricUnitTest()) setupLeakCanary();
 
         JodaTimeAndroid.init(this);
     }
 
-    public static AppComponent getComponent() {
-        return component;
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return activityInjector;
     }
 
-/*
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-    }
-*/
 
     private void setupLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {

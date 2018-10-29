@@ -3,7 +3,7 @@ package com.evartem.remsimon.DI;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 
-import com.evartem.remsimon.DI.Scopes.PerApplication;
+import com.evartem.remsimon.DI.scopes.PerApplication;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.TasksManagerImpl;
 import com.evartem.remsimon.data.source.TasksDataSource;
@@ -13,8 +13,6 @@ import com.evartem.remsimon.data.types.TasksManagerStarter;
 import com.evartem.remsimon.util.AppExecutors;
 
 import java.util.concurrent.Executors;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;

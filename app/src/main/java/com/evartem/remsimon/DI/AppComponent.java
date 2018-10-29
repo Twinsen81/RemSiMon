@@ -2,28 +2,21 @@ package com.evartem.remsimon.DI;
 
 import android.app.Application;
 
-import com.evartem.remsimon.DI.Scopes.PerApplication;
+import com.evartem.remsimon.DI.scopes.PerApplication;
+import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.tasks.TasksActivity;
-
-import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import dagger.android.AndroidInjector;
 
 @PerApplication
 @Component(modules = {
-        //AppContextModule.class,
-        TasksManagerModule.class,
-        TasksContractModule.class})
-public interface AppComponent {
-    void inject(TasksActivity activity);
-
+        AppModule.class,
+        TasksManagerModule.class})
+public interface AppComponent extends AndroidInjector<TheApp> {
     @Component.Builder
-    interface AppContextBuilder {
-        AppComponent build();
-
-        @BindsInstance
-        AppContextBuilder setAppInstance(Application context);
+    abstract class Builder extends AndroidInjector.Builder<TheApp> {
     }
-
 }
+
