@@ -24,6 +24,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import timber.log.Timber;
 
 import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
@@ -48,17 +51,8 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
 
     private List<StateChangedListener> listeners = new ArrayList<>();
 
-    public static TasksManagerStarter getInstance(@NotNull TasksDataSource dataSource, AppExecutors appExecutors, ExecutorService managerThreadExecutor) {
-        if (INSTANCE == null) {
-            synchronized (TasksManagerImpl.class) {
-                if (INSTANCE == null)
-                    INSTANCE = new TasksManagerImpl(dataSource, appExecutors, managerThreadExecutor);
-            }
-        }
-        return INSTANCE;
-    }
-
-    private TasksManagerImpl(@NotNull TasksDataSource dataSource, AppExecutors appExecutors, ExecutorService managerThreadExecutor) {
+    @Inject
+    public TasksManagerImpl(@NotNull TasksDataSource dataSource, AppExecutors appExecutors, @Named("managerThreadExecutor") ExecutorService managerThreadExecutor) {
         this.dataSource = dataSource;
         this.managerThreadExecutor = managerThreadExecutor;
         this.executors = appExecutors;
@@ -83,7 +77,9 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     }
 
     @Override
-    public TasksManager getManager() {return this;}
+    public TasksManager getManager() {
+        return this;
+    }
 
     @WorkerThread
     @Override
@@ -135,7 +131,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
      * @return True if the worker thread finished correctly
      * @throws InterruptedException
      */
-    public boolean finish() throws InterruptedException {
+/*    public boolean finish() throws InterruptedException {
         listeners.clear();
         if (managerThread != null) {
             managerThread.cancel(true);
@@ -145,7 +141,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
             return successfullyFinishedWorking;
         } else
             return true;
-    }
+    }*/
 
 
     /**
@@ -178,7 +174,6 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         });
     }
     */
-
     @WorkerThread
     private synchronized void loadTasksFromDatasource() {
         if (loadedTasksFromDatasource) return;

@@ -1,6 +1,7 @@
 package com.evartem.remsimon.data;
 
 import com.evartem.remsimon.data.source.TasksDataSource;
+import com.evartem.remsimon.data.types.TasksManagerStarter;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.util.AppExecutors;
@@ -8,32 +9,29 @@ import com.evartem.remsimon.util.AppExecutors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.evartem.remsimon.data.TasksManagerImpl.StateChangedListener.ADDED;
-import static com.evartem.remsimon.data.TasksManagerImpl.StateChangedListener.STATE_CHANGED;
+import static com.evartem.remsimon.data.TasksManager.StateChangedListener.ADDED;
+import static com.evartem.remsimon.data.TasksManager.StateChangedListener.STATE_CHANGED;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.mockito.Answers.RETURNS_DEFAULTS;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.internal.stubbing.answers.AnswersWithDelay;
 
 public class TasksManagerImplTest {
 
@@ -46,7 +44,7 @@ public class TasksManagerImplTest {
     @Mock
     private AppExecutors appExecutors;
 
-    private TasksManagerImpl manager;
+    private TasksManager manager;
 
     private PingingTask TASK1 = PingingTask.create("TEST ping task 1", 1000, "127.0.0.1", 1000);
 
@@ -62,8 +60,9 @@ public class TasksManagerImplTest {
         when(appExecutors.mainThread()).thenReturn(Executors.newSingleThreadExecutor());
         when(appExecutors.diskIO()).thenReturn(Executors.newSingleThreadExecutor());
 
-        manager = TasksManagerImpl.getInstance(mockDataSource, appExecutors, Executors.newFixedThreadPool(1));
-        manager.startManager();
+        TasksManagerStarter tasksManagerStarter = new TasksManagerImpl(mockDataSource, appExecutors, Executors.newFixedThreadPool(1));
+        tasksManagerStarter.startManager();
+        manager = tasksManagerStarter.getManager();
     }
 
     @After
@@ -82,7 +81,7 @@ public class TasksManagerImplTest {
         // Then the task is added to to the data source
         verify(mockDataSource).updateOrAddTask(TASK1);
         // and to the manager's cache
-        assertThat(manager.tasks.size(), is(1));
+        assertThat(manager.getTasks().size(), is(1));
     }
 
     @Test
@@ -92,7 +91,7 @@ public class TasksManagerImplTest {
         int numberOfTasks = addMultipleTasks();
 
         // Then they are added to the cache
-        assertThat(manager.tasks.size(), is(numberOfTasks));
+        assertThat(manager.getTasks().size(), is(numberOfTasks));
         // and to the data source
         verify(mockDataSource, times(numberOfTasks)).updateOrAddTask(any());
     }
@@ -175,7 +174,7 @@ public class TasksManagerImplTest {
         verify(task, timeout(3000).times(1)).doTheWork();
     }
 
-    @Test
+/*    @Test
     public void gracefullyFinishManager() throws InterruptedException {
 
         // Given a task
@@ -196,7 +195,7 @@ public class TasksManagerImplTest {
         // and the data is saved to the data source
         verify(mockDataSource, times(1)).updateOrAddTasks(any());
 
-    }
+    }*/
 
     @Test
     public void stateChangedListener_Added() {

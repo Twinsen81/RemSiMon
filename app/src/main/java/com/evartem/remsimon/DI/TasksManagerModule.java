@@ -7,25 +7,40 @@ import com.evartem.remsimon.DI.scopes.PerApplication;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.TasksManagerImpl;
 import com.evartem.remsimon.data.source.TasksDataSource;
+import com.evartem.remsimon.data.source.local.PingingTaskDao;
 import com.evartem.remsimon.data.source.local.TasksDatabase;
 import com.evartem.remsimon.data.source.local.TasksLocalDataSource;
 import com.evartem.remsimon.data.types.TasksManagerStarter;
 import com.evartem.remsimon.util.AppExecutors;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.inject.Named;
+
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
 @Module
-final class TasksManagerModule {
+abstract class TasksManagerModule {
 
     @PerApplication
     @Provides
-    static TasksManager getTasksManager(TasksDataSource dataSource, AppExecutors appExecutors) {
-        TasksManagerStarter tasksManagerStarter = TasksManagerImpl.getInstance(dataSource, appExecutors, Executors.newFixedThreadPool(1));
+    static TasksManager getTasksManager(TasksManagerStarter tasksManagerStarter) {
         tasksManagerStarter.startManager();
         return tasksManagerStarter.getManager();
+    }
+
+    @PerApplication
+    @Binds
+    abstract TasksManagerStarter getTasksManagerStarter(TasksManagerImpl tasksManagerImpl);
+
+    @PerApplication
+    @Named("managerThreadExecutor")
+    @Provides
+    static ExecutorService managerThreadExecutor() {
+        return Executors.newFixedThreadPool(1);
     }
 
     @Provides
@@ -34,9 +49,13 @@ final class TasksManagerModule {
     }
 
     @PerApplication
+    @Binds
+    abstract TasksDataSource getLocalDataSource(TasksLocalDataSource localDataSource);
+
+    @PerApplication
     @Provides
-    static TasksDataSource getLocalDataSource(AppExecutors appExecutors, TasksDatabase db) {
-        return TasksLocalDataSource.getInstance(appExecutors, db.pingingTaskDao());
+    static PingingTaskDao getPingingTaskDao(TasksDatabase db) {
+        return db.pingingTaskDao();
     }
 
     @PerApplication

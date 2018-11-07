@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class TasksLocalDataSource implements TasksDataSource {
 
     private static volatile TasksLocalDataSource INSTANCE = null;
@@ -22,21 +24,11 @@ public class TasksLocalDataSource implements TasksDataSource {
 
     private PingingTaskDao pingingTaskDao;
 
-    public static TasksLocalDataSource getInstance(AppExecutors appExecutors, PingingTaskDao pingingTaskDao) {
-        if (INSTANCE == null) {
-            synchronized (TasksLocalDataSource.class) {
-                if (INSTANCE == null)
-                    INSTANCE = new TasksLocalDataSource(appExecutors, pingingTaskDao);
-            }
-        }
-        return INSTANCE;
-    }
-
-    private TasksLocalDataSource(AppExecutors appExecutors, PingingTaskDao pingingTaskDao) {
-        executors = appExecutors;
+    @Inject
+    TasksLocalDataSource(AppExecutors appExecutors, PingingTaskDao pingingTaskDao) {
+        this.executors = appExecutors;
         this.pingingTaskDao = pingingTaskDao;
     }
-
 
     @Override
     public void getTasks(@NonNull LoadTasksListener callback) {

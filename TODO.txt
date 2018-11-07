@@ -1,13 +1,13 @@
-// Remove getInstance - DI handles this now
-
 // Add RecyclerView (dagger - inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/)
+// Add tasks
+// Edit tasks
+// Delete tasks
 
 // Add shared prefs
 
+// testing with dagger
 // add Robolectric UI test
 // add espresso test
-
-// Add MQQT task (A repository for MQQT profiles)
 
 // Ping task: calculate and display uptime and downtime
 // Manager - reads next execution time from all the tasks and sleeps until the next execution is needed
@@ -15,6 +15,8 @@
 // Manager - implement with a thread pool, so several tasks could be executed simultaneously
 
 // instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
+
+// Add MQQT task (A repository for MQQT profiles)
 
 
 // MVVM instead of MVP?
