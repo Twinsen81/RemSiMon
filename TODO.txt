@@ -1,4 +1,3 @@
-// Fix the toolbar - use support library for dagger!
 // Remove getInstance - DI handles this now
 
 // Add RecyclerView (dagger - inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/)

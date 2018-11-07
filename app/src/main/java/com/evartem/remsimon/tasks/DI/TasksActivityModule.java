@@ -1,6 +1,6 @@
 package com.evartem.remsimon.tasks.DI;
 
-import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.evartem.remsimon.DI.base.BaseActivityModule;
 import com.evartem.remsimon.DI.scopes.PerActivity;
@@ -22,7 +22,7 @@ public abstract class TasksActivityModule {
 
     @Binds
     @PerActivity
-    abstract Activity activity(TasksActivity activity);
+    abstract AppCompatActivity activity(TasksActivity activity);
 
 /*    @Binds
     @PerActivity

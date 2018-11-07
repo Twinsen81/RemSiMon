@@ -1,7 +1,8 @@
 package com.evartem.remsimon.DI.base;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import com.evartem.remsimon.DI.scopes.PerFragment;
 

@@ -11,5 +11,5 @@ import dagger.Module;
 public abstract class  TasksPresenterModule {
     @Binds
     @PerFragment
-    abstract TasksPresenter example1Presenter(TasksPresenterImpl example1PresenterImpl);
+    abstract TasksPresenter tasksPresenter(TasksPresenterImpl tasksPresenterImpl);
 }

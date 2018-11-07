@@ -1,21 +1,21 @@
 package com.evartem.remsimon;
 
 import android.app.Activity;
-import android.app.Application;
 import android.os.Build;
 
 import com.evartem.remsimon.DI.DaggerAppComponent;
 import com.squareup.leakcanary.LeakCanary;
+
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
+import dagger.android.support.DaggerApplication;
 import timber.log.Timber;
 
-public class TheApp extends Application implements HasActivityInjector {
+public class TheApp extends DaggerApplication {
 
     @Inject
     DispatchingAndroidInjector<Activity> activityInjector;
@@ -26,18 +26,10 @@ public class TheApp extends Application implements HasActivityInjector {
 
         Timber.plant(new Timber.DebugTree());
 
-        DaggerAppComponent.builder().create(this).inject(this);
-
         if (!isRobolectricUnitTest()) setupLeakCanary();
 
         JodaTimeAndroid.init(this);
     }
-
-    @Override
-    public AndroidInjector<Activity> activityInjector() {
-        return activityInjector;
-    }
-
 
     private void setupLeakCanary() {
         if (LeakCanary.isInAnalyzerProcess(this)) {
@@ -50,5 +42,10 @@ public class TheApp extends Application implements HasActivityInjector {
 
     public static boolean isRobolectricUnitTest() {
         return "robolectric".equals(Build.FINGERPRINT);
+    }
+
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder().create(this);
     }
 }
