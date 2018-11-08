@@ -1,16 +1,14 @@
 package com.evartem.remsimon.tasks.ContractMVP;
 
 import com.evartem.remsimon.BaseMVP.presenter.Presenter;
+import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
+
+import java.util.List;
 
 public interface TasksPresenter extends Presenter {
 
-    boolean isInputValidTitle(String title);
-    boolean isInputValidAddress(String address);
-    boolean isInputValidRunEveryMs(String runEveryMs);
-    boolean isInputValidTimeoutMs(String timeoutMs);
+    void onTaskClicked(MonitoringTask task);
 
-    void onApplyClicked(PingingTask task);
-
-    PingingTask getCurrentTask();
+    List<MonitoringTask> getTasks();
 }

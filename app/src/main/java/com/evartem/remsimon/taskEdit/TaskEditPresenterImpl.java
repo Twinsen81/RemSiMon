@@ -1,4 +1,4 @@
-package com.evartem.remsimon.tasks;
+/*package com.evartem.remsimon.taskEdit;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,29 +20,19 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class TasksPresenterImpl extends BasePresenter<TasksView> implements TasksPresenter, TasksManager.StateChangedListener {
+public class TaskEditPresenterImpl extends BasePresenter<TasksView> implements TasksPresenter, TasksManager.StateChangedListener {
 
-    @Inject
+   *//* @Inject
     TasksManager manager;
 
     private PingingTask theTask = null;
 
     @Inject
-    TasksPresenterImpl(TasksView view) {
+    TaskEditPresenterImpl(TasksView view) {
         super(view);
     }
 
     @Override
-    public void onTaskClicked(MonitoringTask task) {
-
-    }
-
-    @Override
-    public List<MonitoringTask> getTasks() {
-        return null;
-    }
-
-   /* @Override
     public boolean isInputValidTitle(String title) {
         return !Strings.isNullOrEmpty(title);
     }
@@ -83,7 +73,7 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
     @Override
     public PingingTask getCurrentTask() {
         return theTask;
-    }*/
+    }
 
     @Override
     public void onStart(@Nullable Bundle savedInstanceState) {
@@ -91,16 +81,15 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
 
         Timber.i("View is ready: %s", view);
         manager.getTasks(tasks -> {
-            Timber.i("Loaded %s tasks from the data source", tasks.size());
-            view.displayTasks(tasks);
+            if (tasks.size() > 0) {
+                Timber.i("Loaded a task from DS: %s", tasks.get(0).getDescription());
+                theTask = (PingingTask) tasks.get(0);
+            } else
+                theTask = new PingingTask("New task", MonitoringTask.MODE_ACTIVE);
+            view.displayTask(theTask);
         });
         manager.addTaskStateChangedListener(this);
-      /*  PingingTask pt = new PingingTask("Pinging google.com");
-        pt.setRunTaskEveryMs(10000);
-        pt.settings.setPingAddress("google.com");
-        pt.settings.setPingTimeoutMs(1333);
-        manager.addTask(pt);*/
-    }
+    }*//*
 
     @Override
     public void onTaskStateChanged(@Nullable MonitoringTask changedTask, int whatChanged) {
@@ -112,10 +101,18 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
     @Override
     public void onEnd() {
         Timber.i("View is not ready: %s", view);
-        manager.removeTaskStateChangedListener(this);
+        //manager.removeTaskStateChangedListener(this);
 
         super.onEnd();
     }
 
+    @Override
+    public void onTaskClicked(MonitoringTask task) {
 
-}
+    }
+
+    @Override
+    public List<MonitoringTask> getTasks() {
+        return null;
+    }
+}*/

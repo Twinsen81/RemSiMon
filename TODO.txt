@@ -2,6 +2,10 @@
 // Add tasks
 // Edit tasks
 // Delete tasks
+// Update
+
+// Add 2nd type - MQTT (dagger - inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/)
+
 
 // Add shared prefs
 

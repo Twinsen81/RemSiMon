@@ -1,32 +1,27 @@
 package com.evartem.remsimon.tasks;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.design.widget.Snackbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
-import com.evartem.remsimon.data.types.pinging.PingingTask;
+import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
 import com.evartem.remsimon.tasks.ContractMVP.TasksView;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 public class TasksFragment extends BaseViewFragment<TasksPresenter> implements TasksView {
 
-    @BindView(R.id.tvResult)
+/*    @BindView(R.id.tvResult)
     TextView tvResult;
 
 
@@ -40,8 +35,13 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
     @BindView(R.id.etRunEveryMs)
     EditText etRunEveryMs;
     @BindView(R.id.etTimeoutMs)
-    EditText etTimeoutMs;
+    EditText etTimeoutMs;*/
 
+    @BindView(R.id.rvTasks)
+    RecyclerView rvTasks;
+
+    @Inject
+    TasksAdapter tasksAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,10 +53,20 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
 
-        setEditTextsCallbacks();
+        setupRecyclerView();
     }
 
-    private void setEditTextsCallbacks() {
+    private void setupRecyclerView() {
+        rvTasks.setAdapter(tasksAdapter);
+        rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    @Override
+    public void displayTasks(List<MonitoringTask> tasks) {
+        tasksAdapter.updateTasks(tasks);
+    }
+
+    /*private void setEditTextsCallbacks() {
 
         etTitle.addTextChangedListener(new TextWatcher() {
             @Override
@@ -176,5 +186,5 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
     public void onResume() {
         super.onResume();
         onInputChanged();
-    }
+    }*/
 }

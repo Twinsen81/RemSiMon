@@ -1,13 +1,13 @@
 package com.evartem.remsimon.tasks.ContractMVP;
 
 import com.evartem.remsimon.BaseMVP.view.MVPView;
+import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
+
+import java.util.List;
 
 public interface TasksView extends MVPView {
 
-    void displayTask(PingingTask task);
+    void displayTasks(List<MonitoringTask> tasks);
 
-    void displayMessage(String message);
-
-    void displayResult(String result);
 }
