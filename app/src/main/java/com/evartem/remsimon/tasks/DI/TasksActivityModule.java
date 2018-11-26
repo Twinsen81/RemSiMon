@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.evartem.remsimon.DI.base.BaseActivityModule;
 import com.evartem.remsimon.DI.scopes.PerActivity;
 import com.evartem.remsimon.DI.scopes.PerFragment;
+import com.evartem.remsimon.taskEdit.DI.TaskEditFragmentModule;
+import com.evartem.remsimon.taskEdit.TaskEditFragment;
 import com.evartem.remsimon.tasks.TasksActivity;
 import com.evartem.remsimon.tasks.TasksFragment;
 
@@ -15,6 +17,9 @@ import dagger.android.ContributesAndroidInjector;
 @Module(includes = BaseActivityModule.class)
 public abstract class TasksActivityModule {
 
+    @PerFragment
+    @ContributesAndroidInjector(modules = TaskEditFragmentModule.class)
+    abstract TaskEditFragment taskEditFragmentInjector();
 
     @PerFragment
     @ContributesAndroidInjector(modules = TasksFragmentModule.class)
@@ -23,8 +28,4 @@ public abstract class TasksActivityModule {
     @Binds
     @PerActivity
     abstract AppCompatActivity activity(TasksActivity activity);
-
-/*    @Binds
-    @PerActivity
-    abstract MainFragmentListener mainFragmentListener(MainActivity mainActivity);*/
 }

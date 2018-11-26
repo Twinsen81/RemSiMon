@@ -3,7 +3,7 @@ package com.evartem.remsimon.taskEdit.ContractMVP;
 import com.evartem.remsimon.BaseMVP.presenter.Presenter;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 
-public interface TasksPresenter extends Presenter {
+public interface TaskEditPresenter extends Presenter {
 
     boolean isInputValidTitle(String title);
     boolean isInputValidAddress(String address);
@@ -12,5 +12,5 @@ public interface TasksPresenter extends Presenter {
 
     void onApplyClicked(PingingTask task);
 
-    PingingTask getCurrentTask();
+    //PingingTask getCurrentTask();
 }

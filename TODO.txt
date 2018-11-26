@@ -1,11 +1,9 @@
-// Add RecyclerView (dagger - inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/)
-// Add tasks
-// Edit tasks
-// Delete tasks
-// Update
 
-// Add 2nd type - MQTT (dagger - inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/)
+- Delete task
+- Update tasks when there're changes
 
+// Add 2nd type - retrofit json
+4. inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
 
 // Add shared prefs
 
@@ -20,9 +18,7 @@
 
 // instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
 
-// Add MQQT task (A repository for MQQT profiles)
+// Notifications (downtime exceeded the setpoint, JSON data setpoint)
 
-
-// MVVM instead of MVP?
 // Add RxJava + RxBindings library from Jake Wharton
 // Rewrite in Kotlin. Also try to use composition instead of inheritance

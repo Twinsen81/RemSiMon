@@ -16,4 +16,5 @@
     <string name="how_often_the_task_is_run">how often the task is run</string>
     <string name="short_description">short description</string>
     <string name="ip_or_url">IP or URL</string>
+    <string name="cancel">CANCEL</string>
 </resources>

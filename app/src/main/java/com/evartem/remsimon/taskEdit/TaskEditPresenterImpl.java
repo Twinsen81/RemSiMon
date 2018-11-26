@@ -1,35 +1,37 @@
-/*package com.evartem.remsimon.taskEdit;
+package com.evartem.remsimon.taskEdit;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.evartem.remsimon.BaseMVP.presenter.BasePresenter;
 import com.evartem.remsimon.data.TasksManager;
-import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.HybridPinger;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
-import com.evartem.remsimon.tasks.ContractMVP.TasksView;
+import com.evartem.remsimon.taskEdit.ContractMVP.TaskEditPresenter;
+import com.evartem.remsimon.taskEdit.ContractMVP.TaskEditView;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
 import timber.log.Timber;
 
-public class TaskEditPresenterImpl extends BasePresenter<TasksView> implements TasksPresenter, TasksManager.StateChangedListener {
-
-   *//* @Inject
-    TasksManager manager;
-
-    private PingingTask theTask = null;
+public class TaskEditPresenterImpl extends BasePresenter<TaskEditView> implements TaskEditPresenter {
 
     @Inject
-    TaskEditPresenterImpl(TasksView view) {
+    TasksManager manager;
+
+    @Inject
+    TaskEditPresenterImpl(TaskEditView view) {
         super(view);
+    }
+
+    @Override
+    public void onStart(@Nullable Bundle savedInstanceState) {
+        super.onStart(savedInstanceState);
+        Timber.i("View is ready: %s", view);
+        //view.displayTask(new PingingTask("A pinging task"));
     }
 
     @Override
@@ -66,53 +68,18 @@ public class TaskEditPresenterImpl extends BasePresenter<TasksView> implements T
 
     @Override
     public void onApplyClicked(@NotNull PingingTask task) {
-        manager.addTask(theTask);
+        manager.addTask(task);
         manager.forceSaveAll2Datasource();
     }
 
-    @Override
-    public PingingTask getCurrentTask() {
-        return theTask;
-    }
 
-    @Override
-    public void onStart(@Nullable Bundle savedInstanceState) {
-        super.onStart(savedInstanceState);
 
-        Timber.i("View is ready: %s", view);
-        manager.getTasks(tasks -> {
-            if (tasks.size() > 0) {
-                Timber.i("Loaded a task from DS: %s", tasks.get(0).getDescription());
-                theTask = (PingingTask) tasks.get(0);
-            } else
-                theTask = new PingingTask("New task", MonitoringTask.MODE_ACTIVE);
-            view.displayTask(theTask);
-        });
-        manager.addTaskStateChangedListener(this);
-    }*//*
-
-    @Override
-    public void onTaskStateChanged(@Nullable MonitoringTask changedTask, int whatChanged) {
-        if (changedTask != null) {
-            //view.displayResult(changedTask.getLastResultJson());
-        }
-    }
 
     @Override
     public void onEnd() {
         Timber.i("View is not ready: %s", view);
-        //manager.removeTaskStateChangedListener(this);
 
         super.onEnd();
     }
 
-    @Override
-    public void onTaskClicked(MonitoringTask task) {
-
-    }
-
-    @Override
-    public List<MonitoringTask> getTasks() {
-        return null;
-    }
-}*/
+}

@@ -17,7 +17,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHolder> {
@@ -28,10 +27,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     List<MonitoringTask> tasks;
 
     @Inject
-    public TasksAdapter() {
+    TasksAdapter() {
     }
 
-    public void updateTasks(List<MonitoringTask> tasks) {
+    void updateTasks(List<MonitoringTask> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
@@ -40,7 +39,13 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item_pinging, parent, false);
-        return new TaskViewHolder(view);
+        final TasksAdapter.TaskViewHolder viewHolder = new TaskViewHolder(view);
+        viewHolder.itemView.setOnClickListener(v -> onItemClicked(viewHolder.getAdapterPosition()));
+        return viewHolder;
+    }
+
+    private void onItemClicked(int adapterPosition) {
+        presenter.onTaskClicked(tasks.get(adapterPosition));
     }
 
     @Override
@@ -68,10 +73,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             ButterKnife.bind(this, itemView);
         }
 
-        @OnClick({R.id.tvName, R.id.tvResult})
+    /*    @OnClick({R.id.tvName, R.id.tvResult})
         public void onTaskClicked() {
 
-        }
+        }*/
 
 
     }

@@ -5,6 +5,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import com.evartem.remsimon.DI.base.BaseActivityModule;
 
@@ -25,8 +26,11 @@ public abstract class BaseViewActivity extends DaggerAppCompatActivity {
     }
 
     protected final void addFragment(@IdRes int containerViewId, Fragment fragment) {
-        fragmentManager.beginTransaction()
-                .add(containerViewId, fragment)
-                .commit();
+        boolean isFirstFragment = fragmentManager.getFragments().isEmpty();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction()
+                .add(containerViewId, fragment);
+        if (!isFirstFragment)
+            fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
