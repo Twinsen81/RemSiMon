@@ -11,6 +11,7 @@ public interface TaskEditPresenter extends Presenter {
     boolean isInputValidTimeoutMs(String timeoutMs);
 
     void onApplyClicked(PingingTask task);
+    void onDeleteClicked(PingingTask task);
 
-    //PingingTask getCurrentTask();
+
 }

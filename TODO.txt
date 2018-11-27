@@ -1,6 +1,5 @@
 
-- Delete task
-- Update tasks when there're changes
+- Update tasks when there're changes (OnResume is not called int hte presenter)
 
 // Add 2nd type - retrofit json
 4. inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/

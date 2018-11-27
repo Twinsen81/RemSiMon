@@ -73,7 +73,11 @@ public class TaskEditPresenterImpl extends BasePresenter<TaskEditView> implement
     }
 
 
-
+    @Override
+    public void onDeleteClicked(PingingTask task) {
+        manager.deleteTask(task);
+        manager.forceSaveAll2Datasource();
+    }
 
     @Override
     public void onEnd() {

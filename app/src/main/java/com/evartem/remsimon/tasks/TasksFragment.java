@@ -89,4 +89,6 @@ import butterknife.OnClick;
         swipeRefreshLayout.setRefreshing(true);
         presenter.reloadTasks();
     }
+
+
 }

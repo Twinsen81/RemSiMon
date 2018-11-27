@@ -17,4 +17,5 @@
     <string name="short_description">short description</string>
     <string name="ip_or_url">IP or URL</string>
     <string name="cancel">CANCEL</string>
+    <string name="delete">DELETE</string>
 </resources>

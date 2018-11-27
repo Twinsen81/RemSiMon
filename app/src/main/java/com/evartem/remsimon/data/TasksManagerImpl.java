@@ -230,6 +230,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     @UiThread
     @Override
     public void deleteTask(@NonNull MonitoringTask task) {
+        if (task == null) return;
         tasks.remove(task.getTaskId());
         dataSource.deleteTask(task);
         notifyListenersFromUI(task, StateChangedListener.DELETED);

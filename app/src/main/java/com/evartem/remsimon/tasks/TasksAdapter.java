@@ -39,9 +39,19 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item_pinging, parent, false);
-        final TasksAdapter.TaskViewHolder viewHolder = new TaskViewHolder(view);
-        viewHolder.itemView.setOnClickListener(v -> onItemClicked(viewHolder.getAdapterPosition()));
-        return viewHolder;
+        return new TaskViewHolder(view);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull TaskViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        holder.itemView.setOnClickListener(v -> onItemClicked(holder.getAdapterPosition()));
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull TaskViewHolder holder) {
+        holder.itemView.setOnClickListener(null);
+        super.onViewDetachedFromWindow(holder);
     }
 
     private void onItemClicked(int adapterPosition) {

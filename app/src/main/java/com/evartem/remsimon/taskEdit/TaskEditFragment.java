@@ -24,6 +24,8 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
 
     @BindView(R.id.btnApply)
     Button btnApply;
+    @BindView(R.id.btnDelete)
+    Button btnDelete;
     @BindView(R.id.etLabel)
     EditText etTitle;
     @BindView(R.id.etAddress)
@@ -49,6 +51,25 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         displayTaskToEdit();
     }
 
+    private void displayTaskToEdit() {
+        if (task != null) {
+            etTitle.setText(task.getDescription());
+            etAddress.setText(task.settings.getPingAddress());
+            etRunEveryMs.setText(String.valueOf(task.getRunTaskEveryMs()));
+            etTimeoutMs.setText(String.valueOf(task.settings.getPingTimeoutMs()));
+            btnDelete.setEnabled(true);
+        }else {
+            etTitle.setText("New task");
+            etAddress.setText("8.8.8.8");
+            etRunEveryMs.setText("5000");
+            etTimeoutMs.setText("2000");
+        }
+    }
+
+    @Override
+    public void setTaskToEdit(PingingTask task) {
+        this.task = task;
+    }
 
     private void setEditTextsCallbacks() {
         etTitle.addTextChangedListener(new TextWatcher() {
@@ -137,6 +158,12 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         getFragmentManager().popBackStack();
     }
 
+    @OnClick(R.id.btnDelete)
+    void onDeleteButtonClicked() {
+        presenter.onDeleteClicked(task);
+        getFragmentManager().popBackStack();
+    }
+
     @OnClick(R.id.btnCancel)
     void onCancelButtonClicked() {
         getFragmentManager().popBackStack();
@@ -150,20 +177,6 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         boolean timeoutMsIsValid = presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim());
 
         btnApply.setEnabled(addressIsValid && titleIsValid && runEveryMsIsValid && timeoutMsIsValid);
-    }
-
-    @Override
-    public void setTaskToEdit(PingingTask task) {
-        this.task = task;
-    }
-
-    private void displayTaskToEdit() {
-        if (task != null) {
-            etTitle.setText(task.getDescription());
-            etAddress.setText(task.settings.getPingAddress());
-            etRunEveryMs.setText(String.valueOf(task.getRunTaskEveryMs()));
-            etTimeoutMs.setText(String.valueOf(task.settings.getPingTimeoutMs()));
-        }
     }
 
     @Override

@@ -44,7 +44,6 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
         super.onStart(savedInstanceState);
 
         Timber.i("View is ready: %s", view);
-        reloadTasks();
         manager.addTaskStateChangedListener(this);
     }
 
@@ -63,5 +62,10 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
         super.onEnd();
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        Timber.i("OnResume");
+        reloadTasks();
+    }
 }
