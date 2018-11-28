@@ -1,4 +1,4 @@
-package com.evartem.remsimon.data.types.pinging;
+package com.evartem.remsimon.data.types.http;
 
 import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Entity;
@@ -10,6 +10,10 @@ import android.support.annotation.WorkerThread;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
+import com.evartem.remsimon.data.types.pinging.HybridPinger;
+import com.evartem.remsimon.data.types.pinging.Pinger;
+import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
+import com.evartem.remsimon.data.types.pinging.PingingTaskSettings;
 import com.google.common.base.Strings;
 import com.squareup.moshi.JsonAdapter;
 
@@ -21,12 +25,11 @@ import java.io.IOException;
 import timber.log.Timber;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 
-@Entity(tableName = TaskType.PINGING,
+@Entity(tableName = TaskType.HTTP,
         indices = @Index({"taskId"}))
-public class PingingTask extends MonitoringTask {
+public class HttpTask extends MonitoringTask {
 
     @Ignore
     Pinger pinger;
@@ -37,13 +40,13 @@ public class PingingTask extends MonitoringTask {
      * @param description A short description of the task
      */
     @Ignore
-    public PingingTask(@NonNull String description) {
+    public HttpTask(@NonNull String description) {
         this(description, MonitoringTask.MODE_STOPPED, "");
         settings = new PingingTaskSettings();
     }
 
     @Ignore
-    public PingingTask(@NonNull String description, int mode) {
+    public HttpTask(@NonNull String description, int mode) {
         this(description, mode, "");
         settings = new PingingTaskSettings();
     }
@@ -51,7 +54,7 @@ public class PingingTask extends MonitoringTask {
     /**
      * SHOULD NOT be used directly in the app! A special constructor for the Room library.
      */
-    public PingingTask(@NonNull String description, int mode, String lastResultJson) {
+    public HttpTask(@NonNull String description, int mode, String lastResultJson) {
         super(description, mode, lastResultJson);
 
         pinger = new HybridPinger();
@@ -71,9 +74,9 @@ public class PingingTask extends MonitoringTask {
     /**
      * A factory method for quick creation of a pinging task
      */
-    public static PingingTask create(@NonNull String description, int runTaskEveryMs,
-                                     @NonNull String addressToPing, int pingTimeoutMs) {
-        PingingTask task = new PingingTask(description);
+    public static HttpTask create(@NonNull String description, int runTaskEveryMs,
+                                  @NonNull String addressToPing, int pingTimeoutMs) {
+        HttpTask task = new HttpTask(description);
         task.setRunTaskEveryMs(runTaskEveryMs);
         task.settings.setPingAddress(addressToPing);
         task.settings.setPingTimeoutMs(pingTimeoutMs);
@@ -147,9 +150,9 @@ public class PingingTask extends MonitoringTask {
     @Override
     public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
         super.copyPropertiesFrom(sourceTask);
-        if (sourceTask instanceof PingingTask) {
-            jsonAdapter = ((PingingTask)sourceTask).jsonAdapter;
-            settings = ((PingingTask)sourceTask).settings;
+        if (sourceTask instanceof HttpTask) {
+            jsonAdapter = ((HttpTask)sourceTask).jsonAdapter;
+            settings = ((HttpTask)sourceTask).settings;
         }
     }
 }

@@ -1,11 +1,11 @@
-package com.evartem.remsimon.taskEdit.DI;
+package com.evartem.remsimon.taskEdit.pinging.DI;
 
 import android.support.v4.app.Fragment;
 
 import com.evartem.remsimon.DI.base.BaseFragmentModule;
 import com.evartem.remsimon.DI.scopes.PerFragment;
-import com.evartem.remsimon.taskEdit.ContractMVP.TaskEditView;
-import com.evartem.remsimon.taskEdit.TaskEditFragment;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditView;
+import com.evartem.remsimon.taskEdit.pinging.TaskEditFragment;
 
 import javax.inject.Named;
 

@@ -1,4 +1,4 @@
-    package com.evartem.remsimon.tasks;
+package com.evartem.remsimon.tasks;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +13,7 @@ import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.TaskEditFragment;
+import com.evartem.remsimon.taskEdit.pinging.TaskEditFragment;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
 import com.evartem.remsimon.tasks.ContractMVP.TasksView;
 
@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-    public class TasksFragment extends BaseViewFragment<TasksPresenter> implements TasksView, SwipeRefreshLayout.OnRefreshListener {
+public class TasksFragment extends BaseViewFragment<TasksPresenter> implements TasksView, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.rvTasks)
     RecyclerView rvTasks;
@@ -64,7 +64,7 @@ import butterknife.OnClick;
 
         if (task instanceof PingingTask) {
             TaskEditFragment taskEditFragment = new TaskEditFragment();
-            taskEditFragment.setTaskToEdit((PingingTask)task);
+            taskEditFragment.setTaskToEdit((PingingTask) task);
             fragment = taskEditFragment;
         }
         if (fragment != null)
@@ -82,6 +82,13 @@ import butterknife.OnClick;
     public void displayTasks(List<MonitoringTask> tasks) {
         tasksAdapter.updateTasks(tasks);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void displayChangedState(MonitoringTask task, int positionInTheList) {
+        //Timber.i("displayChangedState for position: " + positionInTheList + ", task: " + task.getDescription());
+        if (tasksAdapter != null && positionInTheList >= 0)
+            tasksAdapter.notifyItemChanged(positionInTheList);
     }
 
     @Override

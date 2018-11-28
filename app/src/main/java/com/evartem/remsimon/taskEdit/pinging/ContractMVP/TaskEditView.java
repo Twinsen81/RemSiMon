@@ -1,4 +1,4 @@
-package com.evartem.remsimon.taskEdit.ContractMVP;
+package com.evartem.remsimon.taskEdit.pinging.ContractMVP;
 
 import com.evartem.remsimon.BaseMVP.view.MVPView;
 import com.evartem.remsimon.data.types.pinging.PingingTask;

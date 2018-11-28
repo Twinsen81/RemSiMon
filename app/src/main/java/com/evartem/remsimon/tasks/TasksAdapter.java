@@ -66,7 +66,7 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public int getItemCount() {
-        if (tasks != null) Timber.i("items number in the adapter: %s", tasks.size());
+        //if (tasks != null) Timber.i("items number in the adapter: %s", tasks.size());
         return tasks == null ? 0 : tasks.size();
     }
 

@@ -3,6 +3,8 @@ package com.evartem.remsimon.tasks;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,9 +15,19 @@ import android.view.MenuItem;
 import com.evartem.remsimon.BaseMVP.view.BaseViewActivity;
 import com.evartem.remsimon.R;
 
+import java.io.IOException;
+import java.util.Timer;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import timber.log.Timber;
+
 
 public class TasksActivity extends BaseViewActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +50,24 @@ public class TasksActivity extends BaseViewActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
     }
 
+    /**
+     * onResume is not called when popping the fragment from the back stack,
+     * so using this workaround to get notified when the TasksFragment is visible again
+     */
+    @Override
+    public void onBackStackChanged() {
+        FragmentManager manager = getSupportFragmentManager();
+        if (manager != null) {
+            Fragment currentFragment = manager.findFragmentById(R.id.fragment_container);
+            if (currentFragment instanceof TasksFragment) {
+                currentFragment.onResume(); // Updating the tasks list in the corresponding override
+            }
+        }
+    }
 
     @Override
     public void onBackPressed() {
@@ -67,6 +95,28 @@ public class TasksActivity extends BaseViewActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://google.com/")
+                    .build();
+            GeneralApi generalApi = retrofit.create(GeneralApi.class);
+            Call<ResponseBody> call = generalApi.getHttpData("https://evartem.com/tracks.html");//("http://sonoff1.iglinetic.mykeenetic.com/data");
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        Timber.i("HTTPdata: \r\n" + response.body().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Timber.e(t.toString());
+                }
+            });
+            Timber.i("REQUEST URL: " + call.request().url().toString());
+
             return true;
         }
 

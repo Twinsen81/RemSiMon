@@ -1,4 +1,4 @@
-package com.evartem.remsimon.taskEdit;
+package com.evartem.remsimon.taskEdit.pinging;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,8 +14,8 @@ import android.widget.EditText;
 import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.ContractMVP.TaskEditPresenter;
-import com.evartem.remsimon.taskEdit.ContractMVP.TaskEditView;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditPresenter;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditView;
 
 import butterknife.BindView;
 import butterknife.OnClick;

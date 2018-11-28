@@ -1,8 +1,8 @@
-package com.evartem.remsimon.taskEdit.DI;
+package com.evartem.remsimon.taskEdit.pinging.DI;
 
 import com.evartem.remsimon.DI.scopes.PerFragment;
-import com.evartem.remsimon.taskEdit.ContractMVP.TaskEditPresenter;
-import com.evartem.remsimon.taskEdit.TaskEditPresenterImpl;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditPresenter;
+import com.evartem.remsimon.taskEdit.pinging.TaskEditPresenterImpl;
 
 import dagger.Binds;
 import dagger.Module;

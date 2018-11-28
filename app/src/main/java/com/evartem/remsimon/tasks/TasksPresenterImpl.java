@@ -19,8 +19,6 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
     @Inject
     TasksManager manager;
 
-    private PingingTask theTask = null;
-
     @Inject
     TasksPresenterImpl(TasksView view) {
         super(view);
@@ -48,9 +46,12 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
     }
 
     @Override
-    public void onTaskStateChanged(@Nullable MonitoringTask changedTask, int whatChanged) {
-        if (changedTask != null) {
-            //view.displayResult(changedTask.getLastResultJson());
+    public void onTaskStateChanged(@Nullable MonitoringTask changedTask, int taskPositionInTheList, int whatChanged) {
+        if (changedTask != null && whatChanged == STATE_CHANGED) {
+            if (taskPositionInTheList >= 0)
+                view.displayChangedState(changedTask, taskPositionInTheList);
+            else
+                reloadTasks();
         }
     }
 

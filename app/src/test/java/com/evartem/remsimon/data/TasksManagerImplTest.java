@@ -207,7 +207,7 @@ public class TasksManagerImplTest {
         addMultipleTasks();
 
         // Then the callback's method was called at least 2 times with the argument ADDED
-        verify(stateChangedListener, timeout(200).atLeast(2)).onTaskStateChanged(any(MonitoringTask.class), eq(ADDED));
+        verify(stateChangedListener, timeout(200).atLeast(2)).onTaskStateChanged(any(MonitoringTask.class), any(), eq(ADDED));
     }
 
     @Test
@@ -224,8 +224,8 @@ public class TasksManagerImplTest {
         // When the task is executed and its state changes
 
         // Then the callback was called with the arguments ADDED and CHANGED
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, ADDED);
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, STATE_CHANGED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), ADDED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), STATE_CHANGED);
     }
 
     @Test
@@ -242,8 +242,8 @@ public class TasksManagerImplTest {
         manager.deleteTask(task);
 
         // Then the callback was called with the arguments ADDED and DELETED
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, ADDED);
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, TasksManagerImpl.StateChangedListener.DELETED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), ADDED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), TasksManagerImpl.StateChangedListener.DELETED);
     }
 
     @Test

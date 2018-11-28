@@ -10,8 +10,9 @@ public final class TaskType {
     private TaskType() {}
 
     public static final String PINGING = "PingingTask";
+    public static final String HTTP = "HttpTask";
 
     public static List<String> getAllTypes() {
-        return Arrays.asList(PINGING);
+        return Arrays.asList(PINGING, HTTP);
     }
 }

@@ -1,10 +1,12 @@
+HttpTask:
+- A parser - add interface + inject a list of parsers (HttpTask) gets it's parser according to the settings
+- Write HttpTask
 
-- Update tasks when there're changes (OnResume is not called int hte presenter)
+- For all tasks: notifications (downtime exceeded the setpoint, JSON data setpoint)
 
-// Add 2nd type - retrofit json
-4. inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
 
-// Add shared prefs
+? inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
+
 
 // testing with dagger
 // add Robolectric UI test
@@ -17,7 +19,7 @@
 
 // instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
 
-// Notifications (downtime exceeded the setpoint, JSON data setpoint)
+// Notifications
 
 // Add RxJava + RxBindings library from Jake Wharton
 // Rewrite in Kotlin. Also try to use composition instead of inheritance

@@ -57,7 +57,7 @@ public interface TasksManager {
         public static final int ADDED = 3;
 
         @UiThread
-        void onTaskStateChanged(@Nullable MonitoringTask changedTask, @WhatChanged int whatChanged);
+        void onTaskStateChanged(@Nullable MonitoringTask changedTask, int taskPositionInTheList, @WhatChanged int whatChanged);
 
     }
 

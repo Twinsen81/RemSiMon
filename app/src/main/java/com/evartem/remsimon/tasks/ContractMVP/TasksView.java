@@ -11,4 +11,6 @@ public interface TasksView extends MVPView {
 
     void editTask(MonitoringTask task);
 
+    void displayChangedState(MonitoringTask task, int positionInTheList);
+
 }

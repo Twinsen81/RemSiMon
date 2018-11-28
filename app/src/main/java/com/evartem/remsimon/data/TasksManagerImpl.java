@@ -99,7 +99,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
                 for (MonitoringTask task :
                         tasks.values()) {
                     if (shouldRunTask(task)) {
-                        Timber.i("Executing task: %s", task.getDescription());
+                        //Timber.i("Executing task: %s", task.getDescription());
                         task.doTheWork();
                         someTasksWereRun = true;
                         if (task.gotNewResult()) {
@@ -152,28 +152,6 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
             dataSource.updateOrAddTasks(new ArrayList<MonitoringTask>(tasks.values()));
     }
 
-    /**
-     * Updates current cached list of tasks with tasks from the data source
-     *
-     * @param overwriteExistingTasks if the task already exists in the cache, should its properties
-     *                               be overwritten by the task in the data source?
-     */
-    /*@UiThread
-    public void getTasksFromDatasource(boolean overwriteExistingTasks) {
-        executors.diskIO().execute(() -> {
-            List<MonitoringTask> dbTasks = dataSource.getTasksSync();
-            for (MonitoringTask dbTask :
-                    dbTasks) {
-                MonitoringTask currCachedTask = tasks.get(dbTask.getTaskId());
-                if (currCachedTask == null) {
-                    tasks.put(dbTask.getTaskId(), dbTask);
-                } else if (overwriteExistingTasks) {
-                    currCachedTask.copyPropertiesFrom(dbTask);
-                }
-            }
-        });
-    }
-    */
     @WorkerThread
     private synchronized void loadTasksFromDatasource() {
         if (loadedTasksFromDatasource) return;
@@ -244,9 +222,10 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
 
     @UiThread
     private void notifyListenersFromUI(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged) {
+        int taskPositionInTheList = getTasks().indexOf(changedTask);
         for (StateChangedListener listener :
                 listeners) {
-            listener.onTaskStateChanged(changedTask, whatChanged);
+            listener.onTaskStateChanged(changedTask, taskPositionInTheList, whatChanged);
         }
     }
 

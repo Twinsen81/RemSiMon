@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.evartem.remsimon.DI.base.BaseActivityModule;
 import com.evartem.remsimon.DI.scopes.PerActivity;
 import com.evartem.remsimon.DI.scopes.PerFragment;
-import com.evartem.remsimon.taskEdit.DI.TaskEditFragmentModule;
-import com.evartem.remsimon.taskEdit.TaskEditFragment;
+import com.evartem.remsimon.taskEdit.pinging.DI.TaskEditFragmentModule;
+import com.evartem.remsimon.taskEdit.pinging.TaskEditFragment;
 import com.evartem.remsimon.tasks.TasksActivity;
 import com.evartem.remsimon.tasks.TasksFragment;
 
