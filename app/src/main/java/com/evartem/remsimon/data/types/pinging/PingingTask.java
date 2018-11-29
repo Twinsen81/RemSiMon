@@ -23,7 +23,9 @@ import timber.log.Timber;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-
+/**
+ * This task issues periodic ping requests to the provided URL
+ */
 @Entity(tableName = TaskType.PINGING,
         indices = @Index({"taskId"}))
 public class PingingTask extends MonitoringTask {
@@ -116,7 +118,7 @@ public class PingingTask extends MonitoringTask {
     }
 
     private void formatAndSetResult(@NotNull  PingingTaskResult result) {
-        checkNotNull(lastResultCached);
+        //checkNotNull(lastResultCached);
 
         if (result.pingOK)
             result.lastSuccessTime = Instant.now().getMillis();

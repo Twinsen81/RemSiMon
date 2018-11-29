@@ -14,9 +14,9 @@ import android.view.MenuItem;
 
 import com.evartem.remsimon.BaseMVP.view.BaseViewActivity;
 import com.evartem.remsimon.R;
+import com.evartem.remsimon.data.types.http.GeneralApi;
 
 import java.io.IOException;
-import java.util.Timer;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

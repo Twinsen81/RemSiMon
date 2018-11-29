@@ -1,6 +1,5 @@
-HttpTask:
-- A parser - add interface + inject a list of parsers (HttpTask) gets it's parser according to the settings
-- Write HttpTask
+- Unit test: HttpTask + run all tests
+- UI for HttpTask
 
 - For all tasks: notifications (downtime exceeded the setpoint, JSON data setpoint)
 
@@ -9,8 +8,7 @@ HttpTask:
 
 
 // testing with dagger
-// add Robolectric UI test
-// add espresso test
+// add Robolectric, espresso tests
 
 // Ping task: calculate and display uptime and downtime
 // Manager - reads next execution time from all the tasks and sleeps until the next execution is needed
@@ -18,8 +16,6 @@ HttpTask:
 // Manager - implement with a thread pool, so several tasks could be executed simultaneously
 
 // instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
-
-// Notifications
 
 // Add RxJava + RxBindings library from Jake Wharton
 // Rewrite in Kotlin. Also try to use composition instead of inheritance

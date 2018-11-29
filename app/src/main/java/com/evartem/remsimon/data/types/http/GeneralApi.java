@@ -1,4 +1,4 @@
-package com.evartem.remsimon.tasks;
+package com.evartem.remsimon.data.types.http;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
