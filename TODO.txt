@@ -1,4 +1,5 @@
-- Unit test: HttpTask + run all tests
+- read: Dagger for tests
+- test: HttpTask + run all tests
 - UI for HttpTask
 
 - For all tasks: notifications (downtime exceeded the setpoint, JSON data setpoint)

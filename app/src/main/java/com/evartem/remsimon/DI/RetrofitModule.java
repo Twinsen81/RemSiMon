@@ -7,15 +7,15 @@ import dagger.Provides;
 import retrofit2.Retrofit;
 
 @Module
-abstract class RetrofitModule {
+public abstract class RetrofitModule {
 
     @Provides
-    static GeneralApi generalApi(Retrofit retrofit) {
+    public static GeneralApi generalApi(Retrofit retrofit) {
       return retrofit.create(GeneralApi.class);
     }
 
     @Provides
-    static Retrofit retrofit() {
+    public static Retrofit retrofit() {
        return new Retrofit.Builder()
                .baseUrl("https://google.com/")
                .build();

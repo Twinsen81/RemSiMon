@@ -10,14 +10,9 @@ import android.support.annotation.WorkerThread;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
-import com.evartem.remsimon.data.types.pinging.HybridPinger;
-import com.evartem.remsimon.data.types.pinging.Pinger;
-import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
-import com.evartem.remsimon.data.types.pinging.PingingTaskSettings;
 import com.google.common.base.Strings;
 import com.squareup.moshi.JsonAdapter;
 
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.Instant;
 
 import java.io.IOException;
@@ -166,8 +161,17 @@ public class HttpTask extends MonitoringTask {
         }
     }
 
+    /**
+     * Retrieves the last successful response body and adds it to the list of responses
+     * If the size of the list is grater than the historyDepth, then the oldest responses are removed from the list
+     */
+
     private List<String> getResponses(List<String> responses, Response<ResponseBody> response, HttpTaskSettings httpSettings) {
-        responses.add(response.body().toString());
+        try {
+            responses.add(response.body().string());
+        } catch (IOException e) {
+            Timber.wtf(e);
+        }
         while (responses.size() > 1 && responses.size() > httpSettings.getHistoryDepth())
             responses.remove(0);
         return  responses;
