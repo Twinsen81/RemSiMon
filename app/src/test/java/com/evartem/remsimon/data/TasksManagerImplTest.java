@@ -19,11 +19,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static com.evartem.remsimon.data.TasksManager.StateChangedListener.ADDED;
+import static com.evartem.remsimon.data.TasksManager.StateChangedListener.DELETED;
 import static com.evartem.remsimon.data.TasksManager.StateChangedListener.STATE_CHANGED;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.atLeast;
@@ -174,29 +176,6 @@ public class TasksManagerImplTest {
         verify(task, timeout(3000).times(1)).doTheWork();
     }
 
-/*    @Test
-    public void gracefullyFinishManager() throws InterruptedException {
-
-        // Given a task
-        PingingTask task = Mockito.mock(PingingTask.class);
-        when(task.getTaskId()).thenReturn("TestTaskID");
-        when(task.isTimeToExecute()).thenReturn(true).thenReturn(false);
-        doAnswer(new AnswersWithDelay(100, RETURNS_DEFAULTS)).when(task).doTheWork();
-
-        // When the task is added to the manager
-        // and the manager is shut down
-        manager.addTask(task);
-        verify(mockDataSource, times(1)).updateOrAddTask(task);
-        Thread.sleep(100);
-        Boolean finishedGracefully = manager.finish();
-
-        // Then the manager's worker thread finishes properly
-        assertTrue(finishedGracefully);
-        // and the data is saved to the data source
-        verify(mockDataSource, times(1)).updateOrAddTasks(any());
-
-    }*/
-
     @Test
     public void stateChangedListener_Added() {
         // Given no tasks in the manager
@@ -207,7 +186,7 @@ public class TasksManagerImplTest {
         addMultipleTasks();
 
         // Then the callback's method was called at least 2 times with the argument ADDED
-        verify(stateChangedListener, timeout(200).atLeast(2)).onTaskStateChanged(any(MonitoringTask.class), any(), eq(ADDED));
+        verify(stateChangedListener, timeout(200).atLeast(2)).onTaskStateChanged(any(MonitoringTask.class), anyInt(), eq(ADDED));
     }
 
     @Test
@@ -224,8 +203,8 @@ public class TasksManagerImplTest {
         // When the task is executed and its state changes
 
         // Then the callback was called with the arguments ADDED and CHANGED
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), ADDED);
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), STATE_CHANGED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(eq(task), anyInt(), eq(ADDED));
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(eq(task), anyInt(), eq(STATE_CHANGED));
     }
 
     @Test
@@ -242,8 +221,8 @@ public class TasksManagerImplTest {
         manager.deleteTask(task);
 
         // Then the callback was called with the arguments ADDED and DELETED
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), ADDED);
-        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(task, any(), TasksManagerImpl.StateChangedListener.DELETED);
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(eq(task), anyInt(), eq(ADDED));
+        verify(stateChangedListener, timeout(500).times(1)).onTaskStateChanged(eq(task), anyInt(), eq(DELETED));
     }
 
     @Test
