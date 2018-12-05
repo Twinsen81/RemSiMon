@@ -3,6 +3,7 @@ package com.evartem.remsimon;
 import android.app.Activity;
 import android.os.Build;
 
+import com.evartem.remsimon.DI.AppComponent;
 import com.evartem.remsimon.DI.DaggerAppComponent;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -19,6 +20,8 @@ public class TheApp extends DaggerApplication {
 
     @Inject
     DispatchingAndroidInjector<Activity> activityInjector;
+    private AppComponent appComponent;
+
 
     @Override
     public void onCreate() {
@@ -46,6 +49,10 @@ public class TheApp extends DaggerApplication {
 
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return DaggerAppComponent.builder().create(this);
+        AndroidInjector<TheApp> ai = DaggerAppComponent.builder().create(this);
+        appComponent = (AppComponent)ai;
+        return ai;
     }
+    public AppComponent getAppComponent() { return appComponent;}
+
 }

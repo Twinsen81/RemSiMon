@@ -27,6 +27,4 @@ abstract class AppModule {
     @ContributesAndroidInjector(modules = TasksActivityModule.class)
     abstract TasksActivity tasksActivityInjector();
 
-
-
 }

@@ -1,22 +1,16 @@
-- HttpTask - unit test:
-data extraction (TDD)
-caching responses for the trend display
+- HttpTask: traversing the response and extracting the fields needed
+Find the first occurrence of the field and return it (+comment the code)
 
-- HttpTask - test with retrofit (success, no connection...)
+- HttpTask - unit tests:
+success
+error
+delay
+caching responses for the trend display
+data extraction from simple responses and arrays
 
 - UI for HttpTask
-- UI tests with espresso (special test dagger-component)
-
-- For all tasks: notifications (downtime exceeded the setpoint, JSON data setpoint)
+- UI tests with espresso (special test dagger-component?)
 
 ? inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
 
-// Ping task: calculate and display uptime and downtime
-// Manager - reads next execution time from all the tasks and sleeps until the next execution is needed
-// Manager - if the task is being executed, but user deletes it? + add test case
-// Manager - implement with a thread pool, so several tasks could be executed simultaneously
-
-// instead of service - try WorkManager https://www.youtube.com/watch?v=IrKoBFLwTN0
-
-// Add RxJava + RxBindings library from Jake Wharton
-// Rewrite in Kotlin. Also try to use composition instead of inheritance
+// Ping task: proper UI (item view) + calculate and display uptime and downtime

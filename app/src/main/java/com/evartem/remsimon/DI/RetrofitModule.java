@@ -1,10 +1,15 @@
 package com.evartem.remsimon.DI;
 
+import com.evartem.remsimon.BuildConfig;
+import com.evartem.remsimon.DI.scopes.PerApplication;
 import com.evartem.remsimon.data.types.http.GeneralApi;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 @Module
 public abstract class RetrofitModule {
@@ -15,9 +20,25 @@ public abstract class RetrofitModule {
     }
 
     @Provides
-    public static Retrofit retrofit() {
+    public static Retrofit retrofit(OkHttpClient okHttpClient) {
        return new Retrofit.Builder()
+               .client(okHttpClient)
                .baseUrl("https://google.com/")
                .build();
+    }
+
+    @PerApplication
+    @Provides
+    public static OkHttpClient okHttpClient() {
+        Timber.tag("RSM-OkHttp").d("Providing okhttp...");
+        OkHttpClient.Builder okhttpBuilder = new OkHttpClient.Builder();
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging;
+            logging = new HttpLoggingInterceptor(message -> Timber.tag("RSM-OkHttp").d(message));
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            okhttpBuilder.addInterceptor(logging);
+        }
+        return okhttpBuilder
+                .build();
     }
 }
