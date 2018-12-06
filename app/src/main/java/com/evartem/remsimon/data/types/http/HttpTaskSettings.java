@@ -53,7 +53,9 @@ public class HttpTaskSettings {
         HttpTaskSettings clone = new HttpTaskSettings();
         clone.setHttpAddress(getHttpAddress());
         clone.setTimeoutMs(getTimeoutMs());
-        clone.setHttpAddress(getHttpAddress());
+        clone.setDisplayLayout(getDisplayLayout());
+        clone.setHistoryDepth(getHistoryDepth());
+        clone.setFields(getFields());
         return clone;
     }
 
@@ -62,6 +64,9 @@ public class HttpTaskSettings {
         return obj instanceof HttpTaskSettings &&
                 httpAddress.equals(((HttpTaskSettings) obj).httpAddress) &&
                 timeoutMs == ((HttpTaskSettings) obj).timeoutMs &&
-                httpAddress.equals(((HttpTaskSettings) obj).getHttpAddress());
+                httpAddress.equals(((HttpTaskSettings) obj).getHttpAddress()) &&
+                displayLayout.equals(((HttpTaskSettings) obj).getDisplayLayout()) &&
+                historyDepth == ((HttpTaskSettings) obj).historyDepth &&
+                fields.equals(((HttpTaskSettings) obj).getFields());
     }
 }

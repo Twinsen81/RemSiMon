@@ -11,12 +11,21 @@ import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
 import com.google.common.base.Strings;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.squareup.moshi.JsonAdapter;
 
 import org.joda.time.Instant;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -111,19 +120,23 @@ public class HttpTask extends MonitoringTask {
 
         Response<ResponseBody> response = null;
         String exceptionText = "";
+        Map<String, String> keysValues = new HashMap<>();
 
         try {
             response = httpApi.getHttpData(httpSettings.getHttpAddress()).execute();
-        } catch (IOException e) {
+            JsonKeysFinder jsonKeysFinder = new JsonKeysFinder(httpSettings.getFields());
+            keysValues = jsonKeysFinder.getKeysAndValues(response.body() != null ? response.body().string() : "");
+        } catch (Exception e) {
             exceptionText = e.getMessage();
         }
 
-        formatAndSetResult(response, exceptionText, httpSettings);
+        formatAndSetResult(response, keysValues, exceptionText, httpSettings);
 
         taskGotNewResult = true;
     }
 
-    private void formatAndSetResult(Response<ResponseBody> response, String exceptionText, HttpTaskSettings httpSettings) {
+
+    private void formatAndSetResult(Response<ResponseBody> response, Map<String, String> keysValues, String exceptionText, HttpTaskSettings httpSettings) {
 
         HttpTaskResult result;
 
@@ -135,10 +148,12 @@ public class HttpTask extends MonitoringTask {
         if (response == null || exceptionText.length() > 0 || !response.isSuccessful()) {
             result.responseOK = false;
             result.errorMessage = getErrorMessage(response, exceptionText);
-        }else
-        {
+        } else if (keysValues.isEmpty()) {
+            result.responseOK = false;
+            result.errorMessage = "Fields are not found!";
+        } else {
             result.responseOK = true;
-            result.responses = getResponses(result.responses, response, httpSettings);
+            result.addResponse(keysValues, httpSettings.getHistoryDepth());
         }
 
         if (result.responseOK)
@@ -159,22 +174,6 @@ public class HttpTask extends MonitoringTask {
             lastResultJson = jsonResult;
             lastResultCached = result;
         }
-    }
-
-    /**
-     * Retrieves the last successful response body and adds it to the list of responses
-     * If the size of the list is grater than the historyDepth, then the oldest responses are removed from the list
-     */
-
-    private List<String> getResponses(List<String> responses, Response<ResponseBody> response, HttpTaskSettings httpSettings) {
-        try {
-            responses.add(response.body().string());
-        } catch (IOException e) {
-            Timber.wtf(e);
-        }
-        while (responses.size() > 1 && responses.size() > httpSettings.getHistoryDepth())
-            responses.remove(0);
-        return  responses;
     }
 
     private String getErrorMessage(Response<ResponseBody> response, String exceptionText) {

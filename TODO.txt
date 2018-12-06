@@ -1,12 +1,11 @@
-- HttpTask: traversing the response and extracting the fields needed
-Find the first occurrence of the field and return it (+comment the code)
-
-- HttpTask - unit tests:
-success
-error
-delay
-caching responses for the trend display
-data extraction from simple responses and arrays
+- HttpTask:
+    - Tests: JsonKeysFinder
+        data extraction from simple/nested values and arrays
+    - Tests: HttpTask:
+        success
+        error
+        timeout
+        caching responses for the trend display
 
 - UI for HttpTask
 - UI tests with espresso (special test dagger-component?)
