@@ -1,7 +1,5 @@
 package com.evartem.remsimon.data.types.http;
 
-import android.arch.persistence.room.Ignore;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
@@ -11,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,7 +19,6 @@ import java.util.Set;
  * saving their values as a (key,value) map.
  */
 public class JsonKeysFinder {
-
 
     private Set<String> keys2Find = new HashSet<>();
     private Map<String, String> result = new HashMap<>();
