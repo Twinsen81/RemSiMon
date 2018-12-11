@@ -1,9 +1,5 @@
 - HttpTask:
-    - Tests: JsonKeysFinder
-        data extraction from simple/nested values and arrays
     - Tests: HttpTask:
-        success
-        error
         timeout
         caching responses for the trend display
 

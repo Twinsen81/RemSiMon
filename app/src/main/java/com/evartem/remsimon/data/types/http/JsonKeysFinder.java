@@ -74,7 +74,7 @@ public class JsonKeysFinder {
     private void iterateAndFindKeyValue(String currElementName, JsonElement element) {
         if (element.isJsonPrimitive() && keys2Find.contains(currElementName)) {
             keys2Find.remove(currElementName);
-            result.put(currElementName, element.getAsJsonPrimitive().toString());
+            result.put(currElementName, element.getAsJsonPrimitive().toString().replaceAll("^\"|\"$", "")); // Removing double quotes (if have any)
             return;
         }
         if (element.isJsonArray()) {

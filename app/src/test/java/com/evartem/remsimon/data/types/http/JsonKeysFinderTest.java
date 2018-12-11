@@ -55,9 +55,20 @@ public class JsonKeysFinderTest {
         assertEquals(2, findValuesOfFieldsInJson("person.humans.name,person.humans.age", JSON_ARRAY).size());
     }
 
-    // Expected values are returned
-    // The first found occurrence is returned
+    @Test
+    public void shouldReturnFirstFoundValueIfMultipleFieldsWithTheSameNameExist() {
 
+        // Given JSON which has several values with the same name
+        // When looking for those names (fields)
+        Map<String, String> result = findValuesOfFieldsInJson("person.humans.name,person.humans.age", JSON_ARRAY);
+
+        //Then the first found values are returned
+        assertEquals(2, result.size());
+        assertTrue(result.containsKey("person.humans.name"));
+        assertEquals("Alex", result.get("person.humans.name"));
+        assertTrue(result.containsKey("person.humans.age"));
+        assertEquals("23", result.get("person.humans.age"));
+    }
 
     private Map<String, String> findValuesOfFieldsInJson(String fields, String jsonData) {
         return (new JsonKeysFinder(fields)).getKeysAndValues(jsonData);
