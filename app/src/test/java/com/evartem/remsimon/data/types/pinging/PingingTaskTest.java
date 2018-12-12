@@ -77,12 +77,12 @@ public class PingingTaskTest {
     @Test
     public void workStageIsChanging() {
 
-        // The work stage must change from STOPPED -> INPROGRESS -> FINISHED
+        // The work stage must change from STOPPED -> IN_PROGRESS -> FINISHED_AWAITING_NEXT_EXECUTION
 
         // Set our mocked pinger
         TASK1_Ok.setPinger(pinger);
         Answer pingAnswer = invocation -> { // Will be called when the task calls ping(...)
-            assertTrue(TASK1_Ok.isWorking()); // Should be set to INPROGRESS while in the middle of the work
+            assertTrue(TASK1_Ok.isWorking()); // Should be set to IN_PROGRESS while in the middle of the work
             assertFalse(TASK1_Ok.isFinished());
             return new PingingTaskResult(false, 0);
         };
@@ -91,7 +91,7 @@ public class PingingTaskTest {
         // When the work is executed
         TASK1_Ok.doTheWork();
 
-        // Then, when the work is done,  the stage should be FINISHED
+        // Then, when the work is done,  the stage should be FINISHED_AWAITING_NEXT_EXECUTION
         assertFalse(TASK1_Ok.isWorking());
         assertTrue(TASK1_Ok.isFinished());
     }

@@ -32,6 +32,4 @@ public interface PingingTaskDao {
     @Query("DELETE FROM pingingtask")
     int deleteAll();
 
-    //@Update
-    //int update(@NonNull PingingTask task);
 }

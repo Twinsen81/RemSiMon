@@ -6,16 +6,15 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.data.types.base.TaskEntry;
 
-@Database(entities = {TaskEntry.class, PingingTask.class}, version = 1)
+@Database(entities = {PingingTask.class}, version = 1)
 public abstract class TasksDatabase extends RoomDatabase {
 
-    //public abstract TaskEntryDao taskEntryDao();
 
     public abstract PingingTaskDao pingingTaskDao();
 
-    private static volatile TasksDatabase INSTANCE = null;
+/*    private static volatile TasksDatabase INSTANCE = null;
+
 
     public static TasksDatabase getInstance(Context context) {
         if (INSTANCE == null) {
@@ -25,5 +24,5 @@ public abstract class TasksDatabase extends RoomDatabase {
             }
         }
         return INSTANCE;
-    }
+    }*/
 }

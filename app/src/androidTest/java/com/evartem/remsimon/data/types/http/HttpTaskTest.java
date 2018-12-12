@@ -25,6 +25,14 @@ import static junit.framework.Assert.assertTrue;
 public class HttpTaskTest {
 
     private static final String JSON_SIMPLE_NUMBER = "{\"name\": \"Evgeniy\", \"age\":37}";
+
+    private static final String JSON_SIMPLE_1 = "{\"Location\": \"home\", \"temperature\":24}";
+    private static final String JSON_SIMPLE_2 = "{\"Location\": \"home\", \"temperature\":25}";
+    private static final String JSON_SIMPLE_3 = "{\"Location\": \"home\", \"temperature\":26}";
+    private static final String JSON_SIMPLE_4 = "{\"Location\": \"home\", \"temperature\":27}";
+    private static final String JSON_SIMPLE_5 = "{\"Location\": \"home\", \"temperature\":28}";
+    private static final String JSON_SIMPLE_6 = "{\"Location\": \"home\", \"temperature\":29}";
+
     HttpTask task;
 
     @Before
@@ -68,6 +76,33 @@ public class HttpTaskTest {
         assertEquals(0, result.size());
     }
 
-    // Request times out + Retrofit - set timeout
-    // Saving responses in a list
+    @Test
+    public void shouldSaveANumberOfLastResponses() {
+        // Given 6 JSON responses
+        RESTMockServer.whenGET(pathEndsWith("/data"))
+                .thenReturnString(200, JSON_SIMPLE_1)
+                .thenReturnString(200, JSON_SIMPLE_2)
+                .thenReturnString(200, JSON_SIMPLE_3)
+                .thenReturnString(200, JSON_SIMPLE_4)
+                .thenReturnString(200, JSON_SIMPLE_5)
+                .thenReturnString(200, JSON_SIMPLE_6);
+        // and the setting to save last 4 responses
+        task.settings.setHistoryDepth(4);
+        // When all the responses are received and parsed
+        task.doTheWork();
+        task.doTheWork();
+        task.doTheWork();
+        task.doTheWork();
+        task.doTheWork();
+        task.doTheWork();
+        // Then the last 4 responses should be saved
+        Map<String, List<String>> result = task.getLastResult().responses;
+        assertTrue(result.containsKey("temperature"));
+        assertEquals(4, result.get("temperature").size());
+        assertEquals("26", result.get("temperature").get(0));
+        assertEquals("27", result.get("temperature").get(1));
+        assertEquals("28", result.get("temperature").get(2));
+        assertEquals("29", result.get("temperature").get(3));
+    }
+
 }

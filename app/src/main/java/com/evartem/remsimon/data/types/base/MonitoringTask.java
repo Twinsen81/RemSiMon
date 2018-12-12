@@ -20,7 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 
 /**
- * A common interface that each task of the app must implement
+ * The common functionality that each task of the app must have.
+ * The implemented public methods are threadsafe via the "synchronized" keyword
  */
 public abstract class MonitoringTask {
 
@@ -28,7 +29,9 @@ public abstract class MonitoringTask {
     @NonNull
     protected String taskId;
 
-
+    /**
+     * The task's description that appears in the UI
+     */
     private String description;
 
     /**
@@ -38,6 +41,9 @@ public abstract class MonitoringTask {
     @NonNull
     protected String lastResultJson;
 
+    /**
+     * Provides JSON formatted result of the task execution to UI - {@code lastResultJson}
+     */
     @Ignore
     protected static Moshi moshi = new Moshi.Builder().build();
 
@@ -55,26 +61,44 @@ public abstract class MonitoringTask {
      */
     private int runTaskEveryMs = 5000;
 
+    /**
+     * Notifies the tasks manager that this task has completed and a new result is available for displaying on the UI
+     */
     @Ignore
     protected volatile boolean taskGotNewResult = false;
 
+    /**
+     * The task can be in 3 modes:
+     * STOPPED - was created but has never been started yet
+     * ACTIVE - the task is executed periodically by the task manager according to the task's {@code runTaskEveryMs}
+     * DEACTIVATED - the task has been deactivated by the user and is not executed periodically by the task manager
+     */
+    private volatile int mode;
     public static final int MODE_STOPPED = 0;
     public static final int MODE_ACTIVE = 1;
     public static final int MODE_DEACTIVATED = 2;
 
-    private volatile int mode;
 
-    private enum WorkStage {STOPPED, INPROGRESS, FINISHED}
-
+    /**
+     * Indicates the stage of the task manager's processing of this task:
+     * STOPPED - the task was created but it hasn't been executed by the manager even once
+     * IN_PROGRESS - the task is being executed by the manager now
+     * FINISHED_AWAITING_NEXT_EXECUTION - the task was executed by the manager and now awaits the next execution according to the task's {@code runTaskEveryMs}
+     */
     @Ignore
-    WorkStage workStage;
+    private WorkStage workStage;
+    private enum WorkStage {STOPPED, IN_PROGRESS, FINISHED_AWAITING_NEXT_EXECUTION}
 
 
+    /**
+     * Indicated the last time the execution of this task was completed.
+     * Is used to calculate the next execution time according to the task's {@code runTaskEveryMs}
+     */
     @Ignore
-    Instant lastTimeDidWork; // When this task last time did the work
+    private Instant lastTimeDidWork;
 
 
-    public MonitoringTask(@NonNull String description, int mode, String lastResultJson) {
+    public MonitoringTask(@NonNull String description, int mode, @NonNull String lastResultJson) {
         this.taskId = UUID.randomUUID().toString();
         this.description = description;
         this.mode = mode;
@@ -103,11 +127,6 @@ public abstract class MonitoringTask {
         return mode;
     }
 
-    /**
-     * Returns a non-empty string when an important notification should be shown to the user
-     *
-     * @return An important notification to show to the user, if no notification available at the moment - empty string
-     */
     public synchronized void setDescription(@NonNull String description) {
         if (Strings.isNullOrEmpty(description)) {
             this.description = "New " + getType();
@@ -128,11 +147,6 @@ public abstract class MonitoringTask {
         this.runTaskEveryMs = runTaskEveryMs;
     }
 
-    public String getNotification() {
-        return "";
-    }
-
-
     /**
      * Checks if the task has got new result and thus, UI must be updated.
      * The taskGotNewResult flag is cleared in this method. So the second consecutive call will
@@ -147,10 +161,13 @@ public abstract class MonitoringTask {
     }
 
 
+    /**
+     * Checks if the time has come to execute the task again
+     * @return true - execute the task now, false - the right time hasn't come yet
+     */
     public synchronized boolean isTimeToExecute() {
         return Instant.now().minus(lastTimeDidWork.getMillis()).getMillis() > runTaskEveryMs;
     }
-
 
     /**
      * Executes the task's work.
@@ -172,19 +189,19 @@ public abstract class MonitoringTask {
     }
 
     private synchronized void signalWorkStarted() {
-            workStage = WorkStage.INPROGRESS;
+            workStage = WorkStage.IN_PROGRESS;
     }
 
     private synchronized void signalWorkFinished() {
-            workStage = WorkStage.FINISHED;
+            workStage = WorkStage.FINISHED_AWAITING_NEXT_EXECUTION;
             lastTimeDidWork = Instant.now();
     }
 
     public synchronized boolean isWorking() {
-            return workStage == WorkStage.INPROGRESS;
+            return workStage == WorkStage.IN_PROGRESS;
     }
     public synchronized boolean isFinished() {
-            return workStage == WorkStage.FINISHED;
+            return workStage == WorkStage.FINISHED_AWAITING_NEXT_EXECUTION;
     }
 
     /**

@@ -8,7 +8,6 @@ package com.evartem.remsimon.data.types.http;
  */
 public class HttpTaskSettings {
     private String httpAddress = "https://api.github.com/orgs/square/repos?page=1&per_page=1";
-    private int timeoutMs = 5000;
     private String displayLayout = "default"; // Defines how the received data is parsed and displayed
     private int historyDepth = 5; // How many last http responses (i.e. the extracted fields) will be saved to provide the trend of changing values
     private String fields = ""; // Comma separated names of fields to extract from the response
@@ -41,18 +40,10 @@ public class HttpTaskSettings {
         this.httpAddress = httpAddress;
     }
 
-    public synchronized int getTimeoutMs() {
-        return timeoutMs;
-    }
-
-    public synchronized void setTimeoutMs(int timeoutMs) {
-        this.timeoutMs = timeoutMs;
-    }
 
     public synchronized HttpTaskSettings clone() {
         HttpTaskSettings clone = new HttpTaskSettings();
         clone.setHttpAddress(getHttpAddress());
-        clone.setTimeoutMs(getTimeoutMs());
         clone.setDisplayLayout(getDisplayLayout());
         clone.setHistoryDepth(getHistoryDepth());
         clone.setFields(getFields());
@@ -63,7 +54,6 @@ public class HttpTaskSettings {
     public boolean equals(Object obj) {
         return obj instanceof HttpTaskSettings &&
                 httpAddress.equals(((HttpTaskSettings) obj).httpAddress) &&
-                timeoutMs == ((HttpTaskSettings) obj).timeoutMs &&
                 httpAddress.equals(((HttpTaskSettings) obj).getHttpAddress()) &&
                 displayLayout.equals(((HttpTaskSettings) obj).getDisplayLayout()) &&
                 historyDepth == ((HttpTaskSettings) obj).historyDepth &&

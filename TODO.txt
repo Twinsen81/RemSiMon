@@ -1,11 +1,10 @@
-- HttpTask:
-    - Tests: HttpTask:
-        timeout
-        caching responses for the trend display
+- HttpTask - run the test: caching responses for the trend display
+- Add missing comments
+- Ping task: proper UI (item view) + calculate and display uptime and downtime
 
 - UI for HttpTask
 - UI tests with espresso (special test dagger-component?)
 
 ? inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
 
-// Ping task: proper UI (item view) + calculate and display uptime and downtime
+
