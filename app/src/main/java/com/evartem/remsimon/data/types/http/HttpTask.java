@@ -94,11 +94,11 @@ public class HttpTask extends MonitoringTask {
      * A factory method for quick creation of the HttpTask
      */
     public static HttpTask create(@NonNull String description, int runTaskEveryMs,
-                                  @NonNull String address, @NonNull String fileds) {
+                                  @NonNull String address, @NonNull String fields) {
         HttpTask task = new HttpTask(description);
         task.setRunTaskEveryMs(runTaskEveryMs);
         task.settings.setHttpAddress(address);
-        task.settings.setFields(fileds);
+        task.settings.setFields(fields);
         return task;
     }
 

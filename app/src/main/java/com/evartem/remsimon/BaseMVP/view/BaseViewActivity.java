@@ -14,6 +14,10 @@ import javax.inject.Named;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
+/**
+ * Base class for all activities.
+ * Injects the fragment manager, provides a convenient method for adding fragments
+ */
 public abstract class BaseViewActivity extends DaggerAppCompatActivity {
 
     @Inject

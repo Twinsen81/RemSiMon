@@ -1,4 +1,3 @@
-- HttpTask - run the test: caching responses for the trend display
 - Add missing comments
 - Ping task: proper UI (item view) + calculate and display uptime and downtime
 

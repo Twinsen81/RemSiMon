@@ -88,6 +88,7 @@ public class HttpTaskTest {
                 .thenReturnString(200, JSON_SIMPLE_6);
         // and the setting to save last 4 responses
         task.settings.setHistoryDepth(4);
+        task.settings.setFields("temperature");
         // When all the responses are received and parsed
         task.doTheWork();
         task.doTheWork();

@@ -7,10 +7,25 @@ package com.evartem.remsimon.data.types.http;
  * the worker thread
  */
 public class HttpTaskSettings {
+    /**
+     * The address of the server to get the data from
+     */
     private String httpAddress = "https://api.github.com/orgs/square/repos?page=1&per_page=1";
-    private String displayLayout = "default"; // Defines how the received data is parsed and displayed
-    private int historyDepth = 5; // How many last http responses (i.e. the extracted fields) will be saved to provide the trend of changing values
-    private String fields = ""; // Comma separated names of fields to extract from the response
+
+    /**
+     * Defines the UI layout: how the received data is parsed and displayed
+     */
+    private String displayLayout = "default";
+
+    /**
+     * How many last http responses (i.e. the extracted fields) will be saved to provide the trend of changing values?
+     */
+    private int historyDepth = 5;
+
+    /**
+     * Comma separated names of fields to extract from the JSON response.
+     */
+    private String fields = "";
 
     public synchronized String getFields() { return fields; }
 
@@ -40,7 +55,10 @@ public class HttpTaskSettings {
         this.httpAddress = httpAddress;
     }
 
-
+    /**
+     * Creates a deep copy of this object (thread safe)
+     * @return
+     */
     public synchronized HttpTaskSettings clone() {
         HttpTaskSettings clone = new HttpTaskSettings();
         clone.setHttpAddress(getHttpAddress());

@@ -16,23 +16,28 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+/**
+ * The Room database as the TaskDataSource implementation
+ */
 public class TasksLocalDataSource implements TasksDataSource {
 
-    private static volatile TasksLocalDataSource INSTANCE = null;
+    /**
+     * Executors that will be used to run IO and UI operations
+     */
+    @Inject
+    AppExecutors executors;
 
-    private AppExecutors executors;
-
-    private PingingTaskDao pingingTaskDao;
+    /**
+     * The Room's DAO object for accessing the corresponding DB
+     */
+    @Inject
+    PingingTaskDao pingingTaskDao;
 
     @Inject
-    TasksLocalDataSource(AppExecutors appExecutors, PingingTaskDao pingingTaskDao) {
-        this.executors = appExecutors;
-        this.pingingTaskDao = pingingTaskDao;
-    }
+    TasksLocalDataSource() {}
 
     @Override
     public void getTasks(@NonNull LoadTasksListener callback) {
-
         executors.diskIO().execute(() -> {
             List<MonitoringTask> tasks = getTasksSync();
             executors.mainThread().execute(() -> callback.onTasksLoaded(tasks));
@@ -45,12 +50,6 @@ public class TasksLocalDataSource implements TasksDataSource {
         executors.diskIO().execute(() -> updateOrAddTasksByType(Arrays.asList(task)));
     }
 
-    /**
-     * If called from UI thread -> executes asynchronously
-     * If called from Worker thread -> synchronously
-     *
-     * @param tasks
-     */
     @Override
     public void updateOrAddTasks(@NonNull List<MonitoringTask> tasks) {
         if (isOnMainThread())

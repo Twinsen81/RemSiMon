@@ -22,7 +22,9 @@ import dagger.android.support.AndroidSupportInjection;
 import dagger.android.support.HasSupportFragmentInjector;
 
 /**
- * Implements dependency injection (Dagger + Butterknife) for a Fragment
+ * Implements dependency injection (Dagger + Butterknife) for a Fragment,
+ * so that the concrete implementation wouldn't have to implicitly
+ * call Dagger.inject or ButterKnife.bind
  */
 abstract class BaseDIFragment extends Fragment implements HasSupportFragmentInjector {
     @Inject
@@ -37,13 +39,6 @@ abstract class BaseDIFragment extends Fragment implements HasSupportFragmentInje
 
     @Nullable
     private Unbinder viewUnbinder;
-
-/*    @Override
-    public void onAttach(Activity activity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-            AndroidSupportInjection.inject(this);
-        super.onAttach(activity);
-    }*/
 
     @Override
     public void onAttach(Context context) {

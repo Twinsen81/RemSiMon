@@ -5,6 +5,11 @@ import android.support.annotation.Nullable;
 
 import com.evartem.remsimon.BaseMVP.view.MVPView;
 
+/**
+ * Provides empty implementations of the Presenter interface,
+ * performs view binding.
+ * @param <T> The corresponding view
+ */
 public abstract class BasePresenter<T extends MVPView> implements Presenter {
 
     protected final T view;

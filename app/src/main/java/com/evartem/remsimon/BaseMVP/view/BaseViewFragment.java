@@ -7,6 +7,12 @@ import com.evartem.remsimon.BaseMVP.presenter.Presenter;
 
 import javax.inject.Inject;
 
+/**
+ * Basic implementation of a view for a Fragment.
+ * Injects the presenter.
+ * Calls the presenter's methods in the corresponding lifecycle callbacks.
+ * @param <T>
+ */
 public abstract class BaseViewFragment<T extends Presenter> extends BaseDIFragment
         implements MVPView {
 
@@ -16,8 +22,7 @@ public abstract class BaseViewFragment<T extends Presenter> extends BaseDIFragme
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        // Only start the presenter when the views have been bound.
-        // See BaseDIFragment.onViewStateRestored
+        // At this point all UI elements are ready -> notify the presenter that the view is ready
         presenter.onStart(savedInstanceState);
     }
 

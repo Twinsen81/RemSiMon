@@ -23,7 +23,7 @@ public abstract class RetrofitModule {
     public static Retrofit retrofit(OkHttpClient okHttpClient) {
        return new Retrofit.Builder()
                .client(okHttpClient)
-               .baseUrl("127.0.0.1")
+               .baseUrl("http://127.0.0.1")
                .build();
     }
 
