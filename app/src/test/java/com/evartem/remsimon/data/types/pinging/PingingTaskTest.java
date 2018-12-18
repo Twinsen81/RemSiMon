@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.evartem.remsimon.data.types.pinging.PingingTaskResult.ERROR_TIMEOUT;
 import static com.evartem.remsimon.data.types.pinging.PingingTaskResult.NO_ERROR;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -48,18 +49,14 @@ public class PingingTaskTest {
     private static final int TASK3_RUN_EVERY_MS = 100;
     private static final int TASK3_PING_TIMEOUT = 999;
 
-    private static final String jsonResultInvalidUrl = "{\"errorCode\":1,\"errorMessage\":\"Not a valid URL\",\"lastSuccessTime\":0,\"pingOK\":false,\"pingTimeMs\":0}";
-
     private PingingTask TASK1_Ok = PingingTask.create(TASK1_DESCRIPTION, TASK1_RUN_EVERY_MS, TASK1_PING_ADDRESS, TASK1_PING_TIMEOUT);
     private PingingTask TASK2_NoPing = PingingTask.create(TASK2_DESCRIPTION, TASK2_RUN_EVERY_MS, TASK2_PING_ADDRESS, TASK2_PING_TIMEOUT);
     private PingingTask TASK3_WrongUrl = PingingTask.create(TASK3_DESCRIPTION, TASK3_RUN_EVERY_MS, TASK3_PING_ADDRESS, TASK3_PING_TIMEOUT);
-
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
-
 
     @Test
     public void anInstanceIsProperlyInitialized() {
@@ -112,8 +109,8 @@ public class PingingTaskTest {
         TASK3_WrongUrl.doTheWork();
 
         // Then the corresponding results with error messages are returned
-        assertThat(TASK1_Ok.getLastResultJson(), is(jsonResultInvalidUrl));
-        assertThat(TASK3_WrongUrl.getLastResultJson(), is(jsonResultInvalidUrl));
+        assertThat(TASK1_Ok.getLastResultJson(), containsString("\"errorMessage\":\"Not a valid URL\""));
+        assertThat(TASK3_WrongUrl.getLastResultJson(), containsString("\"errorMessage\":\"Not a valid URL\""));
     }
 
     @Test

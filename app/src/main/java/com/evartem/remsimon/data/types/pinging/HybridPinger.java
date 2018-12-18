@@ -36,8 +36,11 @@ public class HybridPinger implements Pinger {
      */
     public static boolean isValidUrl(String url) {
         Pattern p = Patterns.WEB_URL;
-        Matcher m = p.matcher(url.toLowerCase());
-        return m.matches();
+        if (p != null) {
+            Matcher m = p.matcher(url.toLowerCase());
+            return m.matches();
+        }
+        return false;
     }
 
 }

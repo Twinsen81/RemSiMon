@@ -6,6 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
+import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.google.common.base.Strings;
 import com.squareup.moshi.Moshi;
 
@@ -40,12 +41,6 @@ public abstract class MonitoringTask {
      */
     @NonNull
     protected String lastResultJson;
-
-    /**
-     * Provides JSON formatted result of the task execution to UI - {@code lastResultJson}
-     */
-    @Ignore
-    protected static Moshi moshi = new Moshi.Builder().build();
 
     /**
      * The last result of the doTheActualWork routine is saved here in addition to the lastResultJson field
@@ -242,7 +237,7 @@ public abstract class MonitoringTask {
         return obj instanceof MonitoringTask && ((MonitoringTask) obj).getTaskId().equals(taskId);
     }
 
-    public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
+/*    public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
         description = sourceTask.description;
         lastResultCached = sourceTask.lastResultCached;
         lastResultJson = sourceTask.lastResultJson;
@@ -250,5 +245,5 @@ public abstract class MonitoringTask {
         mode = sourceTask.mode;
         runTaskEveryMs = sourceTask.runTaskEveryMs;
         workStage = sourceTask.workStage;
-    }
+    }*/
 }

@@ -13,9 +13,12 @@ import android.widget.EditText;
 
 import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
+import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditPresenter;
 import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditView;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -36,6 +39,9 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
     EditText etTimeoutMs;
 
     PingingTask task;
+
+    @Inject
+    TheApp app;
 
 
     @Nullable
@@ -149,7 +155,10 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
     @OnClick(R.id.btnApply)
     void onApplyButtonClicked() {
         if (task == null) // Creating a new task (not editing an existing one)
+        {
             task = new PingingTask("A pinging task");
+            app.getAppComponent().inject(task);
+        }
         task.setDescription(etTitle.getText().toString().trim());
         task.setRunTaskEveryMs(Integer.valueOf(etRunEveryMs.getText().toString().trim()));
         task.settings.setPingAddress(etAddress.getText().toString().trim());

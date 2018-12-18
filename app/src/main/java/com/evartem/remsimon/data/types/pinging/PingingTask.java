@@ -10,13 +10,17 @@ import android.support.annotation.WorkerThread;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
+import com.evartem.remsimon.data.types.http.HttpTaskResult;
 import com.google.common.base.Strings;
 import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.Instant;
 
 import java.io.IOException;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
@@ -57,7 +61,7 @@ public class PingingTask extends MonitoringTask {
         super(description, mode, lastResultJson);
 
         pinger = new HybridPinger();
-        jsonAdapter = moshi.adapter(PingingTaskResult.class);
+        //jsonAdapter = moshi.adapter(PingingTaskResult.class);
 
         // Empty lastResultCached is created in the base class, but if we have already a JSON-serialized result in the Room -> unpack it
         if (!Strings.isNullOrEmpty(lastResultJson)) {
@@ -65,9 +69,11 @@ public class PingingTask extends MonitoringTask {
                 lastResultCached = jsonAdapter.fromJson(lastResultJson);
             } catch (IOException e) {
                 Timber.e(e);
-                lastResultCached = new TaskResult();
+                lastResultCached = new PingingTaskResult(true, 0);
             }
         }
+        else
+            lastResultCached = new PingingTaskResult(true, 0);
     }
 
     /**
@@ -97,6 +103,7 @@ public class PingingTask extends MonitoringTask {
     public PingingTaskSettings settings;
 
     @Ignore
+    @Inject
     JsonAdapter<PingingTaskResult> jsonAdapter; // package-private for Unit tests
 
     @Override
@@ -118,12 +125,21 @@ public class PingingTask extends MonitoringTask {
     }
 
     private void formatAndSetResult(@NotNull  PingingTaskResult result) {
-        //checkNotNull(lastResultCached);
 
-        if (result.pingOK)
-            result.lastSuccessTime = Instant.now().getMillis();
-        else
+        long nowMs = Instant.now().getMillis();
+
+        if (result.pingOK) {
+            result.lastSuccessTime = nowMs;
+            if (lastResultCached.errorCode != TaskResult.NO_ERROR ||
+                    lastResultCached.lastSuccessTime == 0) // If this is the first successful ping after creation or a failure
+                result.firstSuccessTime = result.lastSuccessTime; // Memorize for uptime calculation
+            result.uptimeMs = nowMs - result.firstSuccessTime;
+        }
+        else {
             result.lastSuccessTime = lastResultCached.lastSuccessTime;
+            result.downtimeMs = nowMs - result.lastSuccessTime;
+        }
+
 
         String jsonResult;
 
@@ -140,18 +156,11 @@ public class PingingTask extends MonitoringTask {
         }
     }
 
-    @NonNull
-    synchronized PingingTaskResult getLastResult() { //Package access for unit tests
-        return (PingingTaskResult)lastResultCached;
-    }
-
-
-    @Override
+/*    @Override
     public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
         super.copyPropertiesFrom(sourceTask);
         if (sourceTask instanceof PingingTask) {
-            jsonAdapter = ((PingingTask)sourceTask).jsonAdapter;
             settings = ((PingingTask)sourceTask).settings;
         }
-    }
+    }*/
 }

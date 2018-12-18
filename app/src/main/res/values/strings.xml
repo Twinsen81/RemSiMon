@@ -18,4 +18,7 @@
     <string name="ip_or_url">IP or URL</string>
     <string name="cancel">CANCEL</string>
     <string name="delete">DELETE</string>
+    <string name="uptime">UPTIME</string>
+    <string name="downtime">DOWNTIME</string>
+    <string name="lastsuccess">Last successful ping:</string>
 </resources>

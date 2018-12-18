@@ -1,5 +1,7 @@
 package com.evartem.remsimon.data.types.base;
 
+import com.evartem.remsimon.data.types.pinging.PingingTaskSettings;
+
 /**
  * Represents data that every task must provide upon completion
  */
@@ -29,4 +31,12 @@ public class TaskResult {
      * Detailed description of the failure
      */
     public String errorMessage = "";
+
+    public TaskResult clone(TaskResult copy) {
+        copy.firstSuccessTime = firstSuccessTime;
+        copy.lastSuccessTime = lastSuccessTime;
+        copy.errorCode = errorCode;
+        copy.errorMessage = errorMessage;
+        return copy;
+    }
 }

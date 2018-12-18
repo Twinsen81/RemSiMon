@@ -10,6 +10,7 @@ import android.support.annotation.WorkerThread;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
+import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.google.common.base.Strings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -48,6 +49,7 @@ public class HttpTask extends MonitoringTask {
     public HttpTaskSettings settings;
 
     @Ignore
+    @Inject
     JsonAdapter<HttpTaskResult> jsonAdapter; // package-private for Unit tests
 
     @Ignore
@@ -77,17 +79,16 @@ public class HttpTask extends MonitoringTask {
     public HttpTask(@NonNull String description, int mode, String lastResultJson) {
         super(description, mode, lastResultJson);
 
-        jsonAdapter = moshi.adapter(HttpTaskResult.class);
-
         // Empty lastResultCached is created in the base class, but if we have already a JSON-serialized result in the Room -> unpack it
         if (!Strings.isNullOrEmpty(lastResultJson)) {
             try {
                 lastResultCached = jsonAdapter.fromJson(lastResultJson);
             } catch (IOException e) {
                 Timber.e(e);
-                lastResultCached = new TaskResult();
+                lastResultCached = new HttpTaskResult();
             }
-        }
+        } else
+            lastResultCached = new HttpTaskResult();
     }
 
     /**
@@ -138,12 +139,7 @@ public class HttpTask extends MonitoringTask {
 
     private void formatAndSetResult(Response<ResponseBody> response, Map<String, String> keysValues, String exceptionText, HttpTaskSettings httpSettings) {
 
-        HttpTaskResult result;
-
-        if (!(lastResultCached instanceof HttpTaskResult)) // This is the first result we get
-            result = new HttpTaskResult();
-        else
-            result = (HttpTaskResult) lastResultCached;
+        HttpTaskResult result = (HttpTaskResult) lastResultCached;
 
         if (response == null || exceptionText.length() > 0 || !response.isSuccessful()) {
             result.responseOK = false;
@@ -184,18 +180,12 @@ public class HttpTask extends MonitoringTask {
         return "WTF? Very strange error without any description (((";
     }
 
-    @NonNull
-    synchronized HttpTaskResult getLastResult() { //Package access for unit tests
-        return (HttpTaskResult) lastResultCached;
-    }
-
-
-    @Override
+/*    @Override
     public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
         super.copyPropertiesFrom(sourceTask);
         if (sourceTask instanceof HttpTask) {
             jsonAdapter = ((HttpTask) sourceTask).jsonAdapter;
             settings = ((HttpTask) sourceTask).settings;
         }
-    }
+    }*/
 }

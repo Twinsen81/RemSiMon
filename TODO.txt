@@ -1,6 +1,6 @@
+- Ping task: proper UI (item view)
+- Fix tests
 - Add missing comments
-- Ping task: proper UI (item view) + calculate and display uptime and downtime
-
 - UI for HttpTask
 - UI tests with espresso (special test dagger-component?)
 

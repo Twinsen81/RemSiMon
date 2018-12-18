@@ -8,5 +8,4 @@ public interface TasksPresenter extends Presenter {
     void onTaskClicked(MonitoringTask task);
 
     void reloadTasks();
-    //List<MonitoringTask> getTasks();
 }

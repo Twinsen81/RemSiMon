@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.evartem.remsimon.DI.AppComponent;
 import com.evartem.remsimon.data.source.local.TasksDatabase;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -39,9 +41,13 @@ public class PingingTaskDaoTest {
 
     @Before
     public void init() {
+        TheApp app = (TheApp) getInstrumentation().getTargetContext().getApplicationContext();
+        AppComponent appComponent = app.getAppComponent();
         database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(), TasksDatabase.class).build();
         TASK1 = PingingTask.create(TASK1_DESCRIPTION, TASK1_RUN_EVERY, TASK1_PING_ADDRESS, TASK1_PING_TIMEOUT);
+        appComponent.inject(TASK1);
         TASK2 = PingingTask.create(TASK2_DESCRIPTION, TASK2_RUN_EVERY, TASK2_PING_ADDRESS, TASK2_PING_TIMEOUT);
+        appComponent.inject(TASK2);
     }
 
     @After

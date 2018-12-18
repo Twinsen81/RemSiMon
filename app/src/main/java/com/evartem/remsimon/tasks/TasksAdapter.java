@@ -9,8 +9,12 @@ import android.widget.TextView;
 
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.data.types.pinging.PingingTask;
+import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
+import com.squareup.moshi.JsonAdapter;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -27,8 +31,10 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
     List<MonitoringTask> tasks;
 
     @Inject
-    TasksAdapter() {
-    }
+    JsonAdapter<PingingTaskResult> pingingTaskResultJsonAdapter;
+
+    @Inject
+    TasksAdapter() {}
 
     void updateTasks(List<MonitoringTask> tasks) {
         this.tasks = tasks;
@@ -60,8 +66,29 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-        holder.tvName.setText(tasks.get(position).getDescription());
-        holder.tvResult.setText(tasks.get(position).getLastResultJson());
+
+        MonitoringTask vhTask = tasks.get(position);
+        holder.tvName.setText(vhTask.getDescription());
+
+
+        if (vhTask instanceof PingingTask) {
+            PingingTask task = (PingingTask) vhTask;
+            holder.tvAddress.setText(task.settings.getPingAddress());
+
+            PingingTaskResult result = null;
+            try {
+                result = pingingTaskResultJsonAdapter.fromJson(tasks.get(position).getLastResultJson());
+            } catch (IOException e) {
+                Timber.wtf(e);
+            }
+
+            if (result != null) {
+                holder.tvName.setBackgroundColor(holder.tvName.getContext().getResources().getColor(result.pingOK ? R.color.pingOk:R.color.pingNotOk));
+                holder.tvUpDown.setText(result.pingOK ? R.string.uptime : R.string.downtime);
+                holder.tvTime.setText(String.valueOf(result.pingOK ? result.uptimeMs : result.downtimeMs));
+                holder.tvSuccessTime.setText(String.valueOf(result.lastSuccessTime));
+            }
+        }
     }
 
     @Override
@@ -75,19 +102,21 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         @BindView(R.id.tvName)
         TextView tvName;
 
-        @BindView(R.id.tvResult)
-        TextView tvResult;
+        @BindView(R.id.tvAddress)
+        TextView tvAddress;
+
+        @BindView(R.id.tvUpDown)
+        TextView tvUpDown;
+
+        @BindView(R.id.tvTime)
+        TextView tvTime;
+
+        @BindView(R.id.tvSuccessTime)
+        TextView tvSuccessTime;
 
         TaskViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-    /*    @OnClick({R.id.tvName, R.id.tvResult})
-        public void onTaskClicked() {
-
-        }*/
-
-
     }
 }

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 
+import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
@@ -26,6 +27,9 @@ public class TasksLocalDataSource implements TasksDataSource {
      */
     @Inject
     AppExecutors executors;
+
+    @Inject
+    TheApp app;
 
     /**
      * The Room's DAO object for accessing the corresponding DB
@@ -72,8 +76,10 @@ public class TasksLocalDataSource implements TasksDataSource {
 
         // PingingTask
         List<PingingTask> pingingTasks = pingingTaskDao.getAll();
-        if (pingingTasks != null)
+        if (pingingTasks != null) {
+            for (PingingTask task : pingingTasks) app.getAppComponent().inject(task);
             tasks.addAll(pingingTasks);
+        }
 
         return tasks;
     }
