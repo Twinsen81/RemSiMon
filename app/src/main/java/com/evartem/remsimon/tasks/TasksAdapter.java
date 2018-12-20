@@ -1,5 +1,6 @@
 package com.evartem.remsimon.tasks;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,12 @@ import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
 import com.squareup.moshi.JsonAdapter;
+
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,11 +37,25 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
 
     List<MonitoringTask> tasks;
 
+    PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
+            .appendDays()
+            .appendSuffix(" d ")
+            .appendHours()
+            .appendSuffix(" h ")
+            .appendMinutes()
+            .appendSuffix(" m ")
+            .appendSeconds()
+            .appendSuffix(" s ")
+            .toFormatter();
+
+    DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("dd MMMM HH:mm:ss");
+
     @Inject
     JsonAdapter<PingingTaskResult> pingingTaskResultJsonAdapter;
 
     @Inject
-    TasksAdapter() {}
+    TasksAdapter() {
+    }
 
     void updateTasks(List<MonitoringTask> tasks) {
         this.tasks = tasks;
@@ -83,12 +104,24 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             }
 
             if (result != null) {
-                holder.tvName.setBackgroundColor(holder.tvName.getContext().getResources().getColor(result.pingOK ? R.color.pingOk:R.color.pingNotOk));
+                Resources res = holder.tvName.getContext().getResources();
+
+                holder.tvName.setBackgroundColor(res.getColor(result.pingOK ? R.color.pingOk : R.color.pingNotOk));
                 holder.tvUpDown.setText(result.pingOK ? R.string.uptime : R.string.downtime);
-                holder.tvTime.setText(String.valueOf(result.pingOK ? result.uptimeMs : result.downtimeMs));
-                holder.tvSuccessTime.setText(String.valueOf(result.lastSuccessTime));
+                holder.tvTime.setText(formatPeriod(result.pingOK ? result.uptimeMs : result.downtimeMs, res));
+                holder.tvSuccessTime.setText(formatDateTime(result.lastSuccessTime, res));
             }
         }
+    }
+
+    private String formatPeriod(long periodMs, Resources resources) {
+        if (periodMs > 94608000000L) return resources.getString(R.string.neverup);
+        return periodFormatter.print(new Period(periodMs));
+    }
+
+    private String formatDateTime(long dateTimeMs, Resources resources) {
+        if (dateTimeMs == 0) return resources.getString(R.string.never);
+        return dateTimeFormatter.print(dateTimeMs);
     }
 
     @Override

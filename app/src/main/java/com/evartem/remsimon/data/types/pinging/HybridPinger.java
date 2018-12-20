@@ -9,8 +9,15 @@ import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 public class HybridPinger implements Pinger {
+
+    @Inject
+    public HybridPinger() { }
+
     @Override
+
     public PingingTaskResult ping(PingingTaskSettings pingSettings) {
 
         if (!isValidUrl(pingSettings.getPingAddress()))

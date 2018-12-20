@@ -7,6 +7,8 @@ import com.evartem.remsimon.DI.scopes.PerActivity;
 import com.evartem.remsimon.DI.scopes.PerApplication;
 import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.http.HttpTaskResult;
+import com.evartem.remsimon.data.types.pinging.HybridPinger;
+import com.evartem.remsimon.data.types.pinging.Pinger;
 import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.evartem.remsimon.tasks.TasksActivity;
 import com.evartem.remsimon.tasks.DI.TasksActivityModule;
@@ -49,5 +51,9 @@ abstract class AppModule {
     @Provides
     static Moshi moshi() {return new Moshi.Builder().build();}
 
+    @Binds
+    abstract Pinger pinger(HybridPinger hybridPinger);
+
+    static HybridPinger hybridPinger() {return new HybridPinger();}
 
 }

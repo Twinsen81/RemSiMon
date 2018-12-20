@@ -7,6 +7,7 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
+import com.evartem.remsimon.DI.AppComponent;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
@@ -35,7 +36,15 @@ import static com.google.common.base.Preconditions.checkState;
 public class PingingTask extends MonitoringTask {
 
     @Ignore
+    @Inject
     Pinger pinger;
+
+    @Embedded
+    public PingingTaskSettings settings;
+
+    @Ignore
+    @Inject
+    JsonAdapter<PingingTaskResult> jsonAdapter; // package-private for Unit tests
 
     /**
      * Creates the pinging task.
@@ -61,9 +70,24 @@ public class PingingTask extends MonitoringTask {
         super(description, mode, lastResultJson);
 
         pinger = new HybridPinger();
-        //jsonAdapter = moshi.adapter(PingingTaskResult.class);
+    }
 
-        // Empty lastResultCached is created in the base class, but if we have already a JSON-serialized result in the Room -> unpack it
+    /**
+     * A convenience method for quick creation of a pinging task
+     */
+    public static PingingTask create(@NonNull String description, int runTaskEveryMs,
+                                     @NonNull String addressToPing, int pingTimeoutMs) {
+        PingingTask task = new PingingTask(description);
+        task.setRunTaskEveryMs(runTaskEveryMs);
+        task.settings.setPingAddress(addressToPing);
+        task.settings.setPingTimeoutMs(pingTimeoutMs);
+        return task;
+    }
+
+    public void injectDependencies(AppComponent appComponent) {
+        appComponent.inject(this);
+
+        // Empty lastResultCached is created in the base class, but if we already have a JSON-serialized result in the Room DB -> unpack it
         if (!Strings.isNullOrEmpty(lastResultJson)) {
             try {
                 lastResultCached = jsonAdapter.fromJson(lastResultJson);
@@ -77,18 +101,6 @@ public class PingingTask extends MonitoringTask {
     }
 
     /**
-     * A factory method for quick creation of a pinging task
-     */
-    public static PingingTask create(@NonNull String description, int runTaskEveryMs,
-                                     @NonNull String addressToPing, int pingTimeoutMs) {
-        PingingTask task = new PingingTask(description);
-        task.setRunTaskEveryMs(runTaskEveryMs);
-        task.settings.setPingAddress(addressToPing);
-        task.settings.setPingTimeoutMs(pingTimeoutMs);
-        return task;
-    }
-
-    /**
      * Replaces the default pinger (for Unit tests)
      * @param pinger the class that implements {@link Pinger} and actually performs pinging
      */
@@ -99,18 +111,15 @@ public class PingingTask extends MonitoringTask {
         return TaskType.PINGING;
     }
 
-    @Embedded
-    public PingingTaskSettings settings;
-
-    @Ignore
-    @Inject
-    JsonAdapter<PingingTaskResult> jsonAdapter; // package-private for Unit tests
 
     @Override
     @WorkerThread
     protected void doTheActualWork() {
 
+        checkNotNull(jsonAdapter);
+        checkNotNull(pinger);
         checkNotNull(settings);
+
         PingingTaskSettings pingSettings;
 
         synchronized (this) {
@@ -126,20 +135,7 @@ public class PingingTask extends MonitoringTask {
 
     private void formatAndSetResult(@NotNull  PingingTaskResult result) {
 
-        long nowMs = Instant.now().getMillis();
-
-        if (result.pingOK) {
-            result.lastSuccessTime = nowMs;
-            if (lastResultCached.errorCode != TaskResult.NO_ERROR ||
-                    lastResultCached.lastSuccessTime == 0) // If this is the first successful ping after creation or a failure
-                result.firstSuccessTime = result.lastSuccessTime; // Memorize for uptime calculation
-            result.uptimeMs = nowMs - result.firstSuccessTime;
-        }
-        else {
-            result.lastSuccessTime = lastResultCached.lastSuccessTime;
-            result.downtimeMs = nowMs - result.lastSuccessTime;
-        }
-
+        result = calculateUpDownTime(result);
 
         String jsonResult;
 
@@ -156,11 +152,27 @@ public class PingingTask extends MonitoringTask {
         }
     }
 
-/*    @Override
-    public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
-        super.copyPropertiesFrom(sourceTask);
-        if (sourceTask instanceof PingingTask) {
-            settings = ((PingingTask)sourceTask).settings;
+    private PingingTaskResult calculateUpDownTime(PingingTaskResult result) {
+        long nowMs = Instant.now().getMillis();
+
+        if (result.pingOK) {
+            result.lastSuccessTime = nowMs;
+            if (lastResultCached.errorCode != TaskResult.NO_ERROR ||
+                    lastResultCached.lastSuccessTime == 0) // If this is the first successful ping after creation or a failure
+                result.firstSuccessTime = result.lastSuccessTime; // Memorize for uptime calculation
+            else {
+                result.firstSuccessTime = lastResultCached.firstSuccessTime;
+                if (result.firstSuccessTime == 0) { // The task was just created
+                    result.firstSuccessTime = nowMs;
+                }
+            }
+
+            result.uptimeMs = nowMs - result.firstSuccessTime;
         }
-    }*/
+        else {
+            result.lastSuccessTime = lastResultCached.lastSuccessTime;
+            result.downtimeMs = nowMs - result.lastSuccessTime;
+        }
+        return result;
+    }
 }

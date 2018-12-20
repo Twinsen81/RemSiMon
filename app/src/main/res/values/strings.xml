@@ -2,8 +2,8 @@
     <string name="app_name">Remote Site Monitor</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">evartem studio</string>
+    <string name="nav_header_subtitle">evartemstudio@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="timeout">Timeout</string>
@@ -18,7 +18,9 @@
     <string name="ip_or_url">IP or URL</string>
     <string name="cancel">CANCEL</string>
     <string name="delete">DELETE</string>
-    <string name="uptime">UPTIME</string>
-    <string name="downtime">DOWNTIME</string>
+    <string name="uptime">UPTIME:</string>
+    <string name="downtime">DOWNTIME:</string>
+    <string name="neverup">has never been up yet</string>
+    <string name="never">never</string>
     <string name="lastsuccess">Last successful ping:</string>
 </resources>

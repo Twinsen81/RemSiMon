@@ -77,7 +77,7 @@ public class TasksLocalDataSource implements TasksDataSource {
         // PingingTask
         List<PingingTask> pingingTasks = pingingTaskDao.getAll();
         if (pingingTasks != null) {
-            for (PingingTask task : pingingTasks) app.getAppComponent().inject(task);
+            for (PingingTask task : pingingTasks) task.injectDependencies(app.getAppComponent());
             tasks.addAll(pingingTasks);
         }
 
