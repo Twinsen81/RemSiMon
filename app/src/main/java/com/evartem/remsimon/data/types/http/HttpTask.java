@@ -8,24 +8,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
 import com.evartem.remsimon.data.types.base.MonitoringTask;
-import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
-import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.google.common.base.Strings;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import com.squareup.moshi.JsonAdapter;
 
 import org.joda.time.Instant;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -178,6 +168,15 @@ public class HttpTask extends MonitoringTask {
         else if (response != null)
             return response.toString();
         return "WTF? Very strange error without any description (((";
+    }
+
+    /**
+     * Returns the result of the last work.
+     * Package-private - should be used for test only.
+     * Clients should only request the JSON formatted result through {@code getLastResultJson}
+     */
+    HttpTaskResult getLastResult() {
+        return (HttpTaskResult) lastResultCached;
     }
 
 /*    @Override

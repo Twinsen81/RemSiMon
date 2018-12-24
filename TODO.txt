@@ -1,8 +1,7 @@
-- Ping task: proper UI (item view)
-- Once in a while flush the last result to the DB
+- Fix tests: googleUrlAlwaysPingsSuccessfully and others
 
-- Fix tests
 - Add missing comments
+
 - UI for HttpTask
 - UI tests with espresso (special test dagger-component?)
 

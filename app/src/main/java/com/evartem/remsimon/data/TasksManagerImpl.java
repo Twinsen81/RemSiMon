@@ -1,10 +1,7 @@
 package com.evartem.remsimon.data;
 
-import android.support.annotation.IntDef;
-import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RestrictTo;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 
@@ -15,8 +12,6 @@ import com.evartem.remsimon.util.AppExecutors;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,8 +24,6 @@ import javax.inject.Named;
 
 import timber.log.Timber;
 
-import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
-
 /**
  * A repository for the tasks and a manager responsible for executing the tasks.
  * Should be kept alive during the app's lifecycle, even when activities are destroyed and
@@ -38,7 +31,7 @@ import static android.support.annotation.RestrictTo.Scope.LIBRARY_GROUP;
  */
 public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runnable {
 
-    private static TasksManagerImpl INSTANCE = null;
+    //private static TasksManagerImpl INSTANCE = null;
     private TasksDataSource dataSource;
     ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source (package access for testing)
 
@@ -46,10 +39,12 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     private AppExecutors executors;
 
     private volatile boolean loadedTasksFromDatasource = false;
-    private volatile boolean successfullyFinishedWorking = false;
+    //private volatile boolean successfullyFinishedWorking = false;
     private Future managerThread = null;
 
     private List<StateChangedListener> listeners = new ArrayList<>();
+
+    private volatile boolean stopManager = false;
 
     @Inject
     public TasksManagerImpl(@NotNull TasksDataSource dataSource, AppExecutors appExecutors, @Named("managerThreadExecutor") ExecutorService managerThreadExecutor) {
@@ -61,11 +56,11 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     /**
      * Used to force new instance creation (for tests)
      */
-    public static void destroyInstance() {
+/*    public static void destroyInstance() {
         synchronized (TasksManagerImpl.class) {
             INSTANCE = null;
         }
-    }
+    }*/
 
     /**
      * Strating the thread that will execute tasks
@@ -92,7 +87,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         // Load tasks that were previously saved to the datasource
         loadTasksFromDatasource();
 
-        while (!Thread.interrupted() && !interrupted) {
+        while (!Thread.interrupted() && !interrupted && !stopManager) {
             someTasksWereRun = false;
             try {
 
@@ -117,7 +112,6 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         }
 
         forceSaveAll2Datasource();
-        successfullyFinishedWorking = true;
         Timber.i("Tasks manager finished");
     }
 
@@ -128,28 +122,26 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     /**
      * Interrupts the worker thread (run)
      *
-     * @return True if the worker thread finished correctly
      * @throws InterruptedException
      */
-/*    public boolean finish() throws InterruptedException {
+    @Override
+    public void finish() throws InterruptedException {
         listeners.clear();
+        stopManager = true;
         if (managerThread != null) {
             managerThread.cancel(true);
-            System.out.println("after cancel");
             managerThreadExecutor.shutdownNow();
             managerThreadExecutor.awaitTermination(2000, TimeUnit.MILLISECONDS);
-            return successfullyFinishedWorking;
-        } else
-            return true;
-    }*/
+        }
+    }
 
 
     /**
-     * Saves current state of all tasks in the datasource
+     * Saves current state of all tasks to the datasource
      */
     public void forceSaveAll2Datasource() {
         if (tasks.size() > 0)
-            dataSource.updateOrAddTasks(new ArrayList<MonitoringTask>(tasks.values()));
+            dataSource.updateOrAddTasks(new ArrayList<>(tasks.values()));
     }
 
     @WorkerThread
@@ -169,7 +161,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     @UiThread
     @Override
     public List<MonitoringTask> getTasks() {
-        return new ArrayList<MonitoringTask>(tasks.values());
+        return new ArrayList<>(tasks.values());
     }
 
     @UiThread
@@ -177,7 +169,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     public void getTasks(LoadTasksCallback callback) {
         executors.diskIO().execute(() -> {
             loadTasksFromDatasource();
-            executors.mainThread().execute(() -> callback.onTasksLoaded(new ArrayList<MonitoringTask>(tasks.values())));
+            executors.mainThread().execute(() -> callback.onTasksLoaded(new ArrayList<>(tasks.values())));
         });
     }
 

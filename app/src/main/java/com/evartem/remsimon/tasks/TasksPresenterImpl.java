@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import com.evartem.remsimon.BaseMVP.presenter.BasePresenter;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
-import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
 import com.evartem.remsimon.tasks.ContractMVP.TasksView;
 
@@ -59,6 +58,8 @@ public class TasksPresenterImpl extends BasePresenter<TasksView> implements Task
     public void onEnd() {
         Timber.i("View is not ready: %s", view);
         manager.removeTaskStateChangedListener(this);
+
+        manager.forceSaveAll2Datasource();
 
         super.onEnd();
     }

@@ -3,6 +3,7 @@ package com.evartem.remsimon.data;
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.TasksManagerStarter;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.data.types.pinging.JavaPinger;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.util.AppExecutors;
 
@@ -57,6 +58,12 @@ public class TasksManagerImplTest {
 
     @Before
     public void setUp() {
+
+        TASK1.setPinger(new JavaPinger());
+        pingingTasks.get(0).setPinger(new JavaPinger());
+        pingingTasks.get(1).setPinger(new JavaPinger());
+        pingingTasks.get(2).setPinger(new JavaPinger());
+
         MockitoAnnotations.initMocks(this);
 
         when(appExecutors.mainThread()).thenReturn(Executors.newSingleThreadExecutor());
@@ -68,9 +75,8 @@ public class TasksManagerImplTest {
     }
 
     @After
-    public void destroyRepositoryInstance() {
-        // Make sure each test method gets its own manager instance
-        TasksManagerImpl.destroyInstance();
+    public void destroyRepositoryInstance() throws InterruptedException {
+        manager.finish();
     }
 
 

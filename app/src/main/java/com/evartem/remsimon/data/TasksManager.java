@@ -37,6 +37,8 @@ public interface TasksManager {
 
     void removeTaskStateChangedListener(@NonNull StateChangedListener callback);
 
+    void finish() throws InterruptedException;
+
     /**
      * Notifies the subscriber about changes in the tasks:
      * ADDED - a new task was added

@@ -11,10 +11,8 @@ import com.evartem.remsimon.DI.AppComponent;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
-import com.evartem.remsimon.data.types.http.HttpTaskResult;
 import com.google.common.base.Strings;
 import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.Instant;
@@ -26,7 +24,6 @@ import javax.inject.Inject;
 import timber.log.Timber;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * This task issues periodic ping requests to the provided URL
@@ -95,16 +92,18 @@ public class PingingTask extends MonitoringTask {
                 Timber.e(e);
                 lastResultCached = new PingingTaskResult(true, 0);
             }
-        }
-        else
+        } else
             lastResultCached = new PingingTaskResult(true, 0);
     }
 
     /**
      * Replaces the default pinger (for Unit tests)
+     *
      * @param pinger the class that implements {@link Pinger} and actually performs pinging
      */
-    void setPinger(@NotNull Pinger pinger) {this.pinger = pinger;}
+    public void setPinger(@NotNull Pinger pinger) {
+        this.pinger = pinger;
+    }
 
     @Override
     public String getType() {
@@ -116,6 +115,7 @@ public class PingingTask extends MonitoringTask {
     @WorkerThread
     protected void doTheActualWork() {
 
+        Timber.tag("CURR_TASK").d(getDescription());
         checkNotNull(jsonAdapter);
         checkNotNull(pinger);
         checkNotNull(settings);
@@ -133,7 +133,7 @@ public class PingingTask extends MonitoringTask {
         taskGotNewResult = true;
     }
 
-    private void formatAndSetResult(@NotNull  PingingTaskResult result) {
+    private void formatAndSetResult(@NotNull PingingTaskResult result) {
 
         result = calculateUpDownTime(result);
 
@@ -168,11 +168,21 @@ public class PingingTask extends MonitoringTask {
             }
 
             result.uptimeMs = nowMs - result.firstSuccessTime;
-        }
-        else {
+        } else {
             result.lastSuccessTime = lastResultCached.lastSuccessTime;
             result.downtimeMs = nowMs - result.lastSuccessTime;
         }
         return result;
+    }
+
+    /**
+     * Returns the result of the last work.
+     * Package-private - should be used for test only.
+     * Clients should only request the JSON formatted result through {@code getLastResultJson}
+     */
+    PingingTaskResult getLastResult() {
+        if (lastResultCached instanceof PingingTaskResult)
+            return (PingingTaskResult) lastResultCached;
+        return null;
     }
 }
