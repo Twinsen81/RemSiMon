@@ -1,5 +1,3 @@
-- Fix tests: googleUrlAlwaysPingsSuccessfully and others
-
 - Add missing comments
 
 - UI for HttpTask

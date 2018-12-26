@@ -1,5 +1,6 @@
 package com.evartem.remsimon.data.types.pinging;
 
+import com.evartem.remsimon.DI.AppModule;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskType;
 
@@ -37,7 +38,7 @@ public class PingingTaskTest {
     private static final String TASK1_DESCRIPTION = "Test task - always available google's DNS";
     private static final String TASK1_PING_ADDRESS = "8.8.8.8";  // google's dns
     private static final int TASK1_RUN_EVERY_MS = 100;
-    private static final int TASK1_PING_TIMEOUT = 500;
+    private static final int TASK1_PING_TIMEOUT = 2000;
 
     private static final String TASK2_DESCRIPTION = "Test task - non-existent IP that always times out";
     private static final String TASK2_PING_ADDRESS = "192.168.88.88";
@@ -56,12 +57,14 @@ public class PingingTaskTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        TASK1_Ok.setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
+        TASK2_NoPing.setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
+        TASK3_WrongUrl.setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
     }
 
     @Test
     public void anInstanceIsProperlyInitialized() {
         // Given a task, make sure all the fields are initialized properly
-        assertNotNull(TASK1_Ok.jsonAdapter);
         assertNotNull(TASK1_Ok.settings);
         assertNotNull(TASK1_Ok.pinger);
         assertNotNull(UUID.fromString(TASK1_Ok.getTaskId()));

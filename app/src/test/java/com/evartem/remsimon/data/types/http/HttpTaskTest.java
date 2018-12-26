@@ -1,5 +1,6 @@
 package com.evartem.remsimon.data.types.http;
 
+import com.evartem.remsimon.DI.AppModule;
 import com.evartem.remsimon.DI.RetrofitModule;
 import com.evartem.remsimon.data.util.StandardOutputLoggingTree;
 
@@ -36,6 +37,7 @@ public class HttpTaskTest {
 
         HttpTask task2 = HttpTask.create("Test task2", 5000, RESTMockServer.getUrl() + "data", "data");
         task2.httpApi = RetrofitModule.generalApi(RetrofitModule.retrofit(RetrofitModule.okHttpClient()));
+        task2.jsonAdapter = AppModule.httpTaskResultJsonAdapter(AppModule.moshi());
         task2.settings.setFields("user, temp");
         task2.settings.setHistoryDepth(4);
         task2.doTheWork();

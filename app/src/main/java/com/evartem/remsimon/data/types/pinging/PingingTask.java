@@ -105,6 +105,14 @@ public class PingingTask extends MonitoringTask {
         this.pinger = pinger;
     }
 
+    /**
+     * Sets or replaces the current JSON adapter (for Unit tests)
+     * @param jsonAdapter
+     */
+    public void setJsonAdapter(JsonAdapter<PingingTaskResult> jsonAdapter) {
+        this.jsonAdapter = jsonAdapter;
+    }
+
     @Override
     public String getType() {
         return TaskType.PINGING;

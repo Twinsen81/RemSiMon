@@ -1,5 +1,6 @@
 package com.evartem.remsimon.data;
 
+import com.evartem.remsimon.DI.AppModule;
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.TasksManagerStarter;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
@@ -61,8 +62,11 @@ public class TasksManagerImplTest {
 
         TASK1.setPinger(new JavaPinger());
         pingingTasks.get(0).setPinger(new JavaPinger());
+        pingingTasks.get(0).setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
         pingingTasks.get(1).setPinger(new JavaPinger());
+        pingingTasks.get(1).setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
         pingingTasks.get(2).setPinger(new JavaPinger());
+        pingingTasks.get(2).setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
 
         MockitoAnnotations.initMocks(this);
 

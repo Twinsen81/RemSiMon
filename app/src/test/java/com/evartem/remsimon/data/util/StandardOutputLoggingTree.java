@@ -10,7 +10,7 @@ import timber.log.Timber;
 
 /**
  * A simple Timber tree that prints to the standard output streams
- * It's useful int JUnit tests where the Android's Log class is not available
+ * It's useful in JUnit tests where the Android's Log class is not available
  */
 public final class StandardOutputLoggingTree extends Timber.Tree {
     @Override
