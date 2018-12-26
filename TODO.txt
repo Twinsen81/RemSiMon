@@ -1,4 +1,4 @@
-- Add missing comments
+- Add missing comments: TasksManager.java
 
 - UI for HttpTask
 - UI tests with espresso (special test dagger-component?)

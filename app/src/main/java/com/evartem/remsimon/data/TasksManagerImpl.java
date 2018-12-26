@@ -27,7 +27,7 @@ import timber.log.Timber;
 /**
  * A repository for the tasks and a manager responsible for executing the tasks.
  * Should be kept alive during the app's lifecycle, even when activities are destroyed and
- * the app is in the background. Hence, must be run in a service or somehow else (Scgeduler?)
+ * the app is in the background. Hence, must be run in a service or somehow else (Scheduler?)
  */
 public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runnable {
 

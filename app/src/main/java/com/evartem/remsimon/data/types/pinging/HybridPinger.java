@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+/**
+ * Tries to ping using native ping util - if the util isn't found
+ * pings with Java's InetAddress.
+ */
 public class HybridPinger implements Pinger {
 
     @Inject

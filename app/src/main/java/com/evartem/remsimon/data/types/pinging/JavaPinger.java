@@ -5,6 +5,9 @@ import java.net.UnknownHostException;
 
 import static com.evartem.remsimon.data.types.pinging.PingingTaskResult.NO_ERROR;
 
+/**
+ * A pinger to use in unit tests. Uses Java's InetAddress class.
+ */
 public class JavaPinger implements Pinger {
 
     @Override
@@ -29,22 +32,4 @@ public class JavaPinger implements Pinger {
             return new PingingTaskResult(false, 0, PingingTaskResult.ERROR_IO, "IOException: " + e.getMessage());
         }
     }
-
-/*    @Override
-    public PingingTaskResult ping(PingingTaskSettings pingSettings) {
-        boolean pingOk = false;
-        try {
-            try (Socket socket = new Socket()) {
-                socket.connect(new InetSocketAddress(pingSettings.getPingAddress(), 80), pingSettings.getPingTimeoutMs());
-            }
-            pingOk = true;
-
-        } catch (IOException ignored) {
-        }
-
-        return new PingingTaskResult(pingOk,
-                0,
-                !pingOk ? PingingTaskResult.ERROR_TIMEOUT : NO_ERROR,
-                !pingOk ? "Timed Out" : "");
-    }*/
 }

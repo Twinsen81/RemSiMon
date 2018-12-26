@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Defines tasks available in the app
+ * Defines types of tasks available in the app
  */
 public final class TaskType {
     private TaskType() {}

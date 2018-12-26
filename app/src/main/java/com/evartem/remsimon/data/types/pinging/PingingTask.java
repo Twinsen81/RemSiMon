@@ -41,13 +41,8 @@ public class PingingTask extends MonitoringTask {
 
     @Ignore
     @Inject
-    JsonAdapter<PingingTaskResult> jsonAdapter; // package-private for Unit tests
+    JsonAdapter<PingingTaskResult> jsonAdapter;
 
-    /**
-     * Creates the pinging task.
-     *
-     * @param description A short description of the task
-     */
     @Ignore
     public PingingTask(@NonNull String description) {
         this(description, MonitoringTask.MODE_STOPPED, "");
@@ -81,6 +76,11 @@ public class PingingTask extends MonitoringTask {
         return task;
     }
 
+    /**
+     * Injecting dependencies. Should be called right after getting the task from the Room.
+     * Creates the result object from the saved in the Room JSON string.
+     * @param appComponent
+     */
     public void injectDependencies(AppComponent appComponent) {
         appComponent.inject(this);
 
@@ -97,7 +97,7 @@ public class PingingTask extends MonitoringTask {
     }
 
     /**
-     * Replaces the default pinger (for Unit tests)
+     * Replaces the default pinger (for unit tests)
      *
      * @param pinger the class that implements {@link Pinger} and actually performs pinging
      */
@@ -106,7 +106,7 @@ public class PingingTask extends MonitoringTask {
     }
 
     /**
-     * Sets or replaces the current JSON adapter (for Unit tests)
+     * Sets or replaces the current JSON adapter (for unit tests)
      * @param jsonAdapter
      */
     public void setJsonAdapter(JsonAdapter<PingingTaskResult> jsonAdapter) {
@@ -123,7 +123,6 @@ public class PingingTask extends MonitoringTask {
     @WorkerThread
     protected void doTheActualWork() {
 
-        Timber.tag("CURR_TASK").d(getDescription());
         checkNotNull(jsonAdapter);
         checkNotNull(pinger);
         checkNotNull(settings);
@@ -141,6 +140,13 @@ public class PingingTask extends MonitoringTask {
         taskGotNewResult = true;
     }
 
+    /**
+     * Processes the result of the pinging work:
+     * 1. Calculates uptime and downtime
+     * 2. Converts the result into JSON formatted strings
+     * 3. Saves the result object for calculations on the next call
+     * @param result
+     */
     private void formatAndSetResult(@NotNull PingingTaskResult result) {
 
         result = calculateUpDownTime(result);
@@ -160,6 +166,11 @@ public class PingingTask extends MonitoringTask {
         }
     }
 
+    /**
+     * Calculates the uptime and downtime (depending on the ping results)
+     * @param result The latest ping command results
+     * @return The input parameter with uptime and downtime calculated
+     */
     private PingingTaskResult calculateUpDownTime(PingingTaskResult result) {
         long nowMs = Instant.now().getMillis();
 
