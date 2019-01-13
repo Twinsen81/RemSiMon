@@ -93,7 +93,7 @@ public class TasksManagerImplTest {
         // Then the task is added to to the data source
         verify(mockDataSource).updateOrAddTask(TASK1);
         // and to the manager's cache
-        assertThat(manager.getTasks().size(), is(1));
+        assertThat(manager.getCachedTasks().size(), is(1));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class TasksManagerImplTest {
         int numberOfTasks = addMultipleTasks();
 
         // Then they are added to the cache
-        assertThat(manager.getTasks().size(), is(numberOfTasks));
+        assertThat(manager.getCachedTasks().size(), is(numberOfTasks));
         // and to the data source
         verify(mockDataSource, times(numberOfTasks)).updateOrAddTask(any());
     }
@@ -116,7 +116,7 @@ public class TasksManagerImplTest {
         // Then the corresponding data source method is not called
         verify(mockDataSource, never()).updateOrAddTask(any());
         // and nothing is added to the cache
-        assertThat(manager.getTasks().size(), is(0));
+        assertThat(manager.getCachedTasks().size(), is(0));
     }
 
     @Test
@@ -130,14 +130,14 @@ public class TasksManagerImplTest {
         // Then the corresponding data source method is called only once
         verify(mockDataSource).updateOrAddTask(any());
         // and the cache size is still 1
-        assertThat(manager.getTasks().size(), is(1));
+        assertThat(manager.getCachedTasks().size(), is(1));
     }
 
     @Test
     public void getTasks_NoTasksReturnsEmptyList() {
         // Given no tasks in the manager
         // When requesting the cache
-        List<MonitoringTask> tasks = manager.getTasks();
+        List<MonitoringTask> tasks = manager.getCachedTasks();
 
         // Then an empty list is returned
         assertNotNull(tasks);
@@ -153,7 +153,7 @@ public class TasksManagerImplTest {
         manager.deleteTask(TASK1);
 
         // Then make sure that task is gone from the cache
-        assertFalse(manager.getTasks().contains(TASK1));
+        assertFalse(manager.getCachedTasks().contains(TASK1));
         // and the corresponding method is called on the data source
         verify(mockDataSource).deleteTask(TASK1);
     }
@@ -167,7 +167,7 @@ public class TasksManagerImplTest {
         manager.deleteAllTasks();
 
         // Then there's nothing in the cache
-        assertThat(manager.getTasks().size(), is(0));
+        assertThat(manager.getCachedTasks().size(), is(0));
         // and the corresponding method is called on the data source
         verify(mockDataSource).deleteAllTasks();
     }

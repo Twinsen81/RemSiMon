@@ -24,6 +24,11 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * Displays the list of existing tasks.
+ * Each task is rendered by the corresponding adapter.
+ *
+ */
 public class TasksFragment extends BaseViewFragment<TasksPresenter> implements TasksView, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.rvTasks)

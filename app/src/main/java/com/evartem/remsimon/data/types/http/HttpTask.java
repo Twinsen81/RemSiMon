@@ -173,7 +173,7 @@ public class HttpTask extends MonitoringTask {
     /**
      * Returns the result of the last work.
      * Package-private - should be used for test only.
-     * Clients should only request the JSON formatted result through {@code getLastResultJson}
+     * Clients should only request the JSON formatted result through {@link getLastResultJson}
      */
     HttpTaskResult getLastResult() {
         return (HttpTaskResult) lastResultCached;

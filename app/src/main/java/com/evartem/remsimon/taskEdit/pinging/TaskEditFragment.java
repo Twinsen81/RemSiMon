@@ -23,6 +23,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * A fragment for entering new or editing existing data for a pinging task.
+ * The entered data is verified for consistency by the presenter.
+ */
 public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implements TaskEditView {
 
     @BindView(R.id.btnApply)
@@ -38,6 +42,9 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
     @BindView(R.id.etTimeoutMs)
     EditText etTimeoutMs;
 
+    /**
+     * The task being edited or null if a new task is being created
+     */
     PingingTask task;
 
     @Inject
@@ -57,6 +64,10 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         displayTaskToEdit();
     }
 
+    /**
+     * Fill the UI-elements with data - existing, in case of editing an existing task,
+     * or default values - if this is a new task being created
+     */
     private void displayTaskToEdit() {
         if (task != null) {
             etTitle.setText(task.getDescription());
@@ -64,7 +75,7 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
             etRunEveryMs.setText(String.valueOf(task.getRunTaskEveryMs()));
             etTimeoutMs.setText(String.valueOf(task.settings.getPingTimeoutMs()));
             btnDelete.setEnabled(true);
-        }else {
+        } else {
             etTitle.setText("New task");
             etAddress.setText("8.8.8.8");
             etRunEveryMs.setText("5000");
@@ -72,16 +83,22 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         }
     }
 
+    /**
+     * Sets the task whose properties will be edited
+     */
     @Override
     public void setTaskToEdit(PingingTask task) {
         this.task = task;
     }
 
+    /**
+     * Setting callbacks for edit fields.
+     * The callbacks call the presenter's corresponding user input verification methods.
+     */
     private void setEditTextsCallbacks() {
         etTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -93,13 +110,11 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
         etAddress.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -111,7 +126,6 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
         etTimeoutMs.addTextChangedListener(new TextWatcher() {
@@ -152,6 +166,13 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         });
     }
 
+    /**
+     * On "APPLY" click:
+     * 1. Create a new instance of the pinging task if needed
+     * 2. Fill the instance's fields with new data
+     * 3. Notify the presenter
+     * 4. Return to previous fragment
+     */
     @OnClick(R.id.btnApply)
     void onApplyButtonClicked() {
         if (task == null) // Creating a new task (not editing an existing one)
@@ -167,6 +188,11 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         getFragmentManager().popBackStack();
     }
 
+    /**
+     * On "DELETE" click:
+     * 1. Notify the presenter
+     * 2. Return to previous fragment
+     */
     @OnClick(R.id.btnDelete)
     void onDeleteButtonClicked() {
         presenter.onDeleteClicked(task);
@@ -178,19 +204,21 @@ public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implem
         getFragmentManager().popBackStack();
     }
 
+    /**
+     * Make sure the "APPLY" button is clickable only if the entered data is consistent
+     */
     private void onInputChanged() {
-
         boolean addressIsValid = presenter.isInputValidAddress(etAddress.getText().toString().trim());
         boolean titleIsValid = presenter.isInputValidTitle(etTitle.getText().toString().trim());
         boolean runEveryMsIsValid = presenter.isInputValidRunEveryMs(etRunEveryMs.getText().toString().trim());
         boolean timeoutMsIsValid = presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim());
-
         btnApply.setEnabled(addressIsValid && titleIsValid && runEveryMsIsValid && timeoutMsIsValid);
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        onInputChanged();
+        onInputChanged(); // Disable the "APPLY" button for a new task
     }
 }

@@ -6,9 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.google.common.base.Strings;
-import com.squareup.moshi.Moshi;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;
@@ -16,8 +14,6 @@ import org.joda.time.Instant;
 import java.util.UUID;
 
 import timber.log.Timber;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 
 /**
@@ -65,7 +61,7 @@ public abstract class MonitoringTask {
     /**
      * The task can be in 3 modes:
      * STOPPED - was created but has never been started yet
-     * ACTIVE - the task is executed periodically by the task manager according to the task's {@code runTaskEveryMs}
+     * ACTIVE - the task is executed periodically by the task manager according to the task's runTaskEveryMs
      * DEACTIVATED - the task has been deactivated by the user and is not executed periodically by the task manager
      */
     private volatile int mode;
@@ -78,7 +74,7 @@ public abstract class MonitoringTask {
      * Indicates the stage of the task manager's processing of this task:
      * STOPPED - the task was created but it hasn't been executed by the manager even once
      * IN_PROGRESS - the task is being executed by the manager now
-     * FINISHED_AWAITING_NEXT_EXECUTION - the task was executed by the manager and now awaits the next execution according to the task's {@code runTaskEveryMs}
+     * FINISHED_AWAITING_NEXT_EXECUTION - the task was executed by the manager and now awaits the next execution according to the task's runTaskEveryMs
      */
     @Ignore
     private WorkStage workStage;
@@ -87,7 +83,7 @@ public abstract class MonitoringTask {
 
     /**
      * Indicated the last time the execution of this task was completed.
-     * Is used to calculate the next execution time according to the task's {@code runTaskEveryMs}
+     * Is used to calculate the next execution time according to the task's runTaskEveryMs
      */
     @Ignore
     private Instant lastTimeDidWork;

@@ -17,6 +17,10 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+/**
+ * Verifies the correctness of user input.
+ * Adds/updates/deletes the task in question at the manager.
+ */
 public class TaskEditPresenterImpl extends BasePresenter<TaskEditView> implements TaskEditPresenter {
 
     @Inject

@@ -14,18 +14,12 @@ import android.view.MenuItem;
 
 import com.evartem.remsimon.BaseMVP.view.BaseViewActivity;
 import com.evartem.remsimon.R;
-import com.evartem.remsimon.data.types.http.GeneralApi;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import timber.log.Timber;
-
-
+/**
+ * The main activity of the app.
+ * Upon opening displays the {@link TasksFragment}
+ * Implements standard UI elements of an app (the actionbar, drawer, menus, etc.)
+ */
 public class TasksActivity extends BaseViewActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
@@ -96,7 +90,7 @@ public class TasksActivity extends BaseViewActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
 
-            Retrofit retrofit = new Retrofit.Builder()
+         /*   Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://google.com/")
                     .build();
             GeneralApi generalApi = retrofit.create(GeneralApi.class);
@@ -115,7 +109,7 @@ public class TasksActivity extends BaseViewActivity
                     Timber.e(t.toString());
                 }
             });
-            Timber.i("REQUEST URL: " + call.request().url().toString());
+            Timber.i("REQUEST URL: " + call.request().url().toString());*/
 
             return true;
         }

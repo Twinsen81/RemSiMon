@@ -5,6 +5,8 @@ import com.evartem.remsimon.data.types.pinging.PingingTask;
 
 public interface TaskEditView extends MVPView {
 
+    /**
+     * Sets the task whose properties will be edited
+     */
     void setTaskToEdit(PingingTask task);
-
 }

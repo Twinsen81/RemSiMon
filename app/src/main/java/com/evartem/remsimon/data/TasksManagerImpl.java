@@ -31,19 +31,46 @@ import timber.log.Timber;
  */
 public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runnable {
 
-    //private static TasksManagerImpl INSTANCE = null;
+    /**
+     * A persistent storage for tasks
+     */
     private TasksDataSource dataSource;
-    ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>(); // In-memory cache of the tasks stored in the data source (package access for testing)
 
+    /**
+     * In-memory cache of the tasks stored in the data source (package access for testing)
+     */
+    ConcurrentHashMap<String, MonitoringTask> tasks = new ConcurrentHashMap<>();
+
+    /**
+     * The executor to run the manager itself on
+     */
     private ExecutorService managerThreadExecutor;
+
+    /**
+     * The executors to run I/O and UI operations on
+     */
     private AppExecutors executors;
 
+    /**
+     * Ensures that tasks are loaded from the data source (loadTasksFromDatasource called) only once - when
+     * the app is started
+     */
     private volatile boolean loadedTasksFromDatasource = false;
-    //private volatile boolean successfullyFinishedWorking = false;
+
+    /**
+     * The reference to thread that the manager is running on.
+     * Lets us cancel that thread if needed.
+     */
     private Future managerThread = null;
 
+    /**
+     * Objects that will be notified on the changes in the tasks (adding/deleting/new results)
+     */
     private List<StateChangedListener> listeners = new ArrayList<>();
 
+    /**
+     * A flag to notify the manager's loop to stop executing tasks and exit
+     */
     private volatile boolean stopManager = false;
 
     @Inject
@@ -54,16 +81,13 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     }
 
     /**
-     * Used to force new instance creation (for tests)
-     */
-/*    public static void destroyInstance() {
-        synchronized (TasksManagerImpl.class) {
-            INSTANCE = null;
-        }
-    }*/
-
-    /**
-     * Strating the thread that will execute tasks
+     * Starting the thread that will execute tasks in a loop.
+     * The typical use is:
+     * TasksManagerStarter starter = dependencyInjection.getTasksManagerImplementation();
+     * starter.startManager();
+     * TasksManager manager = starter.getManager();
+     * manager.getCachedTasks();
+     * manager.addTask(...);
      */
     @Override
     public synchronized void startManager() {
@@ -71,11 +95,22 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
             managerThread = managerThreadExecutor.submit(this);
     }
 
+    /**
+     * Getting the TasksManager interface from the TasksManagerStarter interface
+     * @return TasksManager interface to run operations on tasks
+     */
     @Override
     public TasksManager getManager() {
         return this;
     }
 
+    /**
+     * A loop that executes tasks.
+     * Iterates through the list of tasks, and executes those whose next execution
+     * time has come. Notifies listeners if a task has a new result to show to the user.
+     * Before the loop is started, loads tasks from the data source.
+     * After the loop is existed, saves tasks to the data store.
+     */
     @WorkerThread
     @Override
     public void run() {
@@ -84,7 +119,6 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
 
         Timber.i("Tasks manager started");
 
-        // Load tasks that were previously saved to the datasource
         loadTasksFromDatasource();
 
         while (!Thread.interrupted() && !interrupted && !stopManager) {
@@ -94,7 +128,6 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
                 for (MonitoringTask task :
                         tasks.values()) {
                     if (shouldRunTask(task)) {
-                        //Timber.i("Executing task: %s", task.getDescription());
                         task.doTheWork();
                         someTasksWereRun = true;
                         if (task.gotNewResult()) {
@@ -115,12 +148,20 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         Timber.i("Tasks manager finished");
     }
 
+    /**
+     * Determines if the time to execute the task has come based on following:
+     * 1. The task is not being executed at the moment
+     * 2. The task is not deactivated
+     * 3. The task's state and settings signal that it is time to execute it (the pause time elapsed)
+     * @param task The task to run the check on
+     * @return if the time to execute the task has come
+     */
     private boolean shouldRunTask(MonitoringTask task) {
         return !task.isWorking() && task.getMode() != MonitoringTask.MODE_DEACTIVATED && task.isTimeToExecute();
     }
 
     /**
-     * Interrupts the worker thread (run)
+     * Interrupts the worker thread - run()
      *
      * @throws InterruptedException
      */
@@ -144,6 +185,11 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
             dataSource.updateOrAddTasks(new ArrayList<>(tasks.values()));
     }
 
+    /**
+     * Loads tasks from the data source (synchronously).
+     * Call this method when the app starts.
+     * Only the first call is effective, subsequent calls do nothing.
+     */
     @WorkerThread
     private synchronized void loadTasksFromDatasource() {
         if (loadedTasksFromDatasource) return;
@@ -157,13 +203,17 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         loadedTasksFromDatasource = true;
     }
 
-
+    /**
+     * Returns all existing (in the memory) tasks, without checking the data source.
+     */
     @UiThread
-    @Override
-    public List<MonitoringTask> getTasks() {
+    public List<MonitoringTask> getCachedTasks() {
         return new ArrayList<>(tasks.values());
     }
 
+    /**
+     * Returns all existing tasks, retrieves tasks from the data source on the first call.
+     */
     @UiThread
     @Override
     public void getTasks(LoadTasksCallback callback) {
@@ -173,13 +223,17 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         });
     }
 
-    @UiThread
+    /*@UiThread
     @Nullable
     @Override
     public MonitoringTask getTask(String taskId) {
         return tasks.get(taskId);
     }
+*/
 
+    /**
+     * Adds new task or updates an existing one (asynchronously).
+     */
     @UiThread
     @Override
     public void addTask(@NonNull MonitoringTask task) {
@@ -190,6 +244,9 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         notifyListenersFromUI(task, StateChangedListener.ADDED);
     }
 
+    /**
+     * Deletes all tasks from the memory and the data source (asynchronously).
+     */
     @UiThread
     @Override
     public void deleteAllTasks() {
@@ -197,6 +254,9 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         dataSource.deleteAllTasks();
     }
 
+    /**
+     * Deletes a task from the memory and the data source (asynchronously).
+     */
     @UiThread
     @Override
     public void deleteTask(@NonNull MonitoringTask task) {
@@ -207,30 +267,48 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
     }
 
 
+    /**
+     * Notifies listeners about a change (status update) in the task list (a task added/deleted/got a new result).
+     * This method just executes notifyListenersFromUI on the UI thread.
+     * @param changedTask The task that the change is related to. Null if a few tasks are affected.
+     * @param whatChanged The reason for the status updated - what changed in the task.
+     */
     @WorkerThread
     private void notifyListeners(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged) {
         executors.mainThread().execute(() -> notifyListenersFromUI(changedTask, whatChanged));
     }
 
+    /**
+     * Notifies listeners about a change (status update) in the task list (a task added/deleted/got a new result).
+     * Should be called from UI thread, since the method performs the notification call to the UI thread.
+     * @param changedTask The task that the change is related to. Null if a few tasks are affected.
+     * @param whatChanged The reason for the status updated - what changed in the task.
+     */
     @UiThread
     private void notifyListenersFromUI(@Nullable MonitoringTask changedTask, @StateChangedListener.WhatChanged int whatChanged) {
-        int taskPositionInTheList = getTasks().indexOf(changedTask);
+        int taskPositionInTheList = changedTask != null ? getCachedTasks().indexOf(changedTask) : -1;
         for (StateChangedListener listener :
                 listeners) {
             listener.onTaskStateChanged(changedTask, taskPositionInTheList, whatChanged);
         }
     }
 
+    /**
+     * Adds a listener that will be notified about changes in the task list (a task added/deleted/got a new result).
+     * @param callback The {@link StateChangedListener} implementation to listen to the changes.
+     */
+    @UiThread
     @Override
     public void addTaskStateChangedListener(@NonNull StateChangedListener callback) {
         Timber.i("Adding listener: %s", callback.toString());
         if (listeners.size() > 0) // Generally, there should be only one listener - the tasks activity
-        {
             Timber.wtf("Adding second listener. Possible memory leak!");
-        }
         listeners.add(callback);
     }
 
+    /**
+     * Removes the previously added callback.
+     */
     @Override
     public void removeTaskStateChangedListener(@NonNull StateChangedListener callback) {
         Timber.i("Removing listener: %s", callback.toString());
