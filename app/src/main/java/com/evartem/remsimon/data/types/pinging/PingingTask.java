@@ -32,6 +32,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
         indices = @Index({"taskId"}))
 public class PingingTask extends MonitoringTask {
 
+    /**
+     * The component that actually performs pinging.
+     */
     @Ignore
     @Inject
     Pinger pinger;

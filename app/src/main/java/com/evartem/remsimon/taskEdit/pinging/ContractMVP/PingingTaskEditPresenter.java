@@ -3,7 +3,7 @@ package com.evartem.remsimon.taskEdit.pinging.ContractMVP;
 import com.evartem.remsimon.BaseMVP.presenter.Presenter;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 
-public interface TaskEditPresenter extends Presenter {
+public interface PingingTaskEditPresenter extends Presenter {
 
     // This set of methods verifies the correctness of the entered data
     boolean isInputValidTitle(String title);

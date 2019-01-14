@@ -5,8 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.evartem.remsimon.DI.base.BaseActivityModule;
 import com.evartem.remsimon.DI.scopes.PerActivity;
 import com.evartem.remsimon.DI.scopes.PerFragment;
-import com.evartem.remsimon.taskEdit.pinging.DI.TaskEditFragmentModule;
-import com.evartem.remsimon.taskEdit.pinging.TaskEditFragment;
+import com.evartem.remsimon.taskEdit.pinging.DI.PingingTaskEditFragmentModule;
+import com.evartem.remsimon.taskEdit.pinging.PingingTaskEditFragment;
 import com.evartem.remsimon.tasks.TasksActivity;
 import com.evartem.remsimon.tasks.TasksFragment;
 
@@ -18,8 +18,8 @@ import dagger.android.ContributesAndroidInjector;
 public abstract class TasksActivityModule {
 
     @PerFragment
-    @ContributesAndroidInjector(modules = TaskEditFragmentModule.class)
-    abstract TaskEditFragment taskEditFragmentInjector();
+    @ContributesAndroidInjector(modules = PingingTaskEditFragmentModule.class)
+    abstract PingingTaskEditFragment taskEditFragmentInjector();
 
     @PerFragment
     @ContributesAndroidInjector(modules = TasksFragmentModule.class)

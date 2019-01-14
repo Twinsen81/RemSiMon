@@ -1,17 +1,11 @@
 package com.evartem.remsimon.DI;
 
-import android.arch.persistence.room.Ignore;
-
 import com.evartem.remsimon.DI.scopes.PerApplication;
 import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.http.HttpTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
-import com.squareup.moshi.JsonAdapter;
-import com.squareup.moshi.Moshi;
 
 import dagger.Component;
-import dagger.Provides;
 import dagger.android.AndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 

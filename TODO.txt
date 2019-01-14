@@ -1,10 +1,10 @@
-- Add missing comments: tasks, DI-modules
 
-https://habr.com/company/redmadrobot/blog/428525/
-- UI for HttpTask
+- UI for HttpTask - adding a task
+http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
+- The rest of the UI for HttpTask
 - UI tests with espresso (special test dagger-component?)
 
-? inject adapter: http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
+? inject adapter:
 
 - WorkManager: https://medium.com/@nlg.tuan.kiet/dagger-2-setup-with-workmanager-a-complete-step-by-step-guild-bb9f474bde37
 

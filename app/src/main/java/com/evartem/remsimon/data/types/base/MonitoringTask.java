@@ -232,14 +232,4 @@ public abstract class MonitoringTask {
     public boolean equals(Object obj) {
         return obj instanceof MonitoringTask && ((MonitoringTask) obj).getTaskId().equals(taskId);
     }
-
-/*    public synchronized void copyPropertiesFrom(MonitoringTask sourceTask) {
-        description = sourceTask.description;
-        lastResultCached = sourceTask.lastResultCached;
-        lastResultJson = sourceTask.lastResultJson;
-        lastTimeDidWork = sourceTask.lastTimeDidWork;
-        mode = sourceTask.mode;
-        runTaskEveryMs = sourceTask.runTaskEveryMs;
-        workStage = sourceTask.workStage;
-    }*/
 }

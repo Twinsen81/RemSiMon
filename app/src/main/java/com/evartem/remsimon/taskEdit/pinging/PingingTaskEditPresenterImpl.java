@@ -7,8 +7,8 @@ import com.evartem.remsimon.BaseMVP.presenter.BasePresenter;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.types.pinging.HybridPinger;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditPresenter;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditView;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditPresenter;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditView;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,13 +21,13 @@ import timber.log.Timber;
  * Verifies the correctness of user input.
  * Adds/updates/deletes the task in question at the manager.
  */
-public class TaskEditPresenterImpl extends BasePresenter<TaskEditView> implements TaskEditPresenter {
+public class PingingTaskEditPresenterImpl extends BasePresenter<PingingTaskEditView> implements PingingTaskEditPresenter {
 
     @Inject
     TasksManager manager;
 
     @Inject
-    TaskEditPresenterImpl(TaskEditView view) {
+    PingingTaskEditPresenterImpl(PingingTaskEditView view) {
         super(view);
     }
 

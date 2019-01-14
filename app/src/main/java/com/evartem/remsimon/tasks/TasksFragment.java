@@ -13,7 +13,7 @@ import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.pinging.TaskEditFragment;
+import com.evartem.remsimon.taskEdit.pinging.PingingTaskEditFragment;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
 import com.evartem.remsimon.tasks.ContractMVP.TasksView;
 
@@ -34,6 +34,9 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
     @BindView(R.id.rvTasks)
     RecyclerView rvTasks;
 
+    /**
+     * Supporting the swipe-down-to-refresh gesture
+     */
     @BindView(R.id.swipe_container)
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -46,6 +49,9 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
         return inflater.inflate(R.layout.tasks_fragment, container, false);
     }
 
+    /**
+     * When the view is ready..
+     */
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
@@ -53,6 +59,9 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
+    /**
+     * Initializing the recycler view
+     */
     private void setupRecyclerView() {
         rvTasks.setAdapter(tasksAdapter);
         rvTasks.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -60,42 +69,58 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
 
     @OnClick(R.id.fab)
     void onFabClick() {
-        openEditTaskFragment(new TaskEditFragment());
+        openFragment(new PingingTaskEditFragment());
     }
 
+    /**
+     * Opening the corresponding fragment to edit the task of a certain type
+     */
     @Override
     public void editTask(MonitoringTask task) {
         Fragment fragment = null;
 
+        // PingingTask
         if (task instanceof PingingTask) {
-            TaskEditFragment taskEditFragment = new TaskEditFragment();
+            PingingTaskEditFragment taskEditFragment = new PingingTaskEditFragment();
             taskEditFragment.setTaskToEdit((PingingTask) task);
             fragment = taskEditFragment;
         }
+
         if (fragment != null)
-            openEditTaskFragment(fragment);
+            openFragment(fragment);
     }
 
-    private void openEditTaskFragment(Fragment fragment) {
+    /**
+     * A helper function for opening fragments
+     */
+    private void openFragment(Fragment fragment) {
         getFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
     }
 
+    /**
+     * Called by the presenter to display all tasks
+     */
     @Override
     public void displayTasks(List<MonitoringTask> tasks) {
         tasksAdapter.updateTasks(tasks);
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    /**
+     * Called by the presenter when a particular task has got a new result available for the user
+     */
     @Override
     public void displayChangedState(MonitoringTask task, int positionInTheList) {
-        //Timber.i("displayChangedState for position: " + positionInTheList + ", task: " + task.getDescription());
         if (tasksAdapter != null && positionInTheList >= 0)
-            tasksAdapter.notifyItemChanged(positionInTheList);
+            tasksAdapter.notifyItemChanged(positionInTheList); // Update just the task changed
     }
 
+    /**
+     * The user is refreshing manually
+     */
     @Override
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);

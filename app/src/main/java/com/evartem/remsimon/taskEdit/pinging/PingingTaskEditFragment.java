@@ -15,8 +15,8 @@ import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditPresenter;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.TaskEditView;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditPresenter;
+import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditView;
 
 import javax.inject.Inject;
 
@@ -27,7 +27,7 @@ import butterknife.OnClick;
  * A fragment for entering new or editing existing data for a pinging task.
  * The entered data is verified for consistency by the presenter.
  */
-public class TaskEditFragment extends BaseViewFragment<TaskEditPresenter> implements TaskEditView {
+public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPresenter> implements PingingTaskEditView {
 
     @BindView(R.id.btnApply)
     Button btnApply;

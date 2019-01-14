@@ -8,6 +8,10 @@ import android.support.annotation.VisibleForTesting;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Provides the executors that will be used to run
+ * various jobs on (e.g. disk io access for the data source)
+ */
 public class AppExecutors {
 
     private static final int THREAD_COUNT = 3;
