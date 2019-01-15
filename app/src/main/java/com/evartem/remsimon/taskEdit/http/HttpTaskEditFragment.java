@@ -1,4 +1,4 @@
-package com.evartem.remsimon.taskEdit.pinging;
+package com.evartem.remsimon.taskEdit.http;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,8 +15,8 @@ import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditPresenter;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditView;
+import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditPresenter;
+import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditView;
 
 import javax.inject.Inject;
 
@@ -27,7 +27,7 @@ import butterknife.OnClick;
  * A fragment for entering new or editing existing data for a pinging task.
  * The entered data is verified for consistency by the presenter.
  */
-public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPresenter> implements PingingTaskEditView {
+public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter> implements HttpTaskEditView {
 
     @BindView(R.id.btnApply)
     Button btnApply;
