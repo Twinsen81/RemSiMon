@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "52edb9d6544e4ac234c627782768330a",
+    "identityHash": "e71bf1f1be1e6b9eacb43ae5cc2f10d7",
     "entities": [
       {
         "tableName": "PingingTask",
@@ -68,11 +68,88 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "HttpTask",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` TEXT NOT NULL, `lastResultJson` TEXT NOT NULL, `description` TEXT, `runTaskEveryMs` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `httpAddress` TEXT, `displayLayout` TEXT, `historyDepth` INTEGER, `fields` TEXT, PRIMARY KEY(`taskId`))",
+        "fields": [
+          {
+            "fieldPath": "taskId",
+            "columnName": "taskId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastResultJson",
+            "columnName": "lastResultJson",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "runTaskEveryMs",
+            "columnName": "runTaskEveryMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mode",
+            "columnName": "mode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "settings.httpAddress",
+            "columnName": "httpAddress",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "settings.displayLayout",
+            "columnName": "displayLayout",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "settings.historyDepth",
+            "columnName": "historyDepth",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "settings.fields",
+            "columnName": "fields",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "taskId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_HttpTask_taskId",
+            "unique": false,
+            "columnNames": [
+              "taskId"
+            ],
+            "createSql": "CREATE  INDEX `index_HttpTask_taskId` ON `${TABLE_NAME}` (`taskId`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"52edb9d6544e4ac234c627782768330a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e71bf1f1be1e6b9eacb43ae5cc2f10d7\")"
     ]
   }
 }

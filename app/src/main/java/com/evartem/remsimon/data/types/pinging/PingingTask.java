@@ -82,7 +82,6 @@ public class PingingTask extends MonitoringTask {
     /**
      * Injecting dependencies. Should be called right after getting the task from the Room.
      * Creates the result object from the saved in the Room JSON string.
-     * @param appComponent
      */
     public void injectDependencies(AppComponent appComponent) {
         appComponent.inject(this);

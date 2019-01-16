@@ -9,7 +9,7 @@ public interface HttpTaskEditPresenter extends Presenter {
     boolean isInputValidTitle(String title);
     boolean isInputValidAddress(String address);
     boolean isInputValidRunEveryMs(String runEveryMs);
-    boolean isInputValidTimeoutMs(String timeoutMs);
+    boolean isInputValidHistoryDepth(String historyDepth);
 
     /**
      * User wants to save the edited data

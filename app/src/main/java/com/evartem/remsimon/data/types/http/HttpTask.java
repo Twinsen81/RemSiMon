@@ -7,6 +7,7 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
+import com.evartem.remsimon.DI.AppComponent;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskType;
 import com.google.common.base.Strings;
@@ -93,6 +94,25 @@ public class HttpTask extends MonitoringTask {
         return task;
     }
 
+    /**
+     * Injecting dependencies. Should be called right after getting the task from the Room.
+     * Creates the result object from the saved in the Room JSON string.
+     */
+    public void injectDependencies(AppComponent appComponent) {
+        appComponent.inject(this);
+
+        // Empty lastResultCached is created in the base class, but if we already have a JSON-serialized result in the Room DB -> unpack it
+        if (!Strings.isNullOrEmpty(lastResultJson)) {
+            try {
+                lastResultCached = jsonAdapter.fromJson(lastResultJson);
+            } catch (IOException e) {
+                Timber.e(e);
+                lastResultCached = new HttpTaskResult();
+            }
+        } else
+            lastResultCached = new HttpTaskResult();
+    }
+
     @Override
     public String getType() {
         return TaskType.HTTP;
@@ -173,7 +193,7 @@ public class HttpTask extends MonitoringTask {
     /**
      * Returns the result of the last work.
      * Package-private - should be used for test only.
-     * Clients should only request the JSON formatted result through {@link getLastResultJson}
+     * Clients should only request the JSON formatted result through getLastResultJson
      */
     HttpTaskResult getLastResult() {
         return (HttpTaskResult) lastResultCached;

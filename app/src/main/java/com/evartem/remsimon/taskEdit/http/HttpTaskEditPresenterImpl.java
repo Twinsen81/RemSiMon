@@ -5,11 +5,10 @@ import android.support.annotation.Nullable;
 
 import com.evartem.remsimon.BaseMVP.presenter.BasePresenter;
 import com.evartem.remsimon.data.TasksManager;
+import com.evartem.remsimon.data.types.http.HttpTask;
 import com.evartem.remsimon.data.types.pinging.HybridPinger;
-import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditPresenter;
 import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditView;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditView;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
@@ -61,10 +60,10 @@ public class HttpTaskEditPresenterImpl extends BasePresenter<HttpTaskEditView> i
     }
 
     @Override
-    public boolean isInputValidTimeoutMs(String timeoutMs) {
+    public boolean isInputValidHistoryDepth(String historyDepth) {
         try {
-            int ms = Integer.valueOf(timeoutMs);
-            if (ms > 0 && ms < 10000)
+            int hd = Integer.valueOf(historyDepth);
+            if (hd > 0 && hd < 50)
                 return true;
         } catch (NumberFormatException ignored) {
         }
@@ -72,14 +71,14 @@ public class HttpTaskEditPresenterImpl extends BasePresenter<HttpTaskEditView> i
     }
 
     @Override
-    public void onApplyClicked(@NotNull PingingTask task) {
+    public void onApplyClicked(@NotNull HttpTask task) {
         manager.addTask(task);
         manager.forceSaveAll2Datasource();
     }
 
 
     @Override
-    public void onDeleteClicked(PingingTask task) {
+    public void onDeleteClicked(HttpTask task) {
         manager.deleteTask(task);
         manager.forceSaveAll2Datasource();
     }

@@ -111,6 +111,9 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
                 holder.tvTime.setText(formatPeriod(result.pingOK ? result.uptimeMs : result.downtimeMs, res));
                 holder.tvSuccessTime.setText(formatDateTime(result.lastSuccessTime, res));
             }
+        }else
+        {
+            holder.tvAddress.setText(vhTask.getLastResultJson());
         }
     }
 
