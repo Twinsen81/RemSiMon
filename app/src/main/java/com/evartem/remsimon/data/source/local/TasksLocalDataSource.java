@@ -8,6 +8,7 @@ import android.support.annotation.WorkerThread;
 import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.source.TasksDataSource;
+import com.evartem.remsimon.data.types.http.HttpTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.util.AppExecutors;
 
@@ -36,6 +37,9 @@ public class TasksLocalDataSource implements TasksDataSource {
      */
     @Inject
     PingingTaskDao pingingTaskDao;
+
+    @Inject
+    HttpTaskDao httpTaskDao;
 
     @Inject
     TasksLocalDataSource() {}
@@ -81,6 +85,13 @@ public class TasksLocalDataSource implements TasksDataSource {
             tasks.addAll(pingingTasks);
         }
 
+        // HttpTask
+        List<HttpTask> httpTask = httpTaskDao.getAll();
+        if (httpTask != null) {
+            for (HttpTask task : httpTask) task.injectDependencies(app.getAppComponent());
+            tasks.addAll(httpTask);
+        }
+
         return tasks;
     }
 
@@ -92,6 +103,10 @@ public class TasksLocalDataSource implements TasksDataSource {
             // PingingTask
             if (task instanceof PingingTask)
                 pingingTaskDao.addOrReplace((PingingTask)task);
+
+            // HttpTask
+            if (task instanceof HttpTask)
+                httpTaskDao.addOrReplace((HttpTask)task);
         }
     }
 
@@ -99,6 +114,7 @@ public class TasksLocalDataSource implements TasksDataSource {
     @UiThread
     public void deleteAllTasks() {
         executors.diskIO().execute(() -> pingingTaskDao.deleteAll());
+        executors.diskIO().execute(() -> httpTaskDao.deleteAll());
     }
 
     @Override
@@ -109,10 +125,13 @@ public class TasksLocalDataSource implements TasksDataSource {
 
     @WorkerThread
     private void deleteTaskByType(MonitoringTask task) {
-
         // PingingTask
         if (task instanceof PingingTask)
             pingingTaskDao.deleteById(task.getTaskId());
+
+        // HttpTask
+        if (task instanceof HttpTask)
+            httpTaskDao.deleteById(task.getTaskId());
     }
 
 }

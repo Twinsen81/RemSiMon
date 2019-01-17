@@ -7,6 +7,7 @@ import com.evartem.remsimon.DI.scopes.PerApplication;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.TasksManagerImpl;
 import com.evartem.remsimon.data.source.TasksDataSource;
+import com.evartem.remsimon.data.source.local.HttpTaskDao;
 import com.evartem.remsimon.data.source.local.PingingTaskDao;
 import com.evartem.remsimon.data.source.local.TasksDatabase;
 import com.evartem.remsimon.data.source.local.TasksLocalDataSource;
@@ -56,6 +57,12 @@ abstract class TasksManagerModule {
     @Provides
     static PingingTaskDao getPingingTaskDao(TasksDatabase db) {
         return db.pingingTaskDao();
+    }
+
+    @PerApplication
+    @Provides
+    static HttpTaskDao getHttpTaskDao(TasksDatabase db) {
+        return db.httpTaskDao();
     }
 
     @PerApplication

@@ -20,7 +20,7 @@ public interface AppComponent extends AndroidInjector<TheApp> {
     abstract class Builder extends AndroidInjector.Builder<TheApp> {
     }
 
-    void inject(HttpTask httpTask);
     void inject(PingingTask pingingTask);
+    void inject(HttpTask httpTask);
 }
 

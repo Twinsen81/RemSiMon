@@ -1,4 +1,4 @@
-package com.evartem.remsimon.taskEdit.pinging;
+package com.evartem.remsimon.taskEdit.http;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,9 +14,9 @@ import android.widget.EditText;
 import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.TheApp;
-import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditPresenter;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditView;
+import com.evartem.remsimon.data.types.http.HttpTask;
+import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditPresenter;
+import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditView;
 
 import javax.inject.Inject;
 
@@ -27,12 +27,14 @@ import butterknife.OnClick;
  * A fragment for entering new or editing existing data for a pinging task.
  * The entered data is verified for consistency by the presenter.
  */
-public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPresenter> implements PingingTaskEditView {
+public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter> implements HttpTaskEditView {
 
     @BindView(R.id.btnApply)
     Button btnApply;
     @BindView(R.id.btnDelete)
     Button btnDelete;
+    @BindView(R.id.btnTest)
+    Button btnTest;
     @BindView(R.id.etLabel)
     EditText etTitle;
     @BindView(R.id.etAddress)
@@ -40,12 +42,12 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
     @BindView(R.id.etRunEveryMs)
     EditText etRunEveryMs;
     @BindView(R.id.etHistoryDepth)
-    EditText etTimeoutMs;
+    EditText etHistoryDepth;
 
     /**
      * The task being edited or null if a new task is being created
      */
-    PingingTask task;
+    HttpTask task;
 
     @Inject
     TheApp app;
@@ -54,7 +56,7 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.pinging_task_edit_fragment, container, false);
+        return inflater.inflate(R.layout.http_task_edit_fragment, container, false);
     }
 
     @Override
@@ -71,15 +73,15 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
     private void displayTaskToEdit() {
         if (task != null) {
             etTitle.setText(task.getDescription());
-            etAddress.setText(task.settings.getPingAddress());
+            etAddress.setText(task.settings.getHttpAddress());
             etRunEveryMs.setText(String.valueOf(task.getRunTaskEveryMs()));
-            etTimeoutMs.setText(String.valueOf(task.settings.getPingTimeoutMs()));
+            etHistoryDepth.setText(String.valueOf(task.settings.getHistoryDepth()));
             btnDelete.setEnabled(true);
         } else {
             etTitle.setText("New task");
             etAddress.setText("8.8.8.8");
-            etRunEveryMs.setText("5000");
-            etTimeoutMs.setText("2000");
+            etRunEveryMs.setText("10000");
+            etHistoryDepth.setText("1");
         }
     }
 
@@ -87,7 +89,7 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
      * Sets the task whose properties will be edited
      */
     @Override
-    public void setTaskToEdit(PingingTask task) {
+    public void setTaskToEdit(HttpTask task) {
         this.task = task;
     }
 
@@ -128,7 +130,7 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
             public void afterTextChanged(Editable s) {
             }
         });
-        etTimeoutMs.addTextChangedListener(new TextWatcher() {
+        etHistoryDepth.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -136,8 +138,8 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                boolean timeoutMsIsValid = presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim());
-                etTimeoutMs.setError(timeoutMsIsValid ? null : "Enter a valid number!");
+                boolean timeoutMsIsValid = presenter.isInputValidHistoryDepth(etHistoryDepth.getText().toString().trim());
+                etHistoryDepth.setError(timeoutMsIsValid ? null : "Enter a valid number!");
                 onInputChanged();
             }
 
@@ -177,13 +179,13 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
     void onApplyButtonClicked() {
         if (task == null) // Creating a new task (not editing an existing one)
         {
-            task = new PingingTask("A pinging task");
+            task = new HttpTask("An JSON task");
             app.getAppComponent().inject(task);
         }
         task.setDescription(etTitle.getText().toString().trim());
         task.setRunTaskEveryMs(Integer.valueOf(etRunEveryMs.getText().toString().trim()));
-        task.settings.setPingAddress(etAddress.getText().toString().trim());
-        task.settings.setPingTimeoutMs(Integer.valueOf(etTimeoutMs.getText().toString().trim()));
+        task.settings.setHttpAddress(etAddress.getText().toString().trim());
+        task.settings.setHistoryDepth(Integer.valueOf(etHistoryDepth.getText().toString().trim()));
         presenter.onApplyClicked(task);
         getFragmentManager().popBackStack();
     }
@@ -211,8 +213,9 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
         boolean addressIsValid = presenter.isInputValidAddress(etAddress.getText().toString().trim());
         boolean titleIsValid = presenter.isInputValidTitle(etTitle.getText().toString().trim());
         boolean runEveryMsIsValid = presenter.isInputValidRunEveryMs(etRunEveryMs.getText().toString().trim());
-        boolean timeoutMsIsValid = presenter.isInputValidTimeoutMs(etTimeoutMs.getText().toString().trim());
+        boolean timeoutMsIsValid = presenter.isInputValidHistoryDepth(etHistoryDepth.getText().toString().trim());
         btnApply.setEnabled(addressIsValid && titleIsValid && runEveryMsIsValid && timeoutMsIsValid);
+        btnTest.setEnabled(btnApply.isEnabled());
     }
 
 

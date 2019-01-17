@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/windowBackground">
+
+    <TextView
+        android:id="@+id/tvRunEveryMs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="end"
+        android:text="@string/run_every"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etRunEveryMs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etRunEveryMs" />
+
+    <TextView
+        android:id="@+id/tvRunEveryUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/ms"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etRunEveryMs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etRunEveryMs" />
+
+    <TextView
+        android:id="@+id/tvTimeoutUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/requests"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etHistoryDepth"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etHistoryDepth" />
+
+    <EditText
+        android:id="@+id/etLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="@string/short_description"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="New task"/>
+
+    <EditText
+        android:id="@+id/etAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@null"
+        android:ems="10"
+        android:hint="@string/httpRestAddressHint"
+        android:inputType="textUri"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toBottomOf="@+id/etRunEveryMs" />
+
+    <EditText
+        android:id="@+id/etFields"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@null"
+        android:ems="10"
+        android:hint="@string/fieldsHint"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toBottomOf="@+id/etAddress" />
+
+    <TextView
+        android:id="@+id/tvLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="end"
+        android:text="@string/label"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/etLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etLabel" />
+
+    <TextView
+        android:id="@+id/tvAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="end"
+        android:text="@string/addressHttp"
+        app:layout_constraintBottom_toBottomOf="@+id/etAddress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etAddress" />
+
+    <TextView
+        android:id="@+id/tvFields"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="end"
+        android:text="@string/json_fields"
+        app:layout_constraintBottom_toBottomOf="@+id/etFields"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etFields" />
+
+    <TextView
+        android:id="@+id/tvHistoryDepth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="end"
+        android:text="@string/historyDepth"
+        app:layout_constraintBottom_toBottomOf="@+id/etHistoryDepth"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etHistoryDepth" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barAfterAllTextLabels"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="tvAddress, tvLabel, tvRunEveryMs, tvHistoryDepth" />
+
+    <EditText
+        android:id="@+id/etRunEveryMs"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:gravity="end"
+        android:hint="@string/how_often_the_task_is_run"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toBottomOf="@+id/etLabel"
+        tools:text="10000" />
+
+    <EditText
+        android:id="@+id/etHistoryDepth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:gravity="end"
+        android:hint="@string/historyDepthHint"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+        app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+        app:layout_constraintTop_toBottomOf="@+id/etFields"
+        tools:text="1" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barBeforeMs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="left"
+        app:constraint_referenced_ids="tvRunEveryUnits, tvTimeoutUnits" />
+
+    <Button
+        android:id="@+id/btnTest"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_purple"
+        android:text="@string/test"
+        app:layout_constraintEnd_toStartOf="@+id/btnApply"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/btnDelete"
+        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth" />
+
+    <Button
+        android:id="@+id/btnApply"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:text="@string/apply"
+        app:layout_constraintEnd_toStartOf="@+id/btnCancel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/btnTest"
+        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth" />
+
+    <Button
+        android:id="@+id/btnCancel"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/ic_launcher_background"
+        android:text="@string/cancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnApply"
+        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth"
+        tools:text="CANCEL" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:enabled="false"
+        android:text="@string/delete"
+        app:layout_constraintEnd_toStartOf="@+id/btnTest"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth"
+        tools:text="DELETE" />
+
+</android.support.constraint.ConstraintLayout>
