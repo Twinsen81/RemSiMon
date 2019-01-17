@@ -11,8 +11,4 @@ public final class TaskType {
 
     public static final String PINGING = "PingingTask";
     public static final String HTTP = "HttpTask";
-
-    public static List<String> getAllTypes() {
-        return Arrays.asList(PINGING, HTTP);
-    }
 }

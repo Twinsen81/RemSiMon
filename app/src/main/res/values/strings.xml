@@ -31,4 +31,7 @@
     <string name="fieldsHint">Comma separated names of fields</string>
     <string name="httpRestAddressHint">http://someserver.com?param=1</string>
     <string name="json_fields">JSON fields</string>
+    <string name="taskType_Pinging">Pinging task</string>
+    <string name="taskType_Http">JSON request task</string>
+    <string name="taskTypeDialogCaption">Create a task</string>
 </resources>

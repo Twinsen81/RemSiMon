@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.evartem.remsimon.DI.base.BaseActivityModule;
 import com.evartem.remsimon.DI.scopes.PerActivity;
 import com.evartem.remsimon.DI.scopes.PerFragment;
+import com.evartem.remsimon.taskEdit.http.DI.HttpTaskEditFragmentModule;
+import com.evartem.remsimon.taskEdit.http.HttpTaskEditFragment;
 import com.evartem.remsimon.taskEdit.pinging.DI.PingingTaskEditFragmentModule;
 import com.evartem.remsimon.taskEdit.pinging.PingingTaskEditFragment;
 import com.evartem.remsimon.tasks.TasksActivity;
@@ -19,7 +21,11 @@ public abstract class TasksActivityModule {
 
     @PerFragment
     @ContributesAndroidInjector(modules = PingingTaskEditFragmentModule.class)
-    abstract PingingTaskEditFragment taskEditFragmentInjector();
+    abstract PingingTaskEditFragment pingingTaskEditFragmentInjector();
+
+    @PerFragment
+    @ContributesAndroidInjector(modules = HttpTaskEditFragmentModule.class)
+    abstract HttpTaskEditFragment httpTaskEditFragmentInjector();
 
     @PerFragment
     @ContributesAndroidInjector(modules = TasksFragmentModule.class)

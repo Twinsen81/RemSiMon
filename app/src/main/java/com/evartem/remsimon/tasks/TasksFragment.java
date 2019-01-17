@@ -1,10 +1,12 @@
 package com.evartem.remsimon.tasks;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +14,17 @@ import android.view.ViewGroup;
 import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.data.types.base.TaskType;
+import com.evartem.remsimon.data.types.http.HttpTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
+import com.evartem.remsimon.taskEdit.http.HttpTaskEditFragment;
 import com.evartem.remsimon.taskEdit.pinging.PingingTaskEditFragment;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
 import com.evartem.remsimon.tasks.ContractMVP.TasksView;
+import com.evartem.remsimon.util.Helper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -27,7 +34,6 @@ import butterknife.OnClick;
 /**
  * Displays the list of existing tasks.
  * Each task is rendered by the corresponding adapter.
- *
  */
 public class TasksFragment extends BaseViewFragment<TasksPresenter> implements TasksView, SwipeRefreshLayout.OnRefreshListener {
 
@@ -69,7 +75,23 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
 
     @OnClick(R.id.fab)
     void onFabClick() {
-        openFragment(new PingingTaskEditFragment());
+
+        AlertDialog.Builder taskTypeSelectionDialog = new AlertDialog.Builder(getContext());
+        taskTypeSelectionDialog.setTitle(R.string.taskTypeDialogCaption);
+        Pair<List<String>, List<String>> typeNames = Helper.getAllTypes(getContext());
+
+        taskTypeSelectionDialog.setItems(typeNames.second.toArray(new String[0]), (dialog, which) -> {
+            createNewTask(typeNames.first.get(which));
+        });
+        taskTypeSelectionDialog.create().show();
+    }
+
+
+    private void createNewTask(String taskType) {
+        if (taskType.equals(TaskType.PINGING))
+            openFragment(new PingingTaskEditFragment());
+        if (taskType.equals(TaskType.HTTP))
+            openFragment(new HttpTaskEditFragment());
     }
 
     /**
@@ -83,6 +105,13 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
         if (task instanceof PingingTask) {
             PingingTaskEditFragment taskEditFragment = new PingingTaskEditFragment();
             taskEditFragment.setTaskToEdit((PingingTask) task);
+            fragment = taskEditFragment;
+        }
+
+        // HttpTask
+        if (task instanceof HttpTask) {
+            HttpTaskEditFragment taskEditFragment = new HttpTaskEditFragment();
+            taskEditFragment.setTaskToEdit((HttpTask) task);
             fragment = taskEditFragment;
         }
 

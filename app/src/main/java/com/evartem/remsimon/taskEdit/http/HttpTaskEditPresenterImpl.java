@@ -49,6 +49,11 @@ public class HttpTaskEditPresenterImpl extends BasePresenter<HttpTaskEditView> i
     }
 
     @Override
+    public boolean isInputValidFields(String fields) {
+        return !Strings.isNullOrEmpty(fields);
+    }
+
+    @Override
     public boolean isInputValidRunEveryMs(String runEveryMs) {
         try {
             int ms = Integer.valueOf(runEveryMs);

@@ -43,6 +43,8 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
     EditText etRunEveryMs;
     @BindView(R.id.etHistoryDepth)
     EditText etHistoryDepth;
+    @BindView(R.id.etFields)
+    EditText etFields;
 
     /**
      * The task being edited or null if a new task is being created
@@ -76,11 +78,13 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
             etAddress.setText(task.settings.getHttpAddress());
             etRunEveryMs.setText(String.valueOf(task.getRunTaskEveryMs()));
             etHistoryDepth.setText(String.valueOf(task.settings.getHistoryDepth()));
+            etFields.setText(task.settings.getFields());
             btnDelete.setEnabled(true);
         } else {
-            etTitle.setText("New task");
-            etAddress.setText("8.8.8.8");
+            etTitle.setText("JSON task");
+            etAddress.setText("https://jsonplaceholder.typicode.com/todos/1");
             etRunEveryMs.setText("10000");
+            etFields.setText("userId");
             etHistoryDepth.setText("1");
         }
     }
@@ -166,6 +170,22 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
 
             }
         });
+        etFields.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                boolean fieldIsValid = presenter.isInputValidFields(etFields.getText().toString().trim());
+                etTitle.setError(fieldIsValid ? null : "Must not be empty!");
+                onInputChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     /**
@@ -179,12 +199,13 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
     void onApplyButtonClicked() {
         if (task == null) // Creating a new task (not editing an existing one)
         {
-            task = new HttpTask("An JSON task");
+            task = new HttpTask("A JSON task");
             app.getAppComponent().inject(task);
         }
         task.setDescription(etTitle.getText().toString().trim());
         task.setRunTaskEveryMs(Integer.valueOf(etRunEveryMs.getText().toString().trim()));
         task.settings.setHttpAddress(etAddress.getText().toString().trim());
+        task.settings.setFields(etFields.getText().toString().trim());
         task.settings.setHistoryDepth(Integer.valueOf(etHistoryDepth.getText().toString().trim()));
         presenter.onApplyClicked(task);
         getFragmentManager().popBackStack();

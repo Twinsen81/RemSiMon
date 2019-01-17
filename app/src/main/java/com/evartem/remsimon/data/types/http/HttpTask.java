@@ -69,17 +69,6 @@ public class HttpTask extends MonitoringTask {
      */
     public HttpTask(@NonNull String description, int mode, String lastResultJson) {
         super(description, mode, lastResultJson);
-
-        // Empty lastResultCached is created in the base class, but if we have already a JSON-serialized result in the Room -> unpack it
-        if (!Strings.isNullOrEmpty(lastResultJson)) {
-            try {
-                lastResultCached = jsonAdapter.fromJson(lastResultJson);
-            } catch (IOException e) {
-                Timber.e(e);
-                lastResultCached = new HttpTaskResult();
-            }
-        } else
-            lastResultCached = new HttpTaskResult();
     }
 
     /**
