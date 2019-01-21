@@ -138,7 +138,11 @@ public class HttpTask extends MonitoringTask {
 
     private void formatAndSetResult(Response<ResponseBody> response, Map<String, String> keysValues, String exceptionText, HttpTaskSettings httpSettings) {
 
-        HttpTaskResult result = (HttpTaskResult) lastResultCached;
+        HttpTaskResult result;
+        if (lastResultCached instanceof HttpTaskResult)
+            result = (HttpTaskResult) lastResultCached; // Retrieve the previous result
+        else
+            result = new HttpTaskResult(); // or create a new one if the task has just been created
 
         if (response == null || exceptionText.length() > 0 || !response.isSuccessful()) {
             result.responseOK = false;
@@ -148,7 +152,9 @@ public class HttpTask extends MonitoringTask {
             result.errorMessage = "Fields are not found!";
         } else {
             result.responseOK = true;
+            result.errorMessage = "";
             result.addResponse(keysValues, httpSettings.getHistoryDepth());
+            result.removeDeletedFields(httpSettings.getFields());
         }
 
         if (result.responseOK)

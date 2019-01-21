@@ -1,16 +1,13 @@
 package com.evartem.remsimon.data.types.http;
 
 import com.evartem.remsimon.data.types.base.TaskResult;
-import com.google.common.collect.EvictingQueue;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-
-import timber.log.Timber;
+import java.util.Set;
 
 public class HttpTaskResult extends TaskResult {
     public boolean responseOK = false; // Last request was successful?
@@ -32,8 +29,7 @@ public class HttpTaskResult extends TaskResult {
      * Adds new values received from the last JSON response.
      * If the size of the list is grater than the historyDepth, then the oldest values are removed from the list
      */
-    public void addResponse(Map<String, String> keysValues, int historyDepth)
-    {
+    public void addResponse(Map<String, String> keysValues, int historyDepth) {
         for (Map.Entry<String, String> keyValue : keysValues.entrySet()) {
             List<String> values;
             if (responses.containsKey(keyValue.getKey()))
@@ -49,6 +45,28 @@ public class HttpTaskResult extends TaskResult {
             // while - because user might change historyDepth from, say, 5 to 3
             while (values.size() > 1 && values.size() > historyDepth)
                 values.remove(0);
+        }
+    }
+
+    /**
+     * If the user deleted a field in the task's settings, then all the field's
+     * values should be removed from the responses
+     * @param existingFields Current list of fields from the task's settings
+     */
+    public void removeDeletedFields(String existingFields) {
+        // Split the comma separated list into a Set
+        Set<String> fieldsList = new HashSet<>();
+        String[] keys = existingFields.toLowerCase().split(",");
+        for (String key : keys) {
+            if (key.trim().length() > 0)
+                fieldsList.add(key.trim());
+        }
+
+        Set<String> fieldsInResponse = new HashSet<>(responses.keySet());
+        fieldsInResponse.removeAll(fieldsList); // Leaves only old fields that user already deleted
+        for (String deletedField :
+                fieldsInResponse) {
+            responses.remove(deletedField);
         }
     }
 }
