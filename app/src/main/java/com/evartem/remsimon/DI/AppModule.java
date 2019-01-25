@@ -10,7 +10,7 @@ import com.evartem.remsimon.data.types.pinging.HybridPinger;
 import com.evartem.remsimon.data.types.pinging.Pinger;
 import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 import com.evartem.remsimon.tasks.DI.TasksActivityModule;
-import com.evartem.remsimon.tasks.TasksActivity;
+import com.evartem.remsimon.tasks.UI.TasksActivity;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 

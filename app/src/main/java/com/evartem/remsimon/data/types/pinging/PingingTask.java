@@ -120,6 +120,8 @@ public class PingingTask extends MonitoringTask {
         return TaskType.PINGING;
     }
 
+    @Override
+    public int getTypeInt() { return TaskType.PINGING_INT; }
 
     @Override
     @WorkerThread

@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 import com.evartem.remsimon.DI.base.BaseFragmentModule;
 import com.evartem.remsimon.DI.scopes.PerFragment;
 import com.evartem.remsimon.tasks.ContractMVP.TasksView;
-import com.evartem.remsimon.tasks.TasksFragment;
+import com.evartem.remsimon.tasks.UI.TasksFragment;
 
 import javax.inject.Named;
 

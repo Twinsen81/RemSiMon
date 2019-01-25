@@ -9,8 +9,8 @@ import com.evartem.remsimon.taskEdit.http.DI.HttpTaskEditFragmentModule;
 import com.evartem.remsimon.taskEdit.http.HttpTaskEditFragment;
 import com.evartem.remsimon.taskEdit.pinging.DI.PingingTaskEditFragmentModule;
 import com.evartem.remsimon.taskEdit.pinging.PingingTaskEditFragment;
-import com.evartem.remsimon.tasks.TasksActivity;
-import com.evartem.remsimon.tasks.TasksFragment;
+import com.evartem.remsimon.tasks.UI.TasksActivity;
+import com.evartem.remsimon.tasks.UI.TasksFragment;
 
 import dagger.Binds;
 import dagger.Module;

@@ -10,5 +10,8 @@ public final class TaskType {
     private TaskType() {}
 
     public static final String PINGING = "PingingTask";
+    public static final int PINGING_INT = 1;
+
     public static final String HTTP = "HttpTask";
+    public static final int HTTP_INT = 2;
 }

@@ -9,6 +9,7 @@ import android.support.annotation.WorkerThread;
 
 import com.evartem.remsimon.DI.AppComponent;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
+import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
 import com.google.common.base.Strings;
 import com.squareup.moshi.JsonAdapter;
@@ -108,6 +109,9 @@ public class HttpTask extends MonitoringTask {
     }
 
     @Override
+    public int getTypeInt() { return TaskType.HTTP_INT; }
+
+    @Override
     @WorkerThread
     protected void doTheActualWork() {
 
@@ -147,12 +151,18 @@ public class HttpTask extends MonitoringTask {
         if (response == null || exceptionText.length() > 0 || !response.isSuccessful()) {
             result.responseOK = false;
             result.errorMessage = getErrorMessage(response, exceptionText);
+            if (result.errorMessage.equals("timeout"))
+                result.errorCode = TaskResult.ERROR_TIMEOUT;
+            else
+                result.errorCode = TaskResult.ERROR_IO;
         } else if (keysValues.isEmpty()) {
             result.responseOK = false;
+            result.errorCode = TaskResult.ERROR_PARSING;
             result.errorMessage = "Fields are not found!";
         } else {
             result.responseOK = true;
             result.errorMessage = "";
+            result.errorCode = TaskResult.NO_ERROR;
             result.addResponse(keysValues, httpSettings.getHistoryDepth());
             result.removeDeletedFields(httpSettings.getFields());
         }

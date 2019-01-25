@@ -1,4 +1,4 @@
-package com.evartem.remsimon.tasks;
+package com.evartem.remsimon.tasks.UI;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

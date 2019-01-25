@@ -1,6 +1,7 @@
-package com.evartem.remsimon.tasks;
+package com.evartem.remsimon.tasks.UI;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -10,6 +11,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
 import com.evartem.remsimon.R;
@@ -21,10 +23,10 @@ import com.evartem.remsimon.taskEdit.http.HttpTaskEditFragment;
 import com.evartem.remsimon.taskEdit.pinging.PingingTaskEditFragment;
 import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
 import com.evartem.remsimon.tasks.ContractMVP.TasksView;
+import com.evartem.remsimon.tasks.UI.TasksAdapter;
 import com.evartem.remsimon.util.Helper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -156,5 +158,16 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
         presenter.reloadTasks();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        // The soft keyboard isn't always hidden after we return from the editing fragment,
+        // so hide the keyboard here
+        try {
+            InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+        } catch (Exception ignored) {
+        }
+    }
 }

@@ -21,6 +21,7 @@ public class TaskResult {
     public static final int ERROR_INVALID_ADDRESS = 1;
     public static final int ERROR_TIMEOUT = 2;
     public static final int ERROR_IO = 3;
+    public static final int ERROR_PARSING = 4;
 
     /**
      * If the task failed, the reason is written here as a code

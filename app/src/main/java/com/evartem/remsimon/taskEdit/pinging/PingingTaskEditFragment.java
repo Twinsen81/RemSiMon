@@ -39,7 +39,7 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
     EditText etAddress;
     @BindView(R.id.etRunEveryMs)
     EditText etRunEveryMs;
-    @BindView(R.id.etHistoryDepth)
+    @BindView(R.id.etTimeoutMs)
     EditText etTimeoutMs;
 
     /**

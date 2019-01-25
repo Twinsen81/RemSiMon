@@ -217,6 +217,7 @@ public abstract class MonitoringTask {
      * @return The type of this task as defined in {@link TaskType}
      */
     public abstract String getType();
+    public abstract int getTypeInt();
 
 
     @NonNull

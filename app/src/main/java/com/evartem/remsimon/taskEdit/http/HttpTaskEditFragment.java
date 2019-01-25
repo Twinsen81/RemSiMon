@@ -41,7 +41,7 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
     EditText etAddress;
     @BindView(R.id.etRunEveryMs)
     EditText etRunEveryMs;
-    @BindView(R.id.etHistoryDepth)
+    @BindView(R.id.etTimeoutMs)
     EditText etHistoryDepth;
     @BindView(R.id.etFields)
     EditText etFields;

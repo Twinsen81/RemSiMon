@@ -1,17 +1,20 @@
-- UI for HttpTask:
-BUG: the edit fragment is "see through" - you can click to create a new task
-BUG: when HttpTask times out - the error message says "timeout" but the error code = 0
-HttpTask - set timeout time
-BUG: HttpTask headers in the recyclerview sometimes become colored gray - why is that?
-TEST button
 
-http://frogermcs.github.io/inject-everything-viewholder-and-dagger-2-example/
-The rest of the UI for HttpTask (incl. trends)
+HttpTask - set timeout time
+PingingTask - Check if Internet connection is available - still uptime
+PingingTask - number of failed pings before the site is considered to be down
+
+Result - without JSON?
+
+TEST button for both
+Trends
+
+- BUG: portrait mode - no scrolling in the edit fragments
+- "Run every" TIME selection - choose units to enter the time (seconds, minutes, hours)
+
+
 By default, when a new task is created, fill the fields with some public REST API request
 
 - UI tests with espresso (special test dagger-component?)
 
 - WorkManager: https://medium.com/@nlg.tuan.kiet/dagger-2-setup-with-workmanager-a-complete-step-by-step-guild-bb9f474bde37
-
-- BUG: portrait mode - no scrolling in the edit fragments
-- "Run every" TIME selection - choose units to enter the time (seconds, minutes, hours)
+- Notifications

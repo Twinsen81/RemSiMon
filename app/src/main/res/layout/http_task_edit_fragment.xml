@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/windowBackground">
+    android:clickable="true"
+    android:background="?android:attr/windowBackground"
+    android:focusable="true">
 
     <TextView
         android:id="@+id/tvRunEveryMs"
@@ -36,9 +38,9 @@
         android:layout_marginEnd="8dp"
         android:text="@string/requests"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/etHistoryDepth"
+        app:layout_constraintBottom_toBottomOf="@+id/etTimeoutMs"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etHistoryDepth" />
+        app:layout_constraintTop_toTopOf="@+id/etTimeoutMs" />
 
     <EditText
         android:id="@+id/etLabel"
@@ -128,9 +130,9 @@
         android:layout_marginStart="8dp"
         android:gravity="end"
         android:text="@string/historyDepth"
-        app:layout_constraintBottom_toBottomOf="@+id/etHistoryDepth"
+        app:layout_constraintBottom_toBottomOf="@+id/etTimeoutMs"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/etHistoryDepth" />
+        app:layout_constraintTop_toTopOf="@+id/etTimeoutMs" />
 
     <android.support.constraint.Barrier
         android:id="@+id/barAfterAllTextLabels"
@@ -158,7 +160,7 @@
         tools:text="10000" />
 
     <EditText
-        android:id="@+id/etHistoryDepth"
+        android:id="@+id/etTimeoutMs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -194,7 +196,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toEndOf="@+id/btnDelete"
-        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth" />
+        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs" />
 
     <Button
         android:id="@+id/btnApply"
@@ -208,7 +210,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toEndOf="@+id/btnTest"
-        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth" />
+        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs" />
 
     <Button
         android:id="@+id/btnCancel"
@@ -222,7 +224,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnApply"
-        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth"
+        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs"
         tools:text="CANCEL" />
 
     <Button
@@ -238,7 +240,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etHistoryDepth"
+        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs"
         tools:text="DELETE" />
 
 </android.support.constraint.ConstraintLayout>
