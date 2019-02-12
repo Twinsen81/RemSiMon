@@ -1,92 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
     android:layout_marginTop="12dp"
+    android:layout_marginRight="8dp"
     app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<android.support.constraint.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    app:cardElevation="4dp">
 
-    <TextView
-        android:id="@+id/tvName"
-        android:layout_width="0dp"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:background="@android:color/darker_gray"
-        android:padding="2dp"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Task's caption" />
+        android:paddingBottom="8dp">
 
-    <TextView
-        android:id="@+id/tvAddress"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvName"
-        tools:text="http://google.com" />
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/rounded_corner"
+            android:paddingLeft="4dp"
+            android:paddingTop="2dp"
+            android:paddingRight="2dp"
+            android:paddingBottom="2dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Task's caption" />
 
-    <TextView
-        android:id="@+id/tvUpDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/uptime"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddress"
-        tools:text="DOWN TIME:" />
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:ellipsize="end"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvAddressLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/barAllTextLabels"
+            app:layout_constraintTop_toTopOf="@+id/tvAddressLabel"
+            tools:text="http://google.com" />
 
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/tvUpDown"
-        app:layout_constraintTop_toTopOf="@+id/tvUpDown"
-        tools:text="3 days 24h 34m 45s" />
+        <TextView
+            android:id="@+id/tvUpDown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:gravity="end"
+            android:text="@string/uptime"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/barAllTextLabels"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvAddressLabel"
+            tools:text="Downtime:" />
 
-    <TextView
-        android:id="@+id/tvLastSuccessLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:paddingBottom="8dp"
-        android:text="@string/lastsuccess"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUpDown"
-        tools:text="Last successful ping:" />
+        <TextView
+            android:id="@+id/tvAddressLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:gravity="end"
+            android:text="@string/addressLabel"
+            android:textAlignment="viewEnd"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/barAllTextLabels"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
-    <TextView
-        android:id="@+id/tvSuccessTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toEndOf="@+id/tvLastSuccessLabel"
-        app:layout_constraintTop_toTopOf="@+id/tvLastSuccessLabel"
-        tools:text="23.12.18 22:34:11" />
-</android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvUpDown"
+            app:layout_constraintStart_toEndOf="@id/barAllTextLabels"
+            app:layout_constraintTop_toTopOf="@+id/tvUpDown"
+            tools:text="3 days 24h 34m 45s" />
+
+        <TextView
+            android:id="@+id/tvLastSuccessLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:gravity="end"
+            android:text="@string/lastsuccess"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvUpDown"
+            tools:text="Last success:" />
+
+        <TextView
+            android:id="@+id/tvSuccessTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/tvLastSuccessLabel"
+            app:layout_constraintStart_toEndOf="@id/barAllTextLabels"
+            app:layout_constraintTop_toTopOf="@+id/tvLastSuccessLabel"
+            tools:text="23.12.18 22:34:11" />
+
+        <TextView
+            android:id="@+id/tvLastDowntime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:textSize="12sp"
+            android:visibility="gone"
+            android:text="@string/lastDowntimeLasted"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvLastSuccessLabel"
+            tools:text="Last downtime lasted 3m 23s and ended at 12.01.19 23:45:33" />
+
+
+        <android.support.constraint.Barrier
+            android:id="@+id/barAllTextLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="right"
+            app:constraint_referenced_ids="tvAddressLabel,tvLastSuccessLabel,tvUpDown" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

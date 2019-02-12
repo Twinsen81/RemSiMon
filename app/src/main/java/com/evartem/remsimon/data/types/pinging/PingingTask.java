@@ -7,7 +7,7 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.evartem.remsimon.DI.AppComponent;
+import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;
@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
+import static com.evartem.remsimon.TheApp.isInternetConnectionAvailable;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
@@ -109,6 +110,7 @@ public class PingingTask extends MonitoringTask {
 
     /**
      * Sets or replaces the current JSON adapter (for unit tests)
+     *
      * @param jsonAdapter
      */
     public void setJsonAdapter(JsonAdapter<PingingTaskResult> jsonAdapter) {
@@ -121,7 +123,9 @@ public class PingingTask extends MonitoringTask {
     }
 
     @Override
-    public int getTypeInt() { return TaskType.PINGING_INT; }
+    public int getTypeInt() {
+        return TaskType.PINGING_INT;
+    }
 
     @Override
     @WorkerThread
@@ -137,9 +141,14 @@ public class PingingTask extends MonitoringTask {
             pingSettings = settings.clone();
         }
 
-        PingingTaskResult result = pinger.ping(pingSettings);
+        PingingTaskResult result;
 
-        formatAndSetResult(result);
+        if (isInternetConnectionAvailable)
+            result = pinger.ping(pingSettings);
+        else
+            result = ((PingingTaskResult) lastResultCached).clone();
+
+        formatAndSetResult(result, pingSettings);
 
         taskGotNewResult = true;
     }
@@ -149,11 +158,12 @@ public class PingingTask extends MonitoringTask {
      * 1. Calculates uptime and downtime
      * 2. Converts the result into JSON formatted strings
      * 3. Saves the result object for calculations on the next call
+     *
      * @param result
      */
-    private void formatAndSetResult(@NotNull PingingTaskResult result) {
+    private void formatAndSetResult(@NotNull PingingTaskResult result, PingingTaskSettings pingSettings) {
 
-        result = calculateUpDownTime(result);
+        result = calculateUpDownTime(result, pingSettings);
 
         String jsonResult;
 
@@ -172,28 +182,45 @@ public class PingingTask extends MonitoringTask {
 
     /**
      * Calculates the uptime and downtime (depending on the ping results)
+     *
      * @param result The latest ping command results
      * @return The input parameter with uptime and downtime calculated
      */
-    private PingingTaskResult calculateUpDownTime(PingingTaskResult result) {
+    private PingingTaskResult calculateUpDownTime(PingingTaskResult result, PingingTaskSettings pingSettings) {
         long nowMs = Instant.now().getMillis();
+        PingingTaskResult lastResultCached = ((PingingTaskResult) this.lastResultCached);
 
-        if (result.pingOK) {
-            result.lastSuccessTime = nowMs;
+        if (result.lastPingOK) {
+            result.failedPingsCount = 0;
+
+            if (isInternetConnectionAvailable) result.lastSuccessTime = nowMs;
+
             if (lastResultCached.errorCode != TaskResult.NO_ERROR ||
-                    lastResultCached.lastSuccessTime == 0) // If this is the first successful ping after creation or a failure
+                    lastResultCached.lastSuccessTime == 0) {// If this is the first successful ping after creation or a failure
                 result.firstSuccessTime = result.lastSuccessTime; // Memorize for uptime calculation
-            else {
+                result.lastDowntimeDurationMs = lastResultCached.downtimeMs;
+                result.downtimeEndedTime = nowMs;
+            } else { // The previous ping was also successful
                 result.firstSuccessTime = lastResultCached.firstSuccessTime;
+                result.lastDowntimeDurationMs = lastResultCached.lastDowntimeDurationMs;
+                result.downtimeEndedTime = lastResultCached.downtimeEndedTime;
+
                 if (result.firstSuccessTime == 0) { // The task was just created
                     result.firstSuccessTime = nowMs;
                 }
             }
 
-            result.uptimeMs = nowMs - result.firstSuccessTime;
+            if (isInternetConnectionAvailable) result.uptimeMs = nowMs - result.firstSuccessTime;
         } else {
-            result.lastSuccessTime = lastResultCached.lastSuccessTime;
-            result.downtimeMs = nowMs - result.lastSuccessTime;
+            long failedPingsCount = lastResultCached.failedPingsCount + 1;
+            if (failedPingsCount > pingSettings.getDowntimeFailedPingsNumber()) {
+                result.lastSuccessTime = lastResultCached.lastSuccessTime;
+                result.downtimeMs = nowMs - result.lastSuccessTime;
+            } else {
+                result = lastResultCached.clone();
+                result.lastPingOK = false;
+            }
+            result.failedPingsCount = failedPingsCount;
         }
         return result;
     }
@@ -201,7 +228,7 @@ public class PingingTask extends MonitoringTask {
     /**
      * Returns the result of the last work.
      * Package-private - should be used for test only.
-     * Clients should only request the JSON formatted result through {@link getLastResultJson}
+     * Clients should only request the JSON formatted result through {getLastResultJson}
      */
     PingingTaskResult getLastResult() {
         if (lastResultCached instanceof PingingTaskResult)

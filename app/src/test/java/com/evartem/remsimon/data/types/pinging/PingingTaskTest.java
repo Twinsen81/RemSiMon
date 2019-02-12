@@ -1,6 +1,6 @@
 package com.evartem.remsimon.data.types.pinging;
 
-import com.evartem.remsimon.DI.AppModule;
+import com.evartem.remsimon.di.AppModule;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskType;
 
@@ -127,7 +127,7 @@ public class PingingTaskTest {
 
         // Then the result is positive
         PingingTaskResult result = TASK1_Ok.getLastResult();
-        assertTrue(result.pingOK);
+        assertTrue(result.lastPingOK);
         assertTrue(result.pingTimeMs > 0 && result.pingTimeMs < TASK1_PING_TIMEOUT);
         assertThat(result.errorMessage, isEmptyString());
         assertThat(result.errorCode, is(NO_ERROR));
@@ -143,7 +143,7 @@ public class PingingTaskTest {
 
         // Then the result is - timeout
         PingingTaskResult result = TASK2_NoPing.getLastResult();
-        assertFalse(result.pingOK);
+        assertFalse(result.lastPingOK);
         assertTrue(result.pingTimeMs > 0);
         assertTrue(result.errorMessage.length() > 0);
         assertThat(result.errorCode, is(ERROR_TIMEOUT));

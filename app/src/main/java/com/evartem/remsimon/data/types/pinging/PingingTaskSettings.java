@@ -9,6 +9,15 @@ package com.evartem.remsimon.data.types.pinging;
 public class PingingTaskSettings {
     private String pingAddress = "127.0.0.1";
     private int pingTimeoutMs = 1000;
+    private int downtimeFailedPingsNumber = 2; // If ping command fails consecutively for this number of times -> start counting downtime
+
+    public int getDowntimeFailedPingsNumber() {
+        return downtimeFailedPingsNumber;
+    }
+
+    public void setDowntimeFailedPingsNumber(int downtimeFailedPingsNumber) {
+        this.downtimeFailedPingsNumber = downtimeFailedPingsNumber;
+    }
 
     public synchronized String getPingAddress() {
         return pingAddress;

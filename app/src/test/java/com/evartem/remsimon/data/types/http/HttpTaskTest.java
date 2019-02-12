@@ -1,7 +1,7 @@
 package com.evartem.remsimon.data.types.http;
 
-import com.evartem.remsimon.DI.AppModule;
-import com.evartem.remsimon.DI.RetrofitModule;
+import com.evartem.remsimon.di.AppModule;
+import com.evartem.remsimon.di.RetrofitModule;
 import com.evartem.remsimon.data.util.StandardOutputLoggingTree;
 
 import org.json.JSONException;

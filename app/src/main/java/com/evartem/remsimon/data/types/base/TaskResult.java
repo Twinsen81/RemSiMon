@@ -33,7 +33,7 @@ public class TaskResult {
      */
     public String errorMessage = "";
 
-    public TaskResult clone(TaskResult copy) {
+    protected TaskResult clone(TaskResult copy) {
         copy.firstSuccessTime = firstSuccessTime;
         copy.lastSuccessTime = lastSuccessTime;
         copy.errorCode = errorCode;

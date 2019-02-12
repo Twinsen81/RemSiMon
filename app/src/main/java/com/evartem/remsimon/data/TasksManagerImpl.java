@@ -223,13 +223,13 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
         });
     }
 
-    /*@UiThread
+    @UiThread
     @Nullable
     @Override
-    public MonitoringTask getTask(String taskId) {
+    public MonitoringTask getTaskById(String taskId) {
         return tasks.get(taskId);
     }
-*/
+
 
     /**
      * Adds new task or updates an existing one (asynchronously).

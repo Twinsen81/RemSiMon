@@ -31,7 +31,7 @@ public final class Helper {
             .appendSuffix(" s ")
             .toFormatter();
 
-    private static DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("dd MMMM HH:mm:ss");
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("dd.MM.YY HH:mm:ss");
 
     public static  String formatPeriod(long periodMs, Resources resources) {
         if (periodMs > 94608000000L) return resources.getString(R.string.neverup);

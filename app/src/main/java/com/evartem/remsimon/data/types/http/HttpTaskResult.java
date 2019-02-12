@@ -1,6 +1,7 @@
 package com.evartem.remsimon.data.types.http;
 
 import com.evartem.remsimon.data.types.base.TaskResult;
+import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,5 +69,27 @@ public class HttpTaskResult extends TaskResult {
                 fieldsInResponse) {
             responses.remove(deletedField);
         }
+    }
+
+    @Override
+    protected TaskResult clone(TaskResult copy) {
+        super.clone(copy);
+        if (copy instanceof HttpTaskResult)
+            ((HttpTaskResult) copy).responses = copy(responses);
+        return copy;
+    }
+
+    public HttpTaskResult clone() {
+        HttpTaskResult copy = new HttpTaskResult();
+        return (HttpTaskResult)clone(copy);
+    }
+
+    private static Map<String, List<String>> copy(Map<String, List<String>> original)
+    {
+        HashMap<String, List<String>> copy = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : original.entrySet())
+            copy.put(entry.getKey(),
+                    new ArrayList<>(entry.getValue()));
+        return copy;
     }
 }

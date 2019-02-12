@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.evartem.remsimon.BaseMVP.view.BaseViewFragment;
+import com.evartem.remsimon.basemvp.view.BaseViewFragment;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditPresenter;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditView;
+import com.evartem.remsimon.taskEdit.pinging.contractmvp.PingingTaskEditPresenter;
+import com.evartem.remsimon.taskEdit.pinging.contractmvp.PingingTaskEditView;
 
 import javax.inject.Inject;
 
@@ -41,6 +41,10 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
     EditText etRunEveryMs;
     @BindView(R.id.etTimeoutMs)
     EditText etTimeoutMs;
+    @BindView(R.id.etAttempts)
+    EditText etAttempts;
+
+    private static String SAVED_INSTANCE_TASK_ID = "taskId";
 
     /**
      * The task being edited or null if a new task is being created
@@ -60,8 +64,21 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
+
         setEditTextsCallbacks();
-        displayTaskToEdit();
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SAVED_INSTANCE_TASK_ID)) {
+            task = presenter.getTaskById(savedInstanceState.getString(SAVED_INSTANCE_TASK_ID));
+        } else
+            displayTaskToEdit();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if (task != null)
+            outState.putString(SAVED_INSTANCE_TASK_ID, task.getTaskId());
     }
 
     /**
@@ -74,12 +91,14 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
             etAddress.setText(task.settings.getPingAddress());
             etRunEveryMs.setText(String.valueOf(task.getRunTaskEveryMs()));
             etTimeoutMs.setText(String.valueOf(task.settings.getPingTimeoutMs()));
+            etAttempts.setText(String.valueOf(task.settings.getDowntimeFailedPingsNumber()));
             btnDelete.setEnabled(true);
         } else {
             etTitle.setText("New task");
             etAddress.setText("8.8.8.8");
             etRunEveryMs.setText("5000");
             etTimeoutMs.setText("2000");
+            etAttempts.setText("2");
         }
     }
 
@@ -178,7 +197,8 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
         if (task == null) // Creating a new task (not editing an existing one)
         {
             task = new PingingTask("A pinging task");
-            app.getAppComponent().inject(task);
+            //app.getAppComponent().inject(task);
+            task.injectDependencies(app.getAppComponent());
         }
         task.setDescription(etTitle.getText().toString().trim());
         task.setRunTaskEveryMs(Integer.valueOf(etRunEveryMs.getText().toString().trim()));

@@ -1,6 +1,6 @@
 package com.evartem.remsimon.data;
 
-import com.evartem.remsimon.DI.AppModule;
+import com.evartem.remsimon.di.AppModule;
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.TasksManagerStarter;
 import com.evartem.remsimon.data.types.base.MonitoringTask;

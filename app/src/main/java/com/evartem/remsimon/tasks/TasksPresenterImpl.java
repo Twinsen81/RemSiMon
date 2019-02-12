@@ -3,11 +3,11 @@ package com.evartem.remsimon.tasks;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.evartem.remsimon.BaseMVP.presenter.BasePresenter;
+import com.evartem.remsimon.basemvp.presenter.BasePresenter;
 import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
-import com.evartem.remsimon.tasks.ContractMVP.TasksPresenter;
-import com.evartem.remsimon.tasks.ContractMVP.TasksView;
+import com.evartem.remsimon.tasks.contractmvp.TasksPresenter;
+import com.evartem.remsimon.tasks.contractmvp.TasksView;
 
 import javax.inject.Inject;
 

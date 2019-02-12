@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
+    android:focusable="true"
     android:background="?android:attr/windowBackground"
-    android:focusable="true">
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/tvRunEveryMs"
@@ -76,14 +81,14 @@
         app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
         app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
         app:layout_constraintTop_toBottomOf="@+id/etRunEveryMs"
-        tools:text="8.8.8.8" />
+        tools:text="8.8.8.8"
+        android:importantForAutofill="no" />
 
     <TextView
         android:id="@+id/tvLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:gravity="end"
         android:text="@string/label"
         android:textSize="16sp"
@@ -113,12 +118,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/etTimeoutMs" />
 
+        <TextView
+        android:id="@+id/tvAttempts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="end"
+        android:text="@string/attempts"
+        app:layout_constraintBottom_toBottomOf="@+id/etAttempts"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/etAttempts" />
+
     <android.support.constraint.Barrier
         android:id="@+id/barAfterAllTextLabels"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="tvAddress, tvLabel, tvRunEveryMs, tvTimeoutMs" />
+        app:constraint_referenced_ids="tvAddress, tvLabel, tvRunEveryMs, tvTimeoutMs, tvAttempts" />
 
     <EditText
         android:id="@+id/etRunEveryMs"
@@ -154,7 +170,27 @@
         app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
         app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
         app:layout_constraintTop_toBottomOf="@+id/etAddress"
-        tools:text="1000" />
+        tools:text="1000"
+        android:importantForAutofill="no" />
+
+        <EditText
+            android:id="@+id/etAttempts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:ems="10"
+            android:gravity="end"
+            android:hint="@string/attempts_tip"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@+id/barBeforeMs"
+            app:layout_constraintStart_toEndOf="@+id/barAfterAllTextLabels"
+            app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs"
+            tools:text="2"
+            android:importantForAutofill="no" />
 
     <android.support.constraint.Barrier
         android:id="@+id/barBeforeMs"
@@ -175,7 +211,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toEndOf="@+id/btnDelete"
-        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs" />
+        app:layout_constraintTop_toBottomOf="@+id/etAttempts" />
 
     <Button
         android:id="@+id/btnCancel"
@@ -189,7 +225,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnApply"
-        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs"
+        app:layout_constraintTop_toBottomOf="@+id/etAttempts"
         tools:text="CANCEL" />
 
     <Button
@@ -205,7 +241,8 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etTimeoutMs"
+        app:layout_constraintTop_toBottomOf="@+id/etAttempts"
         tools:text="DELETE" />
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

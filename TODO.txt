@@ -1,20 +1,18 @@
-
+Ping - time format - nicer! - localization - read about date format, maybe Joda?
+HttpTask: TextView - rounded corners header + other things like in Pinging Task
 HttpTask - set timeout time
-PingingTask - Check if Internet connection is available - still uptime
-PingingTask - number of failed pings before the site is considered to be down
 
-Result - without JSON?
+Nicer UI for JSON: a table with params and timestamps
 
-TEST button for both
-Trends
+UI tests with espresso (special test dagger-component?)
 
-- BUG: portrait mode - no scrolling in the edit fragments
-- "Run every" TIME selection - choose units to enter the time (seconds, minutes, hours)
 
+- WorkManager:
+    https://medium.com/androiddevelopers/workmanager-basics-beba51e94048
+    https://medium.com/@nlg.tuan.kiet/dagger-2-setup-with-workmanager-a-complete-step-by-step-guild-bb9f474bde37
+    isInternetConnectionAvailable - rewrite
+    Flush tasks to Room every minute
 
 By default, when a new task is created, fill the fields with some public REST API request
-
-- UI tests with espresso (special test dagger-component?)
-
-- WorkManager: https://medium.com/@nlg.tuan.kiet/dagger-2-setup-with-workmanager-a-complete-step-by-step-guild-bb9f474bde37
 - Notifications
+- Add trends for JSON tasks with multiple values

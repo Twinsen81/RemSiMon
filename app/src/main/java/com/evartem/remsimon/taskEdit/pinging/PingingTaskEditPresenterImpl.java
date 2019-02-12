@@ -3,12 +3,13 @@ package com.evartem.remsimon.taskEdit.pinging;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.evartem.remsimon.BaseMVP.presenter.BasePresenter;
+import com.evartem.remsimon.basemvp.presenter.BasePresenter;
 import com.evartem.remsimon.data.TasksManager;
+import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.HybridPinger;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditPresenter;
-import com.evartem.remsimon.taskEdit.pinging.ContractMVP.PingingTaskEditView;
+import com.evartem.remsimon.taskEdit.pinging.contractmvp.PingingTaskEditPresenter;
+import com.evartem.remsimon.taskEdit.pinging.contractmvp.PingingTaskEditView;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
@@ -81,6 +82,14 @@ public class PingingTaskEditPresenterImpl extends BasePresenter<PingingTaskEditV
     public void onDeleteClicked(PingingTask task) {
         manager.deleteTask(task);
         manager.forceSaveAll2Datasource();
+    }
+
+    @Override
+    public PingingTask getTaskById(String taskId) {
+        MonitoringTask task = manager.getTaskById(taskId);
+        if (task instanceof PingingTask)
+            return (PingingTask)task;
+        return null;
     }
 
     @Override

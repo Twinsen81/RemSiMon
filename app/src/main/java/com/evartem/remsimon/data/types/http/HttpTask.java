@@ -7,7 +7,7 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.evartem.remsimon.DI.AppComponent;
+import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskResult;
 import com.evartem.remsimon.data.types.base.TaskType;

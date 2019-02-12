@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e71bf1f1be1e6b9eacb43ae5cc2f10d7",
+    "identityHash": "9fccbaa0f19b41ddc3ba753812f0ff20",
     "entities": [
       {
         "tableName": "PingingTask",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` TEXT NOT NULL, `lastResultJson` TEXT NOT NULL, `description` TEXT, `runTaskEveryMs` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `pingAddress` TEXT, `pingTimeoutMs` INTEGER, PRIMARY KEY(`taskId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`taskId` TEXT NOT NULL, `lastResultJson` TEXT NOT NULL, `description` TEXT, `runTaskEveryMs` INTEGER NOT NULL, `mode` INTEGER NOT NULL, `pingAddress` TEXT, `pingTimeoutMs` INTEGER, `downtimeFailedPingsNumber` INTEGER, PRIMARY KEY(`taskId`))",
         "fields": [
           {
             "fieldPath": "taskId",
@@ -47,6 +47,12 @@
           {
             "fieldPath": "settings.pingTimeoutMs",
             "columnName": "pingTimeoutMs",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "settings.downtimeFailedPingsNumber",
+            "columnName": "downtimeFailedPingsNumber",
             "affinity": "INTEGER",
             "notNull": false
           }
@@ -149,7 +155,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e71bf1f1be1e6b9eacb43ae5cc2f10d7\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9fccbaa0f19b41ddc3ba753812f0ff20\")"
     ]
   }
 }

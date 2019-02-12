@@ -4,7 +4,7 @@ import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.evartem.remsimon.DI.AppComponent;
+import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.data.source.local.TasksDatabase;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 

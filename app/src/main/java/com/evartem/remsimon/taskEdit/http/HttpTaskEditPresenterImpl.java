@@ -3,12 +3,13 @@ package com.evartem.remsimon.taskEdit.http;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.evartem.remsimon.BaseMVP.presenter.BasePresenter;
+import com.evartem.remsimon.basemvp.presenter.BasePresenter;
 import com.evartem.remsimon.data.TasksManager;
+import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.http.HttpTask;
 import com.evartem.remsimon.data.types.pinging.HybridPinger;
-import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditPresenter;
-import com.evartem.remsimon.taskEdit.http.ContractMVP.HttpTaskEditView;
+import com.evartem.remsimon.taskEdit.http.contractmvp.HttpTaskEditPresenter;
+import com.evartem.remsimon.taskEdit.http.contractmvp.HttpTaskEditView;
 import com.google.common.base.Strings;
 
 import org.jetbrains.annotations.NotNull;
@@ -86,6 +87,15 @@ public class HttpTaskEditPresenterImpl extends BasePresenter<HttpTaskEditView> i
     public void onDeleteClicked(HttpTask task) {
         manager.deleteTask(task);
         manager.forceSaveAll2Datasource();
+    }
+
+    @Override
+    @Nullable
+    public HttpTask getTaskById(String taskId) {
+        MonitoringTask task = manager.getTaskById(taskId);
+        if (task instanceof HttpTask)
+            return (HttpTask)task;
+        return null;
     }
 
     @Override

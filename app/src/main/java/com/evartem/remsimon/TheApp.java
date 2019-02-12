@@ -1,10 +1,13 @@
 package com.evartem.remsimon;
 
 import android.app.Activity;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 
-import com.evartem.remsimon.DI.AppComponent;
-import com.evartem.remsimon.DI.DaggerAppComponent;
+import com.evartem.remsimon.di.AppComponent;
+import com.evartem.remsimon.di.DaggerAppComponent;
+import com.evartem.remsimon.util.ConnectivityChangeReceiver;
 import com.squareup.leakcanary.LeakCanary;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -18,6 +21,8 @@ import timber.log.Timber;
 
 public class TheApp extends DaggerApplication {
 
+    public static volatile boolean isInternetConnectionAvailable = false;
+
     @Inject
     DispatchingAndroidInjector<Activity> activityInjector;
     private AppComponent appComponent;
@@ -30,6 +35,11 @@ public class TheApp extends DaggerApplication {
         Timber.plant(new Timber.DebugTree());
 
         if (!isRobolectricUnitTest()) setupLeakCanary();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(new ConnectivityChangeReceiver(), intentFilter);
+
 
         JodaTimeAndroid.init(this);
     }

@@ -29,9 +29,11 @@ public interface TasksManager {
 
     /**
      * Returns the list of existing tasks. This is blocking call.
-     * @return The list of MonitoringTasks subclasses objects.
+     * @return The list of objects implementing MonitoringTasks.
      */
     List<MonitoringTask> getCachedTasks();
+
+
 
     /**
      * Returns the list of existing tasks in a callback.
@@ -43,7 +45,7 @@ public interface TasksManager {
     /**
      * Gets the task object given its ID
      */
-    //MonitoringTask getTask(String taskId);
+    MonitoringTask getTaskById(String taskId);
 
     /**
      * Adds a new task or updates an existing one (memory and datasource)

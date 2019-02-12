@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="pingOk">#60b73e</color>
     <color name="pingNotOk">#c23030</color>
+    <color name="pingNotOkAttempts">#FF9800</color>
+    <color name="pingNoInternet">#636363</color>
 </resources>

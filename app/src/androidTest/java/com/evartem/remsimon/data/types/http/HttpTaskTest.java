@@ -2,7 +2,7 @@ package com.evartem.remsimon.data.types.http;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.evartem.remsimon.DI.AppComponent;
+import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.TheApp;
 
 import org.junit.Before;
