@@ -10,10 +10,10 @@ public class HttpTaskSettings {
     /**
      * The address of the server to get the data from
      */
-    private String httpAddress = "https://api.github.com/orgs/square/repos?page=1&per_page=1";
+    private String httpAddress = "https://www.metaweather.com/api/location/2122265/";//"https://api.github.com/orgs/square/repos?page=1&per_page=1";
 
     /**
-     * Defines the UI layout: how the received data is parsed and displayed
+     * Defines the UI layout: how the received data is parsed and displayed (not used in the current version)
      */
     private String displayLayout = "default";
 

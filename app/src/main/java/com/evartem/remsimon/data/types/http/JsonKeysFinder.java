@@ -57,7 +57,7 @@ public class JsonKeysFinder {
 
     /**
      * Goes through all keys of the JSON data looking for the keys needed (keys2Find).
-     * Once found, puts that key's value into the map (result) and removes they from the kays2Find set.
+     * Once found, puts that key's value into the map (result) and removes it from the kays2Find set.
      * If there're multiple keys with the same name - only the first found is accepted.
      *
      * @param json - JSON data as a string to look in for the keys2Find

@@ -94,9 +94,9 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
             etAttempts.setText(String.valueOf(task.settings.getDowntimeFailedPingsNumber()));
             btnDelete.setEnabled(true);
         } else {
-            etTitle.setText("New task");
+            etTitle.setText("Google DNS");
             etAddress.setText("8.8.8.8");
-            etRunEveryMs.setText("5000");
+            etRunEveryMs.setText("10000");
             etTimeoutMs.setText("2000");
             etAttempts.setText("2");
         }

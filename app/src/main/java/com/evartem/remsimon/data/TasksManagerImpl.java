@@ -11,6 +11,7 @@ import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.util.AppExecutors;
 
 import org.jetbrains.annotations.NotNull;
+import org.joda.time.Instant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +122,8 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
 
         loadTasksFromDatasource();
 
+        Instant lastTimeFlushed2Datasource = Instant.now();
+
         while (!Thread.interrupted() && !interrupted && !stopManager) {
             someTasksWereRun = false;
             try {
@@ -134,10 +137,13 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
                             notifyListeners(task, StateChangedListener.STATE_CHANGED);
                         }
                     }
-
                 }
 
-                if (!someTasksWereRun) TimeUnit.MILLISECONDS.sleep(20);
+                if (!someTasksWereRun)
+                    TimeUnit.MILLISECONDS.sleep(20);
+                else
+                    if (Instant.now().minus(lastTimeFlushed2Datasource.getMillis()).getMillis() > 60000)
+                        forceSaveAll2Datasource(); // Once a minute save tasks to datasource
 
             } catch (InterruptedException e) {
                 interrupted = true;

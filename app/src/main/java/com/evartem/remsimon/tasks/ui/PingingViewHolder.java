@@ -8,12 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.evartem.remsimon.TheApp;
-import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.R;
+import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.pinging.PingingTask;
 import com.evartem.remsimon.data.types.pinging.PingingTaskResult;
+import com.evartem.remsimon.di.AppComponent;
 import com.squareup.moshi.JsonAdapter;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class PingingViewHolder extends TaskViewHolder {
     @BindView(R.id.tvName)
     TextView tvName;
 
-    @BindView(R.id.tvAddress)
+    @BindView(R.id.tvResults)
     TextView tvAddress;
 
     @BindView(R.id.tvUpDown)
@@ -54,7 +54,7 @@ public class PingingViewHolder extends TaskViewHolder {
         appComponent.inject(this);
     }
 
-    public static PingingViewHolder createViewHolder(@NonNull ViewGroup parent, AppComponent appComponent) {
+    static PingingViewHolder createViewHolder(@NonNull ViewGroup parent, AppComponent appComponent) {
         return new PingingViewHolder(
                 LayoutInflater.from(parent.getContext()).inflate(R.layout.task_item_pinging, parent, false),
                 appComponent);
@@ -66,12 +66,6 @@ public class PingingViewHolder extends TaskViewHolder {
             throw new RuntimeException("Wrong ViewHolder type binding. Expected: PingingTask, actual: " + monitoringTask.getClass().getSimpleName());
 
         PingingTask task = (PingingTask) monitoringTask;
-
-        tvName.setText(task.getDescription());
-        Resources res = tvName.getContext().getResources();
-
-        tvAddress.setText(task.settings.getPingAddress());
-
         PingingTaskResult result = null;
         String resultJson = task.getLastResultJson();
 
@@ -85,22 +79,34 @@ public class PingingViewHolder extends TaskViewHolder {
         }
 
         if (result != null) {
-            int color = R.color.pingOk;
-            if (!TheApp.isInternetConnectionAvailable)
-                color = R.color.pingNoInternet;
-            else {
-                if (result.isPingOK() && !result.lastPingOK) color = R.color.pingNotOkAttempts;
-                if (!result.isPingOK()) color = R.color.pingNotOk;
-            }
-            GradientDrawable drawable = (GradientDrawable) tvName.getBackground();
-            drawable.setColor(res.getColor(color));
-
-            tvUpDown.setText(result.isPingOK() ? R.string.uptime : R.string.downtime);
-            tvTime.setText(formatPeriod(result.isPingOK() ? result.uptimeMs : result.downtimeMs, res));
-            tvSuccessTime.setText(formatDateTime(result.lastSuccessTime, res));
-            tvLastDowntime.setVisibility(result.isPingOK() && result.lastDowntimeDurationMs != 0 ? View.VISIBLE : View.GONE);
-            tvLastDowntime.setText(String.format(res.getText(R.string.lastDowntimeLasted).toString(),
-                    formatPeriod(result.lastDowntimeDurationMs, res), formatDateTime(result.downtimeEndedTime, res)));
+            setTitle(result.isPingOK(), result.lastPingOK, task.getDescription());
+            tvAddress.setText(task.settings.getPingAddress());
+            tvSuccessTime.setText(formatDateTime(result.lastSuccessTime, itemView.getResources()));
+            printUpDownTime(result);
         }
+    }
+
+    private void printUpDownTime(PingingTaskResult result) {
+        Resources resources = itemView.getResources();
+        tvUpDown.setText(result.isPingOK() ? R.string.uptime : R.string.downtime);
+        tvTime.setText(formatPeriod(result.isPingOK() ? result.uptimeMs : result.downtimeMs, resources));
+        tvLastDowntime.setVisibility(result.isPingOK() && result.lastDowntimeDurationMs != 0 ? View.VISIBLE : View.GONE);
+        tvLastDowntime.setText(String.format(resources.getText(R.string.lastDowntimeLasted).toString(),
+                formatPeriod(result.lastDowntimeDurationMs, resources),
+                formatDateTime(result.downtimeEndedTime, resources)));
+    }
+
+    private void setTitle(boolean isPingOK, boolean lastPingOK, String description) {
+        int color = R.color.pingOk;
+        if (!TheApp.isInternetConnectionAvailable) {
+            color = R.color.pingNoInternet;
+        }
+        else {
+            if (isPingOK && !lastPingOK) color = R.color.pingNotOkAttempts;
+            if (!isPingOK) color = R.color.pingNotOk;
+        }
+        GradientDrawable drawable = (GradientDrawable) tvName.getBackground();
+        drawable.setColor(itemView.getResources().getColor(color));
+        tvName.setText(description);
     }
 }

@@ -4,6 +4,8 @@ import com.evartem.remsimon.BuildConfig;
 import com.evartem.remsimon.di.scopes.PerApplication;
 import com.evartem.remsimon.data.types.http.GeneralApi;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
@@ -39,6 +41,8 @@ public abstract class RetrofitModule {
             okhttpBuilder.addInterceptor(logging);
         }
         return okhttpBuilder
+                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .build();
     }
 }

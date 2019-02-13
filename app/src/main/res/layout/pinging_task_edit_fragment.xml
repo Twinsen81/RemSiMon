@@ -97,7 +97,7 @@
         app:layout_constraintTop_toTopOf="@+id/etLabel" />
 
     <TextView
-        android:id="@+id/tvAddress"
+        android:id="@+id/tvResults"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -134,7 +134,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="right"
-        app:constraint_referenced_ids="tvAddress, tvLabel, tvRunEveryMs, tvTimeoutMs, tvAttempts" />
+        app:constraint_referenced_ids="tvResults, tvLabel, tvRunEveryMs, tvTimeoutMs, tvAttempts" />
 
     <EditText
         android:id="@+id/etRunEveryMs"

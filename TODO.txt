@@ -1,8 +1,3 @@
-Nicer UI for JSON: a table with params and timestamps
-
-By default, when a new task is created, fill the fields with some public REST API request
-Flush tasks to Room every minute
-
 UI tests with espresso (special test dagger-component?)
 
 - WorkManager:
@@ -10,6 +5,6 @@ UI tests with espresso (special test dagger-component?)
     https://medium.com/@nlg.tuan.kiet/dagger-2-setup-with-workmanager-a-complete-step-by-step-guild-bb9f474bde37
     isInternetConnectionAvailable - rewrite
 
-
-- Notifications
+- Nicer results formatting for JSON tasks (custom value formatting, aliases for field names)
+- Notifications (about values reaching certain setpoints and ping failures)
 - Add trend charts for JSON tasks with multiple values

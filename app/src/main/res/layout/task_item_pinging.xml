@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="8dp"
-    android:layout_marginTop="12dp"
+    android:layout_marginTop="6dp"
     android:layout_marginRight="8dp"
+    android:layout_marginBottom="6dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp">
 
@@ -37,7 +38,7 @@
             tools:text="Task's caption" />
 
         <TextView
-            android:id="@+id/tvAddress"
+            android:id="@+id/tvResults"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -119,9 +120,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
+            android:text="@string/lastDowntimeLasted"
             android:textSize="12sp"
             android:visibility="gone"
-            android:text="@string/lastDowntimeLasted"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLastSuccessLabel"
             tools:text="Last downtime lasted 3m 23s and ended at 12.01.19 23:45:33" />

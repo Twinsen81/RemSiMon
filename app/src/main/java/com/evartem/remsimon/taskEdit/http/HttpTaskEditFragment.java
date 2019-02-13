@@ -33,8 +33,6 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
     Button btnApply;
     @BindView(R.id.btnDelete)
     Button btnDelete;
-    @BindView(R.id.btnTest)
-    Button btnTest;
     @BindView(R.id.etLabel)
     EditText etTitle;
     @BindView(R.id.etAddress)
@@ -96,10 +94,10 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
             etFields.setText(task.settings.getFields());
             btnDelete.setEnabled(true);
         } else {
-            etTitle.setText("JSON task");
-            etAddress.setText("https://jsonplaceholder.typicode.com/todos/1");
+            etTitle.setText("BITCOIN price (USD)");
+            etAddress.setText("https://api.coindesk.com/v1/bpi/currentprice/BTC.json");
             etRunEveryMs.setText("10000");
-            etFields.setText("userId");
+            etFields.setText("bpi.usd.rate");
             etHistoryDepth.setText("1");
         }
     }
@@ -252,7 +250,6 @@ public class HttpTaskEditFragment extends BaseViewFragment<HttpTaskEditPresenter
         boolean runEveryMsIsValid = presenter.isInputValidRunEveryMs(etRunEveryMs.getText().toString().trim());
         boolean timeoutMsIsValid = presenter.isInputValidHistoryDepth(etHistoryDepth.getText().toString().trim());
         btnApply.setEnabled(addressIsValid && titleIsValid && runEveryMsIsValid && timeoutMsIsValid);
-        btnTest.setEnabled(btnApply.isEnabled());
     }
 
 
