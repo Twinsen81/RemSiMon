@@ -1,12 +1,14 @@
 package com.evartem.remsimon.tasks.ui;
 
 import android.content.res.Resources;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.R;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
@@ -57,7 +59,8 @@ public class HttpViewHolder extends TaskViewHolder {
     @Override
     public void bind(MonitoringTask monitoringTask) {
         if (!(monitoringTask instanceof HttpTask))
-            throw new RuntimeException("Wrong ViewHolder type binding. Expected: HttpTask, actual: " + monitoringTask.getClass().getSimpleName());
+            throw new RuntimeException("Wrong ViewHolder type binding. Expected: HttpTask, actual: "
+                    + monitoringTask.getClass().getSimpleName());
 
         HttpTask task = (HttpTask) monitoringTask;
 
@@ -77,8 +80,14 @@ public class HttpViewHolder extends TaskViewHolder {
         }
 
         if (result != null) {
+            int color = R.color.pingOk;
+            if (!TheApp.isInternetConnectionAvailable)
+                color = R.color.pingNoInternet;
+            else if (!result.responseOK) color = R.color.pingNotOk;
+            GradientDrawable drawable = (GradientDrawable) tvName.getBackground();
+            drawable.setColor(res.getColor(color));
+
             tvAddress.setText(result.responses.toString());
-            tvName.setBackgroundColor(res.getColor(result.responseOK ? R.color.pingOk : R.color.pingNotOk));
             tvUpDown.setText("");
             tvTime.setText("");
             tvSuccessTime.setText(formatDateTime(result.lastSuccessTime, res));

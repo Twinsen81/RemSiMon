@@ -92,7 +92,6 @@ public class PingingViewHolder extends TaskViewHolder {
                 if (result.isPingOK() && !result.lastPingOK) color = R.color.pingNotOkAttempts;
                 if (!result.isPingOK()) color = R.color.pingNotOk;
             }
-            //tvName.setBackgroundColor(res.getColor(color));
             GradientDrawable drawable = (GradientDrawable) tvName.getBackground();
             drawable.setColor(res.getColor(color));
 
