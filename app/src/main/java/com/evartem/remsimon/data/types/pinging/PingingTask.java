@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.annotation.WorkerThread;
 
 import com.evartem.remsimon.di.AppComponent;
@@ -72,11 +73,12 @@ public class PingingTask extends MonitoringTask {
      * A convenience method for quick creation of a pinging task
      */
     public static PingingTask create(@NonNull String description, int runTaskEveryMs,
-                                     @NonNull String addressToPing, int pingTimeoutMs) {
+                                     @NonNull String addressToPing, int pingTimeoutMs, int pingAttemptsBeforeFailure) {
         PingingTask task = new PingingTask(description);
         task.setRunTaskEveryMs(runTaskEveryMs);
         task.settings.setPingAddress(addressToPing);
         task.settings.setPingTimeoutMs(pingTimeoutMs);
+        task.settings.setDowntimeFailedPingsNumber(pingAttemptsBeforeFailure);
         return task;
     }
 
@@ -104,6 +106,7 @@ public class PingingTask extends MonitoringTask {
      *
      * @param pinger the class that implements {@link Pinger} and actually performs pinging
      */
+    @VisibleForTesting()
     public void setPinger(@NotNull Pinger pinger) {
         this.pinger = pinger;
     }
@@ -113,6 +116,7 @@ public class PingingTask extends MonitoringTask {
      *
      * @param jsonAdapter
      */
+    @VisibleForTesting()
     public void setJsonAdapter(JsonAdapter<PingingTaskResult> jsonAdapter) {
         this.jsonAdapter = jsonAdapter;
     }
@@ -212,8 +216,10 @@ public class PingingTask extends MonitoringTask {
 
             if (isInternetConnectionAvailable) result.uptimeMs = nowMs - result.firstSuccessTime;
         } else {
+
             long failedPingsCount = lastResultCached.failedPingsCount + 1;
-            if (failedPingsCount > pingSettings.getDowntimeFailedPingsNumber()) {
+            if (failedPingsCount > pingSettings.getDowntimeFailedPingsNumber() ||
+                    result.errorCode == TaskResult.ERROR_INVALID_ADDRESS) {
                 result.lastSuccessTime = lastResultCached.lastSuccessTime;
                 result.downtimeMs = nowMs - result.lastSuccessTime;
             } else {

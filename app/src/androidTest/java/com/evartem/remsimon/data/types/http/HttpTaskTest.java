@@ -2,8 +2,8 @@ package com.evartem.remsimon.data.types.http;
 
 import android.support.test.runner.AndroidJUnit4;
 
-import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.TheApp;
+import com.evartem.remsimon.di.AppComponent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class HttpTaskTest {
     private static final String JSON_SIMPLE_5 = "{\"Location\": \"home\", \"temperature\":28}";
     private static final String JSON_SIMPLE_6 = "{\"Location\": \"home\", \"temperature\":29}";
 
-    HttpTask task;
+    private HttpTask task;
 
     @Before
     public void init() {

@@ -81,9 +81,7 @@ public class TasksFragment extends BaseViewFragment<TasksPresenter> implements T
         taskTypeSelectionDialog.setTitle(R.string.taskTypeDialogCaption);
         Pair<List<String>, List<String>> typeNames = Helper.getAllTypes(getContext());
 
-        taskTypeSelectionDialog.setItems(typeNames.second.toArray(new String[0]), (dialog, which) -> {
-            createNewTask(typeNames.first.get(which));
-        });
+        taskTypeSelectionDialog.setItems(typeNames.second.toArray(new String[0]), (dialog, which) -> createNewTask(typeNames.first.get(which)));
         taskTypeSelectionDialog.create().show();
     }
 

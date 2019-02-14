@@ -2,12 +2,15 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+    testOptions.unitTests.includeAndroidResources = true
+
     defaultConfig {
         applicationId "com.evartem.remsimon"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -41,27 +44,6 @@ android {
             includeAndroidResources = true
         }
     }
-
-/*    flavorDimensions "default"
-
-    // If you need to add more flavors, consider using flavor dimensions.
-    productFlavors {
-        mock {
-            dimension "default"
-            applicationIdSuffix = ".mock"
-        }
-        prod {
-            dimension "default"
-        }
-    }
-
-    // Remove mockRelease as it's not needed.
-    android.variantFilter { variant ->
-        if (variant.buildType.name == 'release'
-                && variant.getFlavors().get(0).name == 'mock') {
-            variant.setIgnore(true)
-        }
-    }*/
 }
 
 dependencies {
@@ -110,12 +92,14 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.hamcrest:hamcrest-all:$hamcrestVersion"
-    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.robolectric:robolectric:4.1'
     testImplementation 'com.github.andrzejchm.RESTMock:android:0.3.2'
 
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation "com.android.support.test.espresso:espresso-idling-resource:3.0.2"
+
     androidTestImplementation 'com.github.andrzejchm.RESTMock:android:0.3.2'
 
     implementation "com.jakewharton:butterknife:$butterknifeVersion"

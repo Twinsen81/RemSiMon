@@ -50,12 +50,12 @@ public class TasksManagerImplTest {
 
     private TasksManager manager;
 
-    private PingingTask TASK1 = PingingTask.create("TEST ping task 1", 1000, "127.0.0.1", 1000);
+    private PingingTask TASK1 = PingingTask.create("TEST ping task 1", 1000, "127.0.0.1", 1000, 1);
 
     private List<PingingTask> pingingTasks = Arrays.asList(
-            PingingTask.create("TEST ping task 2", 1000, "127.0.0.2", 2000),
-            PingingTask.create("TEST ping task 3", 1000, "127.0.0.3", 3000),
-            PingingTask.create("TEST ping task 4", 1000, "127.0.0.4", 4000));
+            PingingTask.create("TEST ping task 2", 1000, "127.0.0.2", 2000,1 ),
+            PingingTask.create("TEST ping task 3", 1000, "127.0.0.3", 3000, 1),
+            PingingTask.create("TEST ping task 4", 1000, "127.0.0.4", 4000, 1));
 
     @Before
     public void setUp() {

@@ -39,6 +39,7 @@ public class PingingTaskSettings {
         PingingTaskSettings clone = new PingingTaskSettings();
         clone.setPingAddress(getPingAddress());
         clone.setPingTimeoutMs(getPingTimeoutMs());
+        clone.setDowntimeFailedPingsNumber(downtimeFailedPingsNumber);
         return clone;
     }
 

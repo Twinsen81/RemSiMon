@@ -1,5 +1,7 @@
 package com.evartem.remsimon.data.types.pinging;
 
+import com.evartem.remsimon.TheApp;
+import com.evartem.remsimon.di.AppComponent;
 import com.evartem.remsimon.di.AppModule;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
 import com.evartem.remsimon.data.types.base.TaskType;
@@ -35,6 +37,10 @@ public class PingingTaskTest {
     private
     Pinger pinger;
 
+    @Mock
+    private
+    AppComponent appComponent;
+
     private static final String TASK1_DESCRIPTION = "Test task - always available google's DNS";
     private static final String TASK1_PING_ADDRESS = "8.8.8.8";  // google's dns
     private static final int TASK1_RUN_EVERY_MS = 100;
@@ -50,16 +56,20 @@ public class PingingTaskTest {
     private static final int TASK3_RUN_EVERY_MS = 100;
     private static final int TASK3_PING_TIMEOUT = 999;
 
-    private PingingTask TASK1_Ok = PingingTask.create(TASK1_DESCRIPTION, TASK1_RUN_EVERY_MS, TASK1_PING_ADDRESS, TASK1_PING_TIMEOUT);
-    private PingingTask TASK2_NoPing = PingingTask.create(TASK2_DESCRIPTION, TASK2_RUN_EVERY_MS, TASK2_PING_ADDRESS, TASK2_PING_TIMEOUT);
-    private PingingTask TASK3_WrongUrl = PingingTask.create(TASK3_DESCRIPTION, TASK3_RUN_EVERY_MS, TASK3_PING_ADDRESS, TASK3_PING_TIMEOUT);
+    private PingingTask TASK1_Ok = PingingTask.create(TASK1_DESCRIPTION, TASK1_RUN_EVERY_MS, TASK1_PING_ADDRESS, TASK1_PING_TIMEOUT, 0);
+    private PingingTask TASK2_NoPing = PingingTask.create(TASK2_DESCRIPTION, TASK2_RUN_EVERY_MS, TASK2_PING_ADDRESS, TASK2_PING_TIMEOUT, 0);
+    private PingingTask TASK3_WrongUrl = PingingTask.create(TASK3_DESCRIPTION, TASK3_RUN_EVERY_MS, TASK3_PING_ADDRESS, TASK3_PING_TIMEOUT, 0);
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         TASK1_Ok.setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
+        TASK1_Ok.injectDependencies(appComponent);
         TASK2_NoPing.setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
+        TASK2_NoPing.injectDependencies(appComponent);
         TASK3_WrongUrl.setJsonAdapter(AppModule.pingingTaskResultJsonAdapter(AppModule.moshi()));
+        TASK3_WrongUrl.injectDependencies(appComponent);
+        TheApp.isInternetConnectionAvailable = true;
     }
 
     @Test
@@ -112,8 +122,8 @@ public class PingingTaskTest {
         TASK3_WrongUrl.doTheWork();
 
         // Then the corresponding results with error messages are returned
-        assertThat(TASK1_Ok.getLastResultJson(), containsString("\"errorMessage\":\"Not a valid URL\""));
-        assertThat(TASK3_WrongUrl.getLastResultJson(), containsString("\"errorMessage\":\"Not a valid URL\""));
+        assertThat(TASK1_Ok.getLastResultJson(), containsString("\"Not a valid URL\""));
+        assertThat(TASK3_WrongUrl.getLastResultJson(), containsString("\"Not a valid URL\""));
     }
 
     @Test
