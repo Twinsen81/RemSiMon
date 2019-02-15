@@ -1,4 +1,8 @@
-UI tests with espresso (special test dagger-component?)
+UI tests with espresso:
+    - Updates a pinging task (all params)
+    - Deletes a pinging task
+    - Updates a JSON task (all params)
+    - Deletes a JSON task
 
 - WorkManager:
     https://medium.com/androiddevelopers/workmanager-basics-beba51e94048

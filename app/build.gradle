@@ -44,7 +44,20 @@ android {
             includeAndroidResources = true
         }
     }
+
+    // Disable LeakCanary for unit and instrumentation tests (supply no-op version)
+    configurations.all { config ->
+        if (config.name.contains('UnitTest') || config.name.contains('AndroidTest')) {
+            config.resolutionStrategy.eachDependency { details ->
+                if (details.requested.group == 'com.squareup.leakcanary' && details.requested.name == 'leakcanary-android') {
+                    details.useTarget(group: details.requested.group, name: 'leakcanary-android-no-op', version: details.requested.version)
+                }
+            }
+        }
+    }
 }
+
+
 
 dependencies {
 
@@ -98,8 +111,6 @@ dependencies {
     androidTestImplementation "org.mockito:mockito-core:$mockitoVersion"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation "com.android.support.test.espresso:espresso-idling-resource:3.0.2"
-
     androidTestImplementation 'com.github.andrzejchm.RESTMock:android:0.3.2'
 
     implementation "com.jakewharton:butterknife:$butterknifeVersion"

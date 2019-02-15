@@ -1,5 +1,6 @@
 package com.evartem.remsimon.di;
 
+import com.evartem.remsimon.data.TasksManager;
 import com.evartem.remsimon.di.scopes.PerApplication;
 import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.types.http.HttpTask;
@@ -27,5 +28,7 @@ public interface AppComponent extends AndroidInjector<TheApp> {
 
     void inject(HttpTask httpTask);
     void inject(HttpViewHolder taskViewHolder);
+
+    TasksManager getTasksManager();
 }
 
