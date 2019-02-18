@@ -25,8 +25,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class PingingTaskDaoTest {
 
-    TasksDatabase database;
-    PingingTask TASK1, TASK2;
+    private TasksDatabase database;
+    private PingingTask TASK1;
+    private PingingTask TASK2;
 
     private static final String TASK1_DESCRIPTION = "Test task description";
     private static final String TASK1_PING_ADDRESS = "8.8.8.8";  // google's dns
@@ -37,7 +38,6 @@ public class PingingTaskDaoTest {
     private static final String TASK2_PING_ADDRESS = "192.168.88.88";
     private static final int TASK2_RUN_EVERY = 2;
     private static final int TASK2_PING_TIMEOUT = 900;
-
 
     @Before
     public void init() {

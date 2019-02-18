@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.annotation.WorkerThread;
 
+import com.evartem.remsimon.TheApp;
 import com.evartem.remsimon.data.source.TasksDataSource;
 import com.evartem.remsimon.data.types.TasksManagerStarter;
 import com.evartem.remsimon.data.types.base.MonitoringTask;
@@ -198,7 +199,7 @@ public class TasksManagerImpl implements TasksManager, TasksManagerStarter, Runn
      */
     @WorkerThread
     private synchronized void loadTasksFromDatasource() {
-        if (loadedTasksFromDatasource) return;
+        if (loadedTasksFromDatasource || TheApp.isRunningEspressoTest()) return;
 
         List<MonitoringTask> dbTasks = dataSource.getTasksSync();
         for (MonitoringTask dbTask :

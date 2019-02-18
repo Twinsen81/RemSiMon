@@ -204,6 +204,7 @@ public class PingingTaskEditFragment extends BaseViewFragment<PingingTaskEditPre
         task.setRunTaskEveryMs(Integer.valueOf(etRunEveryMs.getText().toString().trim()));
         task.settings.setPingAddress(etAddress.getText().toString().trim());
         task.settings.setPingTimeoutMs(Integer.valueOf(etTimeoutMs.getText().toString().trim()));
+        task.settings.setDowntimeFailedPingsNumber(Integer.valueOf(etAttempts.getText().toString().trim()));
         presenter.onApplyClicked(task);
         getFragmentManager().popBackStack();
     }

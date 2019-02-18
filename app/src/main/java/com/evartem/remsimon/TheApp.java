@@ -40,7 +40,6 @@ public class TheApp extends DaggerApplication {
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(new ConnectivityChangeReceiver(), intentFilter);
 
-
         JodaTimeAndroid.init(this);
     }
 
@@ -57,12 +56,28 @@ public class TheApp extends DaggerApplication {
         return "robolectric".equals(Build.FINGERPRINT);
     }
 
+    public static synchronized boolean isRunningEspressoTest() {
+        boolean isRunningEspressoTest;
+
+        try {
+            Class.forName("android.support.test.espresso.Espresso");
+            isRunningEspressoTest = true;
+        } catch (ClassNotFoundException e) {
+            isRunningEspressoTest = false;
+        }
+
+        return isRunningEspressoTest;
+    }
+
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
         AndroidInjector<TheApp> ai = DaggerAppComponent.builder().create(this);
-        appComponent = (AppComponent)ai;
+        appComponent = (AppComponent) ai;
         return ai;
     }
-    public AppComponent getAppComponent() { return appComponent;}
+
+    public AppComponent getAppComponent() {
+        return appComponent;
+    }
 
 }
