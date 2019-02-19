@@ -1,3 +1,7 @@
+[![License Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=true)](http://www.apache.org/licenses/LICENSE-2.0)
+![minSdkVersion 21](https://img.shields.io/badge/minSdkVersion-21-red.svg?style=true)
+![compileSdkVersion 28](https://img.shields.io/badge/compileSdkVersion-28-blueviolet.svg?style=true)
+
 <img alt="Icon" src="app/src/main/res/mipmap-xxhdpi/ic_launcher.png?raw=true" align="left" hspace="1" vspace="1">
 
 # Remote Site Monitor (RemSiMon)
@@ -8,17 +12,14 @@ This is a work in progress ...
 #### The app's tasks
 The app is architectured to be extendable with various types of jobs that the app runs on a regular basis. These jobs are called tasks. Currently there are two types of tasks:
 * <B>Pinging task</B>: pings a URL with a given frequency
-* <B>JSON request task</B> requests a JSON-formatted data from a given URL, extracts and displays selected fields from the received data
+* <B>JSON request task:</B> requests a JSON-formatted data from a given URL, extracts and displays selected fields from the received data
 
-For the sake of faster development and testability the tasks are being executed in the background thread of the app, not a service. This will be later and the execution will be carried out either by a service or WorkManager.
-
-[![License Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=true)](http://www.apache.org/licenses/LICENSE-2.0)
-![minSdkVersion 21](https://img.shields.io/badge/minSdkVersion-21-red.svg?style=true)
-![compileSdkVersion 28](https://img.shields.io/badge/compileSdkVersion-27-blueviolet.svg?style=true)
+For the sake of faster development and testability the tasks are being executed in the background thread of the app, not a service. This will be changed soon and the execution will be carried out either by a service or [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager/).
 
 <p align="center">
-  <img alt='Sample 1' src="/art/rsm_sampleshot1.png">
-  <img alt='Sample 2' src="/art/rsm_sampleshot2.png">
+  <img alt='Sample screenshot 1' src="/art/rsm_sampleshot1.png">
+  <img alt='Sample screenshot 2' src="/art/rsm_sampleshot2.png">
+  <img alt='Sample screenshot 3' src="/art/rsm_sampleshot3.png">
 </p>
 
 ## Frameworks and libraries used in the project
